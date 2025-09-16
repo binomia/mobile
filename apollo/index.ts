@@ -11,7 +11,7 @@ import * as Application from 'expo-application';
 import { HASH } from 'cryptografia';
 
 const httpLink = createHttpLink({
-    uri: MAIN_SERVER_URL,
+    uri: MAIN_SERVER_URL + "/graphql",
     credentials: "include",
     preserveHeaderCase: true,
 });
