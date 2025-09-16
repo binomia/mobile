@@ -1,1 +1,7 @@
 node_modules
+google-services.json
+yarn.lock
+
+.env
+.vscode/
+.expo/
