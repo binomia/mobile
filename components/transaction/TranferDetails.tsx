@@ -66,12 +66,14 @@ const TransactionDetails: React.FC<Props> = ({ onClose = () => { }, goNext = () 
             const message = await AES.encryptAsync(JSON.stringify({ data, recurrence }), signingKey)
 
             const start = Date.now()
-            const { data: createedTransaction } = await createTransaction({
+            const { data: createdTransaction } = await createTransaction({
                 variables: { message }
             })
 
+            console.log("createdTransaction:", (Date.now() - start) / 1000 + "s" );
 
-            const transaction = createedTransaction?.createTransaction
+
+            const transaction = createdTransaction?.createTransaction
             if (transaction) {
                 const accountsData = await AccountAuthSchema.account.parseAsync(transaction?.from)
                 const formatedTransaction = formatTransaction(transaction)

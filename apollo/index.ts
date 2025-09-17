@@ -1,4 +1,3 @@
-import { MAIN_SERVER_URL } from '@/constants';
 import useAsyncStorage from '@/hooks/useAsyncStorage';
 import { ApolloClient, from, createHttpLink, InMemoryCache, DefaultOptions } from '@apollo/client';
 import { setContext } from "@apollo/client/link/context";
@@ -11,7 +10,7 @@ import * as Application from 'expo-application';
 import { HASH } from 'cryptografia';
 
 const httpLink = createHttpLink({
-    uri: MAIN_SERVER_URL + "/graphql",
+    uri: `http://192.168.1.93:8000/graphql`,
     credentials: "include",
     preserveHeaderCase: true,
 });
