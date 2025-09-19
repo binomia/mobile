@@ -30,7 +30,7 @@ type Props = {
 const { width } = Dimensions.get("screen")
 const TransactionDetails: React.FC<Props> = ({ onClose = () => { }, goNext = () => { }, goBack = () => { } }) => {
     const { receiver } = useSelector((state: any) => state.transactionReducer)
-    const { user } = useSelector((state: any) => state.accountReducer)
+    const { user, account } = useSelector((state: any) => state.accountReducer)
 
     const dispatch = useDispatch();
     const { authenticate } = useLocalAuthentication();
@@ -65,17 +65,15 @@ const TransactionDetails: React.FC<Props> = ({ onClose = () => { }, goNext = () 
             const signingKey = await AES.decryptAsync(user.signingKey, ZERO_ENCRYPTION_KEY)
             const message = await AES.encryptAsync(JSON.stringify({ data, recurrence }), signingKey)
 
-            const start = Date.now()
             const { data: createdTransaction } = await createTransaction({
                 variables: { message }
             })
 
-            console.log("createdTransaction:", (Date.now() - start) / 1000 + "s" );
-
-
             const transaction = createdTransaction?.createTransaction
             if (transaction) {
-                const accountsData = await AccountAuthSchema.account.parseAsync(transaction?.from)
+                const accountsData = await AccountAuthSchema.account.parseAsync(account)
+                accountsData.balance = accountsData.balance - transaction.amount
+
                 const formatedTransaction = formatTransaction(transaction)
 
                 await dispatch(accountActions.setAccount(accountsData))
@@ -90,8 +88,6 @@ const TransactionDetails: React.FC<Props> = ({ onClose = () => { }, goNext = () 
                 }))
                 setLoading(false)
                 goNext()
-                const end = Date.now()
-                console.log({ handleOnSend: (end - start) / 1000 + "s" });
             } else {
                 router.navigate("/error?title=Transaction&message=Se ha producido un error al intentar crear la transacción. Por favor, inténtalo de nuevo.")
             }

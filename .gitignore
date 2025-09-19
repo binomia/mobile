@@ -4,4 +4,4 @@ yarn.lock
 
 .env
 .vscode/
-.expo/
+.expo

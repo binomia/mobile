@@ -1,4 +1,4 @@
-import { NOTIFICATION_SERVER_URL, SOCKET_EVENTS } from "@/constants";
+import { SOCKET_EVENTS } from "@/constants";
 import useAsyncStorage from "@/hooks/useAsyncStorage";
 import { createContext, useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -29,7 +29,7 @@ export const SocketContextProvider = ({ children }: { children: JSX.Element }) =
 
     }, []);
 
-    const runCallbackAfterEvents = async () => {
+    const runCallbackAfterEvents = async () => {        
         await Promise.all([
             refreshAccount(),
             dispatch(accountActions.setHaveAccountChanged(false)),
@@ -47,7 +47,7 @@ export const SocketContextProvider = ({ children }: { children: JSX.Element }) =
             const decoded = jwtDecode(jwt);
             const { username } = await AccountAuthSchema.jwtDecoded.parseAsync(decoded)
 
-            const socket = io(NOTIFICATION_SERVER_URL, {
+            const socket = io("http://192.168.1.93:6001", {
                 query: { username }
             });
 
