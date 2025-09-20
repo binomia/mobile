@@ -47,7 +47,7 @@ export const SocketContextProvider = ({ children }: { children: JSX.Element }) =
             const decoded = jwtDecode(jwt);
             const { username } = await AccountAuthSchema.jwtDecoded.parseAsync(decoded)
 
-            const socket = io("http://192.168.1.93:6001", {
+            const socket = io("http://192.168.1.93:8001", {
                 query: { username }
             });
 
