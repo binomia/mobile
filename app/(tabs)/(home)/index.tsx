@@ -17,13 +17,14 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { fetchRecentTopUps, fetchRecentTransactions } from '@/redux/fetchHelper';
 import { accountActions } from '@/redux/slices/accountSlice';
 import TransactionSkeleton from '@/components/transaction/transactionSkeleton';
+import CameraFaceMask from '@/components/global/CameraFaceMask';
+import BottomSheet from '@/components/global/BottomSheet';
 
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const HomeScreen: React.FC = () => {
 	const { account, user } = useSelector((state: any) => state.accountReducer)
 	const { recentTransactionsLoading } = useSelector((state: any) => state.transactionReducer)
-
 
 	const dispatch = useDispatch()
 	const [getAccount] = useLazyQuery(AccountApolloQueries.account());
@@ -31,8 +32,6 @@ const HomeScreen: React.FC = () => {
 
 	const [showBottomSheet, setShowBottomSheet] = useState(false)
 	const [refreshing, setRefreshing] = useState(false);
-
-
 
 	const fetchAccount = async () => {
 		try {
@@ -117,8 +116,8 @@ const HomeScreen: React.FC = () => {
 			name: "Facturas",
 			image: bills,
 			onPress: async () => {
-				console.log(JSON.stringify({user}, null, 2));
-				
+				console.log(JSON.stringify({ user }, null, 2));
+
 			}
 		}
 	]
@@ -199,6 +198,9 @@ const HomeScreen: React.FC = () => {
 					</Text>
 				</VStack>
 			</ScrollView>
+			{/* <BottomSheet showDragIcon={false} height={height * 0.9} open={true}>
+				<CameraFaceMask />
+			</BottomSheet> */}
 			<QRScannerScreen defaultPage={1} open={showBottomSheet} onCloseFinish={() => setShowBottomSheet(false)} />
 		</VStack>
 	)
