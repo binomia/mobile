@@ -1,14 +1,14 @@
 import useAsyncStorage from '@/hooks/useAsyncStorage';
+import * as Network from 'expo-network';
+import * as SecureStore from 'expo-secure-store';
+import * as Application from 'expo-application';
+import * as Device from 'expo-device';
 import { ApolloClient, from, createHttpLink, InMemoryCache, DefaultOptions } from '@apollo/client';
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import { Alert, Platform } from 'react-native';
-import * as Network from 'expo-network';
-import * as SecureStore from 'expo-secure-store';
 import { router } from 'expo-router';
-import * as Application from 'expo-application';
 import { HASH } from 'cryptografia';
-
 
 const httpLink = createHttpLink({
     uri: `http://192.168.1.93:8000/graphql`,
@@ -34,8 +34,6 @@ const errorLink = onError((errorHandlers) => {
         });
 });
 
-
-
 const setAuthorizationLink = setContext(async (_, previousContext) => {
     const jwt = await useAsyncStorage().getItem("jwt");
     const ipAddress = await Network.getIpAddressAsync();
@@ -43,12 +41,26 @@ const setAuthorizationLink = setContext(async (_, previousContext) => {
 
     return {
         headers: {
+            ...previousContext.headers,
             ipAddress,
             platform: Platform.OS,
             "deviceId": HASH.sha256(deviceId.toString()),
             "authorization": `Bearer ${jwt}`,
-            ...previousContext.headers
-        },
+            device: JSON.stringify({
+                ipAddress,
+                platform: Platform.OS,
+                deviceId: HASH.sha256(deviceId.toString()),
+                totalMemory: Device.totalMemory,
+                modelId: Device.modelId?.toLowerCase(),
+                modelName: Device.modelName?.toLowerCase(),
+                osVersion: Device.osVersion?.toLowerCase(),
+                brand: Device.brand?.toLowerCase(),
+                deviceName: Device.deviceName?.toLowerCase(),
+                isDevice: Device.isDevice,
+                manufacturer: Device.manufacturer?.toLowerCase(),
+                deviceType: ["unknown", "phone", "tablet", "tv", "desktop"][Device.deviceType || 0]
+            })
+        }
     };
 });
 

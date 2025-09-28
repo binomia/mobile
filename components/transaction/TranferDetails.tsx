@@ -18,6 +18,7 @@ import { useLocation } from '@/hooks/useLocation'
 import { AccountAuthSchema } from '@/auth/accountAuth';
 import { router } from 'expo-router';
 import { transactionActions } from '@/redux/slices/transactionSlice';
+
 type Props = {
     goBack?: () => void
     goNext?: () => void
@@ -45,10 +46,7 @@ const TransactionDetails: React.FC<Props> = ({ onClose = () => { }, goNext = () 
     const [openOptions, setOpenOptions] = useState<string>("")
     // const { uploadTransactionImages } = useCloudinary();
 
-
     const delay = async (ms: number) => new Promise(res => setTimeout(res, ms))
-
-
 
     const handleOnSend = async (recurrence: { title: string, time: string }) => {
         try {
