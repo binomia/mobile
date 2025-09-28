@@ -7,6 +7,12 @@ export const useLocalAuthentication = () => {
         const hasHardwareAsync = await LocalAuthentication.hasHardwareAsync();
         const isEnrolledAsync = await LocalAuthentication.isEnrolledAsync();
 
+        console.log({
+            hasHardwareAsync,
+            isEnrolledAsync
+        });
+        
+
         if (!hasHardwareAsync && !isEnrolledAsync)
             throw new Error('Local authentication is not available');
 

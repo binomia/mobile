@@ -14,7 +14,6 @@
     },
     "ios": {
       "supportsTablet": false,
-      "developmentTeam": "QYTMGGLSQ3", 
       "bundleIdentifier": "com.binomia.com",
       "infoPlist": {
         "NSCameraUsageDescription": "$(PRODUCT_NAME) needs access to your Camera.",
@@ -64,9 +63,7 @@
           "icon": "./assets/img/notification_icon.png",
           "color": "#ffffff",
           "defaultChannel": "default",
-          "sounds": [
-            "./assets/audio/money.wav"
-          ]
+          "sounds": ["./assets/audio/money.wav"]
         }
       ],
       [
@@ -146,7 +143,14 @@
           "organization": "brayhan-qo"
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-maps",
+        {
+          "requestLocationPermission": true,
+          "locationPermission": "Allow $(PRODUCT_NAME) to use your location"
+        }
+      ]
     ],
     "runtimeVersion": {
       "policy": "appVersion"

@@ -32,13 +32,17 @@ const SingleSentTransaction: React.FC<Props> = ({ title = "Ver Detalles", onClos
 	const ref = useRef<PagerView>(null);
 	const dispatch = useDispatch()
 	const { authenticate } = useLocalAuthentication()
-	const { transaction: reduxTransaction } = useSelector((state: any) => state.transactionReducer)
+	const { transaction: _transaction } = useSelector((state: any) => state.transactionReducer)
 	const { account, user }: { account: any, user: any, location: z.infer<typeof TransactionAuthSchema.transactionLocation> } = useSelector((state: any) => state.accountReducer)
-	const [isLoading, setIsLoading] = useState<boolean>(false)
-	const [isCancelLoading, setIsCancelLoading] = useState<boolean>(false)
-	const [isPaying, setIsPaying] = useState<boolean>(false)
+
 	const [payRequestTransaction] = useMutation(TransactionApolloQueries.payRequestTransaction());
 	const [cancelRequestedTransaction] = useMutation(TransactionApolloQueries.cancelRequestedTransaction());
+
+	const [isLoading, setIsLoading] = useState<boolean>(false)
+	const [isPaying, setIsPaying] = useState<boolean>(false)
+	const [isCancelLoading, setIsCancelLoading] = useState<boolean>(false)
+	const [transaction] = useState<any>(_transaction)
+
 
 	const handleShare = async () => {
 		const isAvailableAsync = await Sharing.isAvailableAsync()
@@ -48,10 +52,10 @@ const SingleSentTransaction: React.FC<Props> = ({ title = "Ver Detalles", onClos
 	}
 
 	const formatTransaction = (transaction: any) => {
-		const isFromMe = transaction?.from.user?.id === user.id
-		const profileImageUrl = isFromMe ? transaction?.to.user?.profileImageUrl : transaction?.from.user?.profileImageUrl
-		const fullName = isFromMe ? transaction?.to.user?.fullName : transaction?.from.user?.fullName
-		const username = isFromMe ? transaction?.to.user?.username : transaction?.from.user?.username
+		const isFromMe = transaction?.from?.user?.id === user?.id
+		const profileImageUrl = isFromMe ? transaction?.to?.user?.profileImageUrl : transaction?.from?.user?.profileImageUrl
+		const fullName = isFromMe ? transaction?.to?.user?.fullName : transaction?.from?.user?.fullName
+		const username = isFromMe ? transaction?.to?.user?.username : transaction?.from?.user?.username
 		const showPayButton = transaction?.transactionType === "request" && !isFromMe && transaction?.status === "pending"
 		const amountColor = (transaction?.transactionType === "request" && isFromMe) ? colors.mainGreen : colors.red
 
@@ -66,6 +70,7 @@ const SingleSentTransaction: React.FC<Props> = ({ title = "Ver Detalles", onClos
 			username: username || ""
 		})
 	}
+
 
 	const onCancelRequestedTransaction = async () => {
 		try {
@@ -90,14 +95,15 @@ const SingleSentTransaction: React.FC<Props> = ({ title = "Ver Detalles", onClos
 	}
 
 	const onPress = async (paymentApproved: boolean) => {
-		if (transaction?.showPayButton) {
+		if (showPayButton) {
 			try {
 				const authenticated = await authenticate()
-				setIsCancelLoading(!paymentApproved)
-				setIsLoading(paymentApproved)
 
 				if (authenticated.success) {
+					setIsCancelLoading(!paymentApproved)
+					setIsLoading(paymentApproved)
 					setIsPaying(true)
+
 					const { data } = await payRequestTransaction({
 						variables: {
 							transactionId: transaction.transactionId,
@@ -112,7 +118,6 @@ const SingleSentTransaction: React.FC<Props> = ({ title = "Ver Detalles", onClos
 						dispatch(accountActions.setAccount(Object.assign({}, account, { balance: Number(account.balance) - Number(transaction?.amount) })))
 					])
 
-
 					goNext(paymentApproved ? 1 : 2)
 				}
 
@@ -126,7 +131,6 @@ const SingleSentTransaction: React.FC<Props> = ({ title = "Ver Detalles", onClos
 				setIsCancelLoading(false)
 				setIsPaying(false)
 			}
-
 		}
 		else {
 			setIsLoading(false)
@@ -181,10 +185,6 @@ const SingleSentTransaction: React.FC<Props> = ({ title = "Ver Detalles", onClos
 			)
 		}
 	}
-
-	const transaction = formatTransaction(reduxTransaction)
-	console.log(JSON.stringify(transaction, null, 2));
-
 
 	return (
 		<VStack px={"20px"}>
