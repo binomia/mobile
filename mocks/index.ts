@@ -188,10 +188,12 @@ export const transactionStatus = (title: string) => {
         case "cancelled":
             return "Cancelado"
         case "requested":
-            return "Solicitado"
+            return "Solicitado"    
         case "waiting":
             return "La transacción está siendo procesada. Este proceso puede tardar unos minutos."
         case "suspicious":
+            return "Transacción en revisión, por favor espere que terminemos, o comuníquese con nosotros."
+        case "audited":
             return "Transacción en revisión, por favor espere que terminemos, o comuníquese con nosotros."
         default:
             return "Procesando";

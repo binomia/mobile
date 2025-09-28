@@ -2,7 +2,6 @@ import { ENVSchema } from "@/auth/envSchema";
 import { Dimensions } from "react-native"
 import { RFPercentage } from "react-native-responsive-fontsize";
 
-
 const evironmentVariables = {
     ZERO_ENCRYPTION_KEY: process.env.ZERO_ENCRYPTION_KEY,
     SUPPORT_PHONE_NUMBER: process.env.SUPPORT_PHONE_NUMBER,
@@ -52,8 +51,11 @@ export const {
     CLOUDINARY_VIDEO_UPLOAD_PRESET,
     CLOUDINARY_API_URL,
     CLOUDINARY_AUDIO_API_URL,
-    GOOGLE_MAPS_API_KEY
-} = ENVSchema.evironmentVariables.parse(evironmentVariables)
+
+    GOOGLE_MAPS_API_KEY,
+    GOOGLE_PROJECT_NUMBER
+} = ENVSchema.evironmentVariables.parse(evironmentVariables);
+
 
 export const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 export const TEXT_HEADING_FONT_SIZE = RFPercentage(4)

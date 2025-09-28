@@ -12,14 +12,11 @@ import { useLocalAuthentication } from '@/hooks/useLocalAuthentication';
 import { TransactionAuthSchema } from '@/auth/transactionAuth';
 import { useMutation } from '@apollo/client';
 import { TransactionApolloQueries } from '@/apollo/query/transactionQuery';
-// import { transactionActions } from '@/redux/slices/transactionSlice';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { accountActions } from '@/redux/slices/accountSlice';
 import { useLocation } from '@/hooks/useLocation'
 import { AccountAuthSchema } from '@/auth/accountAuth';
 import { router } from 'expo-router';
-import { AES } from 'cryptografia';
-import { ZERO_ENCRYPTION_KEY } from '@/constants';
 import { transactionActions } from '@/redux/slices/transactionSlice';
 type Props = {
     goBack?: () => void
@@ -62,11 +59,10 @@ const TransactionDetails: React.FC<Props> = ({ onClose = () => { }, goNext = () 
                 location: Object.assign({}, location, {})
             })
 
-            const signingKey = await AES.decryptAsync(user.signingKey, ZERO_ENCRYPTION_KEY)
-            const message = await AES.encryptAsync(JSON.stringify({ data, recurrence }), signingKey)
+            console.log(JSON.stringify({ data, recurrence }, null, 2));
 
             const { data: createdTransaction } = await createTransaction({
-                variables: { message }
+                variables: { data, recurrence }
             })
 
             const transaction = createdTransaction?.createTransaction

@@ -19,9 +19,6 @@ import { useLocation } from '@/hooks/useLocation';
 import { AccountAuthSchema } from '@/auth/accountAuth';
 import { accountActions } from '@/redux/slices/accountSlice';
 import { router } from 'expo-router';
-import { AES } from 'cryptografia';
-import { ZERO_ENCRYPTION_KEY } from '@/constants';
-import { useCloudinary } from '@/hooks/useCloudinary';
 
 type Props = {
     goBack?: () => void
@@ -41,7 +38,6 @@ const TranferRequestDetails: React.FC<Props> = ({ goNext = () => { }, onCloseFin
 
     const [createRequestTransaction] = useMutation(TransactionApolloQueries.createRequestTransaction())
     const [fetchSingleUser] = useLazyQuery(UserApolloQueries.singleUser())
-    const { uploadTransactionImages } = useCloudinary();
 
     const { transactionDeytails } = useSelector((state: any) => state.transactionReducer)
     const [recurrenceSelected, setRecurrenceSelected] = useState<string>("");
@@ -91,22 +87,18 @@ const TranferRequestDetails: React.FC<Props> = ({ goNext = () => { }, onCloseFin
     const handleOnSend = async (recurrence: { title: string, time: string }) => {
         try {
             const _location = await getLocation()
-            const image = await uploadTransactionImages(getMapLocationImage({ latitude: _location.latitude, longitude: _location.longitude }))
 
             const data = await TransactionAuthSchema.createTransaction.parseAsync({
                 transactionType: "request",
                 receiver: receiver.username,
                 amount: parseFloat(transactionDeytails.amount),
-                location: Object.assign({}, _location, {
-                    uri: image || ""
-                })
+                location: Object.assign({}, _location, {})
             })
 
+            console.log(JSON.stringify({ data, recurrence }, null, 2));
 
-            const signingKey = await AES.decryptAsync(user.signingKey, ZERO_ENCRYPTION_KEY)
-            const message = await AES.encryptAsync(JSON.stringify({ data, recurrence }), signingKey)
             const { data: createdRequestTransaction } = await createRequestTransaction({
-                variables: { message }
+                variables: { data, recurrence }
             })
 
             const transaction = createdRequestTransaction?.createRequestTransaction

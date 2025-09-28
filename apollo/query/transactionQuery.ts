@@ -3,8 +3,8 @@ import { gql } from "@apollo/client"
 export class TransactionApolloQueries {
     static createTransaction = () => {
         return gql`
-            mutation CreateTransaction($message: String!) {
-                createTransaction(message: $message) {
+            mutation CreateTransaction($data: NewTransactionInput!, $recurrence: NewTransactionRecurrenceInput!) {
+                createTransaction(data: $data, recurrence: $recurrence) {
                     transactionId
                     amount
                     deliveredAmount
@@ -47,7 +47,6 @@ export class TransactionApolloQueries {
                             phone
                             email
                             dniNumber
-                            password
                             profileImageUrl
                             userAgreementSigned
                             idFrontUrl
@@ -83,7 +82,6 @@ export class TransactionApolloQueries {
                             phone
                             email
                             dniNumber
-                            password
                             profileImageUrl
                             userAgreementSigned
                             idFrontUrl
@@ -102,8 +100,8 @@ export class TransactionApolloQueries {
 
     static createRequestTransaction = () => {
         return gql`
-            mutation CreateRequestTransaction($message: String!) {
-                createRequestTransaction(message: $message) {
+            mutation CreateRequestTransaction($data: NewTransactionInput!, $recurrence: NewTransactionRecurrenceInput!) {
+                createRequestTransaction(data: $data, recurrence: $recurrence) {
                     transactionId
                     amount
                     deliveredAmount
@@ -146,7 +144,6 @@ export class TransactionApolloQueries {
                             phone
                             email
                             dniNumber
-                            password
                             profileImageUrl
                             userAgreementSigned
                             idFrontUrl
@@ -182,7 +179,6 @@ export class TransactionApolloQueries {
                             phone
                             email
                             dniNumber
-                            password
                             profileImageUrl
                             userAgreementSigned
                             idFrontUrl
@@ -245,7 +241,6 @@ export class TransactionApolloQueries {
                             phone
                             email
                             dniNumber
-                            password
                             profileImageUrl
                             userAgreementSigned
                             idFrontUrl
@@ -281,7 +276,6 @@ export class TransactionApolloQueries {
                             phone
                             email
                             dniNumber
-                            password
                             profileImageUrl
                             userAgreementSigned
                             idFrontUrl
@@ -386,7 +380,6 @@ export class TransactionApolloQueries {
                             phone
                             email
                             dniNumber
-                            password
                             profileImageUrl                            
                             userAgreementSigned
                             idFrontUrl
@@ -422,7 +415,6 @@ export class TransactionApolloQueries {
                             phone
                             email
                             dniNumber
-                            password
                             profileImageUrl                            
                             userAgreementSigned
                             idFrontUrl
@@ -479,7 +471,6 @@ export class TransactionApolloQueries {
                             phone
                             email
                             dniNumber
-                            password
                             profileImageUrl                           
                             userAgreementSigned
                             idFrontUrl
@@ -509,7 +500,6 @@ export class TransactionApolloQueries {
                             phone
                             email
                             dniNumber
-                            password
                             profileImageUrl                            
                             userAgreementSigned
                             idFrontUrl
@@ -692,7 +682,6 @@ export class TransactionApolloQueries {
                             phone
                             email
                             dniNumber
-                            password
                             profileImageUrl                            
                             userAgreementSigned
                             idFrontUrl
@@ -728,7 +717,6 @@ export class TransactionApolloQueries {
                             phone
                             email
                             dniNumber
-                            password
                             profileImageUrl                            
                             userAgreementSigned
                             idFrontUrl
@@ -791,7 +779,6 @@ export class TransactionApolloQueries {
                             phone
                             email
                             dniNumber
-                            password
                             profileImageUrl                            
                             userAgreementSigned
                             idFrontUrl
@@ -827,7 +814,6 @@ export class TransactionApolloQueries {
                             phone
                             email
                             dniNumber
-                            password
                             profileImageUrl                            
                             userAgreementSigned
                             idFrontUrl

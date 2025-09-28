@@ -9,19 +9,18 @@ import { router } from 'expo-router';
 import * as Application from 'expo-application';
 import { HASH } from 'cryptografia';
 
+
 const httpLink = createHttpLink({
     uri: `http://192.168.1.93:8000/graphql`,
     credentials: "include",
     preserveHeaderCase: true,
 });
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
+const errorLink = onError((errorHandlers) => {
+    const { graphQLErrors } = errorHandlers;
     if (graphQLErrors)
         graphQLErrors.forEach(async (error) => {
             const { message } = error;
-
-            console.log("error", { message, networkError });
-
 
             if (message.includes("INVALID_SESSION")) {
                 await SecureStore.deleteItemAsync("jwt").then(async () => {

@@ -2,6 +2,8 @@ node_modules
 google-services.json
 yarn.lock
 
-.env
-.vscode/
+.env*
+.vscode
 .expo
+.vscode/settings.json
+.expo/devices.json

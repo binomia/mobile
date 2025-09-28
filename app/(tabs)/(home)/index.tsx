@@ -17,11 +17,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { fetchRecentTopUps, fetchRecentTransactions } from '@/redux/fetchHelper';
 import { accountActions } from '@/redux/slices/accountSlice';
 import TransactionSkeleton from '@/components/transaction/transactionSkeleton';
-import CameraFaceMask from '@/components/global/CameraFaceMask';
-import BottomSheet from '@/components/global/BottomSheet';
 
-
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const HomeScreen: React.FC = () => {
 	const { account, user } = useSelector((state: any) => state.accountReducer)
 	const { recentTransactionsLoading } = useSelector((state: any) => state.transactionReducer)
