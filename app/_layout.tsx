@@ -56,9 +56,7 @@ const Layout = () => {
 
 	}, []);
 
-	useEffect(() => {
-		console.log(process.env);
-		
+	useEffect(() => {		
 		Sentry.init({
 			dsn: "https://fbfc6726bd4ce4d8269b85359bf908fe@o4508923661058048.ingest.us.sentry.io/4508928816906240",
 			debug: false

@@ -5,7 +5,6 @@ import { globalActions } from '@/redux/slices/globalSlice';
 import { useDispatch } from 'react-redux';
 import { Client } from "@googlemaps/google-maps-services-js";
 import { GOOGLE_MAPS_API_KEY } from '@/constants';
-// import { router } from 'expo-router';
 
 export const useLocation = () => {
     const dispatch = useDispatch();

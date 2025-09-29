@@ -6,7 +6,6 @@ import { bankIcon, bankOff, homeOff, homeOn, profileOff, profileOn } from '@/ass
 import { HomeHeaderRight } from '@/components/navigation/HeaderBar';
 
 
-
 const Layout = () => {
 	const defaultTabStyles = {
 		tabBarStyle: {
@@ -24,7 +23,6 @@ const Layout = () => {
 			shadowOpacity: 0,
 		}
 	}
-
 
 	return (
 		<Tabs screenOptions={{ headerShown: false, ...defaultTabStyles }}>
