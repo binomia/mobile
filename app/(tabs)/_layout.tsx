@@ -1,12 +1,15 @@
-import React from 'react';
-import { Tabs } from 'expo-router';
+import React, { useEffect } from 'react';
+import { Tabs, useNavigation } from 'expo-router';
 import { Image } from 'native-base';
 import colors from '@/colors';
 import { bankIcon, bankOff, homeOff, homeOn, profileOff, profileOn } from '@/assets';
 import { HomeHeaderRight } from '@/components/navigation/HeaderBar';
+import { useGrafanaCloud } from '@/hooks/useGrafanaCloud';
 
 
 const Layout = () => {
+	const navigation = useNavigation()
+	const { sendTempoTraces } = useGrafanaCloud()
 	const defaultTabStyles = {
 		tabBarStyle: {
 			backgroundColor: colors.darkGray,
@@ -23,6 +26,13 @@ const Layout = () => {
 			shadowOpacity: 0,
 		}
 	}
+
+	useEffect(() => {
+		navigation.addListener('state', async () => {
+			await sendTempoTraces()
+		})
+
+	}, []);
 
 	return (
 		<Tabs screenOptions={{ headerShown: false, ...defaultTabStyles }}>
