@@ -18,7 +18,7 @@ import { TopUpContextProvider } from '@/src/contexts/topUpContext';
 import { RouterContextProvider } from '@/src/contexts/RouterContext';
 import * as Sentry from '@sentry/react-native';
 import { SQLiteDatabase, SQLiteProvider } from 'expo-sqlite';
-import { generateLogsTable, generateTransactionTable } from '@/src/sql';
+import { generateAccountTable, generateLogsTable, generateTransactionTable } from '@/src/sql';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const SpaceMono = require('../fonts/SpaceMono-Regular.ttf');
@@ -74,9 +74,11 @@ const Layout = () => {
 	}
 
 	const onInitSQLite = async (db: SQLiteDatabase) => {
+		const drop = false
 		await Promise.all([
-			db.execAsync(generateLogsTable()),
-			db.execAsync(generateTransactionTable()),
+			db.execAsync(generateLogsTable(drop)),
+			db.execAsync(generateTransactionTable(drop)),
+			db.execAsync(generateAccountTable(drop)),
 		])
 	}
 

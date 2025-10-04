@@ -118,16 +118,14 @@ export const SessionContextProvider = ({ children }: SessionContextType) => {
         try {
             await deleteItem("jwt");
 
-            await Promise.all([
-                dispatch(globalActions.setJwt("")),
-                dispatch(accountActions.reSetAllState()),
-                dispatch(registerActions.reSetAllState()),
-                dispatch(topupActions.reSetAllState()),
-                dispatch(transactionActions.reSetAllState())
-            ])
+            dispatch(globalActions.setJwt(""))
+            dispatch(accountActions.reSetAllState())
+            dispatch(registerActions.reSetAllState())
+            dispatch(topupActions.reSetAllState())
+            dispatch(transactionActions.reSetAllState())
 
-            router.navigate("login")
-
+            dispatch(globalActions.setIsLoggedIn(false))
+            router.navigate("/login")
 
         } catch (error) {
             console.log({ onLogout: error });
@@ -226,10 +224,10 @@ export const SessionContextProvider = ({ children }: SessionContextType) => {
 
         if (!pushNotification) {
             await setItem("pushNotification", "true");
-            await dispatch(globalActions.setPushNotification(true));
+            dispatch(globalActions.setPushNotification(true));
 
         } else {
-            await dispatch(globalActions.setPushNotification(pushNotification === "true"));
+            dispatch(globalActions.setPushNotification(pushNotification === "true"));
         }
     }
 

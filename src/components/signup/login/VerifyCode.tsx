@@ -9,6 +9,9 @@ import { CodeField, Cursor, useClearByFocusCell, } from 'react-native-confirmati
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Button from '@/src/components/global/Button';
+import { useDispatch } from 'react-redux';
+import { DispatchType } from '@/src/redux';
+import { globalActions } from '@/src/redux/slices/globalSlice';
 
 type Props = {
     nextPage: () => void
@@ -21,6 +24,8 @@ const VerifyCode: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.E
     const [disabledButton, setDisabledButton] = useState<boolean>(false);
     const [invalidCode, setInvalidCode] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
+
+    const dispatch = useDispatch<DispatchType>();
 
     const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -44,6 +49,7 @@ const VerifyCode: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.E
             nextPage()
             await delay(2000)
             setLoading(false)
+            dispatch(globalActions.setIsLoggedIn(true))
 
         } catch (error) {
             console.log({ onPressNext: error });

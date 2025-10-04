@@ -13,6 +13,7 @@ type InitialStateType = {
     smsNotifications: boolean,
     pushNotifications: boolean,
     isVPNConnected: boolean,
+    isLoggedIn: boolean
     contacts: any[],
     network: any,
     location: any,
@@ -32,6 +33,7 @@ const initialState: InitialStateType = {
     smsNotifications: true,
     pushNotifications: true,
     isVPNConnected: true,
+    isLoggedIn: false,
     contacts: [],
     network: {
         isConnected: false,
@@ -63,6 +65,9 @@ const globalSlice = createSlice({
         },
         setIsVPNConnected: (state, action) => {
             state.isVPNConnected = action.payload
+        },
+        setIsLoggedIn: (state, action) => {
+            state.isLoggedIn = action.payload
         },
         setExpoNotificationToken: (state, action) => {
             state.expoNotificationToken = action.payload

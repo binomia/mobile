@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { VStack, Heading, HStack, Text, Stack } from 'native-base';
-import { SafeAreaView, TouchableOpacity, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
+import { TouchableOpacity, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
 import { SessionContext } from '@/src/contexts/sessionContext';
 import { SessionPropsType } from '@/src/types';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -15,6 +15,7 @@ import BottomSheet from '@/src/components/global/BottomSheet';
 import ForgotPassword from './ForgotPassword';
 import VerifyCode from './VerifyCode';
 import ChangePassword from './ChangePassword';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const LoginComponent: React.FC = (): React.JSX.Element => {
 
