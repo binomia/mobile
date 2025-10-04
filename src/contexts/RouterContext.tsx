@@ -3,10 +3,11 @@ import NetInfo from '@react-native-community/netinfo';
 import useAsyncStorage from "../hooks/useAsyncStorage";
 import VPNScreen from "../components/global/VPNScreen";
 import { Stack } from "expo-router";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { globalActions } from "@/src/redux/slices/globalSlice";
 import { StateType } from "../redux";
+import { useCameraPermission, useMicrophonePermission } from "react-native-vision-camera";
 
 export const RouterContext = createContext({});
 
@@ -15,6 +16,36 @@ export const RouterContextProvider = () => {
     const dispatch = useDispatch<any>()
     const [finishedOnboarding, setFinishedOnboarding] = useState(false)
     const { isVPNConnected, isLoggedIn } = useSelector((state: StateType) => state.globalReducer)
+
+    const cameraPermission = useCameraPermission()
+    const microphonePermission = useMicrophonePermission()
+   
+
+    const onLayoutRootView = useCallback(async () => {
+        try {
+            if (!cameraPermission.hasPermission) {
+                await cameraPermission.requestPermission();
+            };
+
+            if (!microphonePermission.hasPermission) {
+                await microphonePermission.requestPermission();
+            }
+
+        } catch (error) {
+            console.error({ error });
+        }
+
+    }, []);
+
+
+    const initializeAllAppData = async () => {
+        const jwt = await getItem('jwt')
+        dispatch(globalActions.setIsLoggedIn(!!jwt))
+
+        await Promise.all([
+            onLayoutRootView(),
+        ])
+    }
 
 
     useEffect(() => {
@@ -32,8 +63,7 @@ export const RouterContextProvider = () => {
 
     useEffect(() => {
         (async () => {
-            const jwt = await getItem('jwt')
-            dispatch(globalActions.setIsLoggedIn(!!jwt))
+            await initializeAllAppData()
 
             setTimeout(() => {
                 setFinishedOnboarding(true)

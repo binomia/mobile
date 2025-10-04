@@ -4,7 +4,7 @@ import { Image, ZStack, Spinner } from 'native-base'
 const Splash = () => {
   return (
     <ZStack flex={1} justifyContent={"flex-end"} alignItems={"center"}>
-      <Image source={splash} w={"100%"} h={"100%"} />
+      <Image alt='splash-image' source={splash} w={"100%"} h={"100%"} />
       <Spinner mb={70} size={"lg"}/>
     </ZStack>
   )

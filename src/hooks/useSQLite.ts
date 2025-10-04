@@ -12,8 +12,15 @@ export const useSQLite = () => {
     const db = useSQLiteContext()
 
     class SQLite {
+        
         static execute = async (queries: string) => {
-            await db.execAsync(queries)
+            try {   
+                if(db)             
+                await db.execAsync(queries)
+
+            } catch (error: any) {
+                console.error(error);
+            }
         }
 
         static getAll = async (query: string, params: SQLiteVariadicBindParams = []): Promise<LogType[]> => {
@@ -21,6 +28,16 @@ export const useSQLite = () => {
                 return await db.getAllAsync(query)
 
             return await db.getAllAsync<LogType>(query, params)
+        }
+
+        static search = async (query: string) => {
+            try {
+                const results = await db.getAllAsync<Record<string, any>>(query)
+                return results
+
+            } catch (error) {
+                console.error({ error })
+            }
         }
     }
 

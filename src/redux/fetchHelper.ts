@@ -26,6 +26,8 @@ export const fetchRecentTransactions = createAsyncThunk('fetchRecentTransactions
             const date = Number(topup.createdAt);
             return {
                 type: "topup",
+                uuid: topup.referenceId,
+                status: topup.status,
                 timestamp: isNaN(date) ? moment(topup.createdAt).valueOf() : date,
                 data: topup
             }
@@ -35,6 +37,8 @@ export const fetchRecentTransactions = createAsyncThunk('fetchRecentTransactions
             const date = Number(transaction.createdAt);
             return {
                 type: "transaction",
+                uuid: transaction.transactionId,
+                status: transaction.status,
                 timestamp: isNaN(date) ? moment(transaction.createdAt).valueOf() : date,
                 data: transaction
             }
