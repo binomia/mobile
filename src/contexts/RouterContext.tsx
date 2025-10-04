@@ -1,36 +1,22 @@
 import ExpoVpnChecker from "expo-vpn-checker";
 import NetInfo from '@react-native-community/netinfo';
-import VPNScreen from "@/src/components/global/VPNScreen";
+import colors from "@/src/colors";
+import useAsyncStorage from "../hooks/useAsyncStorage";
 import { Stack, useNavigation } from "expo-router";
-import { createContext, useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { globalActions } from "@/src/redux/slices/globalSlice";
-import colors from "@/src/colors";
-
+import { StateType } from "../redux";
 
 export const RouterContext = createContext({});
 
 export const RouterContextProvider = () => {
+    const { getItem } = useAsyncStorage()
     const navigation = useNavigation<any>()
     const dispatch = useDispatch<any>()
-    const { isVPNConnected } = useSelector((state: any) => state.globalReducer)
-
-    useEffect(() => {
-        navigation.addListener('state', async () => {
-            await dispatch(globalActions.setIsVPNConnected(ExpoVpnChecker.checkVpn()))
-        })
-    }, []);
-
-    useEffect(() => {
-        const unsubscribe = NetInfo.addEventListener(async () => {
-            await dispatch(globalActions.setIsVPNConnected(ExpoVpnChecker.checkVpn()))
-        });
-
-        return () => {
-            unsubscribe();
-        }
-
-    }, []);
+    const { isVPNConnected } = useSelector((state: StateType) => state.globalReducer)
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const [finishedOnboarding, setFinishedOnboarding] = useState(false)
 
     const defaultHeaderStyles = {
         backgroundColor: colors.darkGray,
@@ -51,13 +37,51 @@ export const RouterContextProvider = () => {
 
     }
 
-    return (isVPNConnected ? <VPNScreen /> :
-        <RouterContext.Provider value={{}}>
-            <Stack>
-                <Stack.Screen name="(main)" options={{ ...defaultscreenOptions, headerShadowVisible: false, title: "Auditoría" }} />
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="(signup)" options={{ headerShown: false }} />
-            </Stack>
-        </RouterContext.Provider>
+    useEffect(() => {
+        navigation.addListener('state', async () => {
+            await dispatch(globalActions.setIsVPNConnected(ExpoVpnChecker.checkVpn()))
+        })
+    }, []);
+
+    useEffect(() => {
+        const unsubscribe = NetInfo.addEventListener(async () => {
+            await dispatch(globalActions.setIsVPNConnected(ExpoVpnChecker.checkVpn()))
+        });
+
+        return () => {
+            unsubscribe();
+        }
+
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            const jwt = await getItem('jwt')
+            setIsLoggedIn(!!jwt)
+
+            setTimeout(() => {
+                setFinishedOnboarding(true)
+            }, 2000);
+        })()
+    }, [])
+
+
+    return (
+        <Stack screenOptions={{animation: "fade", headerShadowVisible: false}}>
+            <Stack.Protected guard={finishedOnboarding}>
+                <Stack.Protected guard={isLoggedIn}>
+                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                </Stack.Protected>
+                <Stack.Protected guard={!isLoggedIn}>
+                    <Stack.Screen name="(signup)" options={{ headerShown: false }} />
+                </Stack.Protected>
+                <Stack.Protected guard={isVPNConnected}>
+                    <Stack.Screen name="(error)" options={{ ...defaultscreenOptions, headerShadowVisible: false, title: "Auditoría" }} />
+                </Stack.Protected>
+            </Stack.Protected>
+            <Stack.Protected guard={!finishedOnboarding}>
+                <Stack.Screen name="splash" options={{ headerShown: false }} />
+            </Stack.Protected>
+        </Stack>
     )
 }

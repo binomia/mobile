@@ -25,8 +25,6 @@ const SpaceMono = require('../fonts/SpaceMono-Regular.ttf');
 
 LogBox.ignoreAllLogs(true);
 LogBox.ignoreLogs(['In React 18']);
-SplashScreen.preventAutoHideAsync();
-
 
 const Layout = () => {
 	const cameraPermission = useCameraPermission()
