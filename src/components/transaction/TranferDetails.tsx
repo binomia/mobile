@@ -2,15 +2,15 @@ import React, { useState } from 'react'
 import colors from '@/src/colors'
 import Button from '@/src/components/global/Button';
 import BottomSheet from '../global/BottomSheet';
-import { Dimensions } from 'react-native'
-import { Heading, Image, Text, VStack, HStack, Pressable, FlatList, Avatar } from 'native-base'
+import { Dimensions, FlatList } from 'react-native'
+import { Heading, Image, Text, VStack, HStack, Pressable, Avatar } from 'native-base'
 import { EXTRACT_FIRST_LAST_INITIALS, FORMAT_CURRENCY, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, MAKE_FULL_NAME_SHORTEN } from '@/src/helpers'
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
 import { recurenceMonthlyData, recurenceWeeklyData } from '@/src/mocks';
 import { useLocalAuthentication } from '@/src/hooks/useLocalAuthentication';
 import { TransactionAuthSchema } from '@/src/auth/transactionAuth';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { TransactionApolloQueries } from '@/src/apollo/query/transactionQuery';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { accountActions } from '@/src/redux/slices/accountSlice';
@@ -18,6 +18,7 @@ import { useLocation } from '@/src/hooks/useLocation'
 import { AccountAuthSchema } from '@/src/auth/accountAuth';
 import { router } from 'expo-router';
 import { transactionActions } from '@/src/redux/slices/transactionSlice';
+import { DispatchType, StateType } from '@/src/redux';
 
 type Props = {
     goBack?: () => void
@@ -27,13 +28,13 @@ type Props = {
 
 const { width } = Dimensions.get("screen")
 const TransactionDetails: React.FC<Props> = ({ onClose = () => { }, goNext = () => { }, goBack = () => { } }) => {
-    const { receiver } = useSelector((state: any) => state.transactionReducer)
-    const { user, account } = useSelector((state: any) => state.accountReducer)
+    const { receiver } = useSelector((state: StateType) => state.transactionReducer)
+    const { user, account } = useSelector((state: StateType) => state.accountReducer)
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<DispatchType>();
     const { authenticate } = useLocalAuthentication();
     const { getLocation } = useLocation();
-    const [createTransaction] = useMutation(TransactionApolloQueries.createTransaction())
+    const [createTransaction] = useMutation<any>(TransactionApolloQueries.createTransaction())
 
     const { transactionDeytails } = useSelector((state: any) => state.transactionReducer)
     const [recurrence, setRecurrence] = useState<string>("oneTime");
@@ -44,7 +45,6 @@ const TransactionDetails: React.FC<Props> = ({ onClose = () => { }, goNext = () 
     const [recurrenceBiweeklyOptionSelected, setRecurrenceBiweeklyOptionSelected] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false)
     const [openOptions, setOpenOptions] = useState<string>("")
-    // const { uploadTransactionImages } = useCloudinary();
 
     const delay = async (ms: number) => new Promise(res => setTimeout(res, ms))
 

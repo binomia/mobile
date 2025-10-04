@@ -10,10 +10,11 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { RefreshControl } from 'react-native'
 import { accountActions } from '@/src/redux/slices/accountSlice'
 import { fetchAccountLimit } from '@/src/redux/fetchHelper'
+import { DispatchType } from '@/src/redux';
 
 
 const LimitsScreen: React.FC = () => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<DispatchType>()
     const isFocused = useNavigation().isFocused()
     const { account, limits, haveAccountChanged } = useSelector((state: any) => state.accountReducer)
 

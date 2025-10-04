@@ -6,8 +6,8 @@ import colors from '@/src/colors';
 interface Props extends IInputProps {
     onChangeText: (value: string) => void
     placeholder: string
-    rightElement?: JSX.Element
-    leftElement?: JSX.Element
+    rightElement?: React.JSX.Element
+    leftElement?: React.JSX.Element
     secureTextEntry?: boolean
     isInvalid?: boolean
     errorMessage?: string

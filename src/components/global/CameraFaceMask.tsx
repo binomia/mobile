@@ -4,7 +4,7 @@ import { Camera, DrawableFrame, useCameraDevice, useSkiaFrameProcessor } from 'r
 import { Face, FaceDetectionOptions, useFaceDetector } from 'react-native-vision-camera-face-detector'
 import { ZStack } from 'native-base'
 import { Worklets } from 'react-native-worklets-core'
-import { PaintStyle, Skia } from '@shopify/react-native-skia'
+import { Skia } from '@shopify/react-native-skia'
 import { qrIcon } from '@/src/assets'
 
 
@@ -32,9 +32,7 @@ const CameraFaceMask: React.FC = () => {
         const faces = detectFaces(frame)
         if (faces.length > 0) {
             const face = faces[0];
-            const { x, y, width, height } = face.bounds;
-
-
+            const { x, y } = face.bounds;
 
             // Build a circle path with Skia
             const paint = Skia.Image.MakeImageFromNativeBuffer(qrIcon);

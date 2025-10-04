@@ -16,7 +16,7 @@ import ForgotPassword from './ForgotPassword';
 import VerifyCode from './VerifyCode';
 import ChangePassword from './ChangePassword';
 
-const LoginComponent: React.FC = (): JSX.Element => {
+const LoginComponent: React.FC = (): React.JSX.Element => {
 
     const pageViewRef = useRef<PagerView>(null);
     const pageRef = useRef<PagerView>(null);

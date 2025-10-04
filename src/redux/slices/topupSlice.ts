@@ -1,7 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { fetchRecentTopUps } from '../fetchHelper'
 
-const initialState = {
+type TopupStateType = {
+    topup: any,
+    newTopUp: any,
+    recentTopUps: any[],
+    phoneNumber: string,
+    fullName: string,
+    company: any,
+    hasNewTransaction: boolean
+}
+
+const initialState: TopupStateType = {
     topup: {},
     newTopUp: {},
     recentTopUps: [],

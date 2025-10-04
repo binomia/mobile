@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { VStack, Heading, Text, HStack } from 'native-base';
-import { SafeAreaView, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
+import { TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
 import { SessionContext } from '@/src/contexts/sessionContext';
 import { SessionPropsType } from '@/src/types';
 import colors from '@/src/colors';
@@ -9,9 +9,10 @@ import { VALIDATE_EMAIL } from '@/src/helpers';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import { UserApolloQueries } from '@/src/apollo/query';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
 import Input from '@/src/components/global/Input';
 import Button from '@/src/components/global/Button';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 
@@ -19,13 +20,13 @@ type Props = {
     nextPage: () => void
 }
 
-const ForgotPassword: React.FC<Props> = ({ nextPage }: Props): JSX.Element => {
+const ForgotPassword: React.FC<Props> = ({ nextPage }: Props): React.JSX.Element => {
     const { sendVerificationCode, setVerificationData } = useContext<SessionPropsType>(SessionContext);
     const [email, setEmail] = useState<string>("");
     const [disabledButton, setDisabledButton] = useState<boolean>(true);
     const [showEmailError, setShowEmailError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false)
-    const [getUserByEmail] = useLazyQuery(UserApolloQueries.userByEmail());
+    const [getUserByEmail] = useLazyQuery<any>(UserApolloQueries.userByEmail());
 
     const sendCode = async () => {
         try {
@@ -98,7 +99,7 @@ const ForgotPassword: React.FC<Props> = ({ nextPage }: Props): JSX.Element => {
                             </HStack>
                             : VALIDATE_EMAIL(email) ?
                                 <HStack space={2} mt={"20px"}>
-                                    <AntDesign style={{ marginTop: 5 }} name="checkcircle" size={24} color={colors.mainGreen} />
+                                    <AntDesign style={{ marginTop: 5 }} name="check-circle" size={24} color={colors.mainGreen} />
                                     <Text fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"85%"} color={"mainGreen"}>
                                         Te enviaremos un código de verificación de 6 digitos a <Text color={"white"}>{email.toLowerCase()}</Text> para recuperar tu cuenta.
                                     </Text>

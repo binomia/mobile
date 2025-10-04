@@ -3,9 +3,9 @@ import colors from '@/src/colors'
 import Input from '@/src/components/global/Input'
 import moment from 'moment';
 import TransactionSkeleton from '@/src/components/transaction/transactionSkeleton';
-import { Keyboard, Dimensions, TouchableWithoutFeedback, TouchableOpacity, RefreshControl, NativeSyntheticEvent, NativeScrollEvent } from 'react-native'
-import { Heading, Image, Text, VStack, FlatList, HStack, Spinner, Pressable, ScrollView, Avatar } from 'native-base'
-import { useLazyQuery } from '@apollo/client'
+import { Keyboard, Dimensions, TouchableWithoutFeedback, TouchableOpacity, RefreshControl, NativeSyntheticEvent, NativeScrollEvent, FlatList } from 'react-native'
+import { Heading, Image, Text, VStack, HStack, Spinner, Pressable, ScrollView, Avatar } from 'native-base'
+import { useLazyQuery } from '@apollo/client/react'
 import { EXTRACT_FIRST_LAST_INITIALS, FORMAT_CURRENCY, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, MAKE_FULL_NAME_SHORTEN } from '@/src/helpers'
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +13,7 @@ import { transactionActions } from '@/src/redux/slices/transactionSlice';
 import { TransactionApolloQueries } from '@/src/apollo/query/transactionQuery';
 import { noTransactions } from '@/src/assets';
 import { router, useNavigation } from 'expo-router';
+import { DispatchType, StateType } from '@/src/redux';
 
 type Props = {
     showNewTransaction?: boolean;
@@ -20,13 +21,13 @@ type Props = {
 
 const { height } = Dimensions.get('window')
 const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: Props) => {
-    const dispatch = useDispatch()
-    const { user } = useSelector((state: any) => state.accountReducer)
+    const dispatch = useDispatch<DispatchType>()
+    const { user } = useSelector((state: StateType) => state.accountReducer)
     const { hasNewTransaction } = useSelector((state: any) => state.topupReducer)
     const isFocused = useNavigation().isFocused()
 
-    const [accountTransactions, { refetch: refetchAccountTransactions }] = useLazyQuery(TransactionApolloQueries.accountTransactions())
-    const [searchAccountTransactions] = useLazyQuery(TransactionApolloQueries.searchAccountTransactions())
+    const [accountTransactions, { refetch: refetchAccountTransactions }] = useLazyQuery<any>(TransactionApolloQueries.accountTransactions())
+    const [searchAccountTransactions] = useLazyQuery<any>(TransactionApolloQueries.searchAccountTransactions())
 
     const [refreshing, setRefreshing] = useState(false);
     const [transactions, setTransactions] = useState<any[]>([])
@@ -180,9 +181,8 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
                                     <Heading px={showNewTransaction ? "20px" : "0px"} underline fontSize={scale(17)} color={colors.pureGray}>{"Ver más"}</Heading>
                                 </Pressable> : null}
                             </HStack>
-                            <FlatList
-                                px={showNewTransaction ? "20px" : "0px"}
-                                mt={"10px"}
+                            <FlatList                                
+                                style={{paddingHorizontal: showNewTransaction ? 20 : 0, marginTop: 10}}
                                 scrollEnabled={false}
                                 data={transactions}
                                 renderItem={({ item, index }: any) => (

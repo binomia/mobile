@@ -14,7 +14,7 @@ type Props = {
     cancelBottomSheet: () => void
 }
 
-const ChangePassword: React.FC<Props> = ({ nextPage, cancelBottomSheet }: Props): JSX.Element => {
+const ChangePassword: React.FC<Props> = ({ nextPage, cancelBottomSheet }: Props): React.JSX.Element => {
 
     const [password, setPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");

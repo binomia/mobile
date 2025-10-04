@@ -3,8 +3,8 @@ import colors from '@/src/colors'
 import BottomSheet from '@/src/components/global/BottomSheet';
 import moment from 'moment';
 import * as Sharing from 'expo-sharing';
-import { SafeAreaView, Dimensions } from 'react-native'
-import { Heading, Image, Text, VStack, FlatList, HStack, Pressable, ZStack } from 'native-base'
+import { SafeAreaView, Dimensions, FlatList } from 'react-native'
+import { Heading, Image, Text, VStack, HStack, Pressable, ZStack } from 'native-base'
 import { FORMAT_CREATED_DATE, FORMAT_CURRENCY } from '@/src/helpers'
 import { scale } from 'react-native-size-matters';
 import { useSelector } from 'react-redux';

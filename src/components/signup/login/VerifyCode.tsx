@@ -16,7 +16,7 @@ type Props = {
 }
 
 const CELL_COUNT = 6;
-const VerifyCode: React.FC<Props> = ({ nextPage, prevPage }: Props): JSX.Element => {
+const VerifyCode: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.Element => {
     const { verificationCode, setVerificationCode } = useContext<SessionPropsType>(SessionContext);
     const [disabledButton, setDisabledButton] = useState<boolean>(false);
     const [invalidCode, setInvalidCode] = useState<boolean>(false);
@@ -107,7 +107,7 @@ const VerifyCode: React.FC<Props> = ({ nextPage, prevPage }: Props): JSX.Element
                             :
                             code.length === 6 && code === verificationCode &&
                             <HStack mt={"20px"}>
-                                <AntDesign style={{ marginTop: 5 }} name="checkcircle" size={24} color={colors.mainGreen} />
+                                <AntDesign style={{ marginTop: 5 }} name="check-circle" size={24} color={colors.mainGreen} />
                                 <Text textAlign={"center"} fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"85%"} color={"mainGreen"}>
                                     As ingresado un código valido. Ahora puede presionar el botón que dice Siguiente.
                                 </Text>

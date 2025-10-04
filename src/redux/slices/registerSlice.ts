@@ -1,7 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+type InitialStateType = {
+    fullName: string
+    username: string
+    phone: string
+    email: string
+    password: string
+    profileImageUrl: string | null
+    userAgreementSigned: boolean
+    idBackUrl: string
+    idFrontUrl: string
+    faceVideoUrl: string
+    address: string
+    dniNumber: string
+    dob: string
+    dniExpiration: string
+    gender: string | null
+    occupation: string | null
+    maritalStatus: string | null
+    bloodType: string | null
+}
 
-const initialState = {
+const initialState: InitialStateType = {
     fullName: "",
     username: "",
     phone: "",

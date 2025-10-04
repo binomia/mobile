@@ -3,7 +3,7 @@ import { Stack } from 'expo-router';
 import colors from '@/src/colors';
 
 
-const TabLayout: React.FC = (): JSX.Element => {
+const TabLayout: React.FC = () => {
 	const defaultHeaderStyles = {
 		backgroundColor: colors.darkGray,
 		shadowOpacity: 0,

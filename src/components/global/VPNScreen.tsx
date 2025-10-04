@@ -8,12 +8,13 @@ import colors from '@/src/colors'
 import ExpoVpnChecker from "expo-vpn-checker";
 import { useDispatch } from 'react-redux'
 import { globalActions } from '@/src/redux/slices/globalSlice'
+import { DispatchType } from '@/src/redux'
 
 const { width } = Dimensions.get('window')
 const VPNScreen: React.FC = () => {
     const [refreshing, setRefreshing] = useState(false);
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<DispatchType>()
 
     const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 

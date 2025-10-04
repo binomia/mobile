@@ -6,28 +6,29 @@ import Cards from '@/src/components/cards'
 import CardModification from '@/src/components/cards/CardModification'
 import SingleTransactionBanking from '@/src/components/transaction/SingleBankingTransaction'
 import DepositOrWithdrawTransaction from '@/src/components/banking/deposit'
-import { VStack, Text, HStack, FlatList, Heading, Image, Pressable, ScrollView } from 'native-base'
+import { VStack, Text, HStack, Heading, Image, Pressable, ScrollView } from 'native-base'
 import { useDispatch, useSelector } from 'react-redux'
 import { scale } from 'react-native-size-matters'
 import { cashIn, cashout, noTransactions } from '@/src/assets'
 import { FORMAT_CREATED_DATE, FORMAT_CURRENCY } from '@/src/helpers'
-import { Alert, Dimensions, RefreshControl } from 'react-native'
+import { Alert, Dimensions, FlatList, RefreshControl } from 'react-native'
 import { transactionActions } from '@/src/redux/slices/transactionSlice'
 import { router, useNavigation } from 'expo-router'
 import { TransactionApolloQueries } from '@/src/apollo/query/transactionQuery'
-import { useLazyQuery, useMutation } from '@apollo/client'
+import { useLazyQuery, useMutation } from '@apollo/client/react'
 import { TransactionAuthSchema } from '@/src/auth/transactionAuth'
 import { useLocalAuthentication } from '@/src/hooks/useLocalAuthentication'
 import { accountActions } from '@/src/redux/slices/accountSlice';
 import { fetchAccountBankingTransactions } from '@/src/redux/fetchHelper';
 import { AccountApolloQueries } from '@/src/apollo/query';
+import { DispatchType, StateType } from '@/src/redux';
 
 
 const { height, width } = Dimensions.get('window')
-const BankingScreen: React.FC = () => {
-    const dispatch = useDispatch()
+const BankingScreen: React.FC = (): React.JSX.Element => {
+    const dispatch = useDispatch<DispatchType>()
     const { authenticate } = useLocalAuthentication()
-    const { location } = useSelector((state: any) => state.globalReducer)
+    const { location } = useSelector((state: StateType) => state.globalReducer)
     const { user, cards, card, limits, account, } = useSelector((state: any) => state.accountReducer)
     const { bankingTransactions } = useSelector((state: any) => state.transactionReducer)
     const [showAllCards, setShowAllCards] = useState<boolean>(false)
@@ -36,9 +37,9 @@ const BankingScreen: React.FC = () => {
 
     const isFocused = useNavigation().isFocused()
 
-    const [createBankingTransaction] = useMutation(TransactionApolloQueries.createBankingTransaction())
-    const [accountStatus] = useLazyQuery(AccountApolloQueries.accountStatus())
-    const [fetchAccount] = useLazyQuery(AccountApolloQueries.account())
+    const [createBankingTransaction] = useMutation<any>(TransactionApolloQueries.createBankingTransaction())
+    const [accountStatus] = useLazyQuery<any>(AccountApolloQueries.accountStatus())
+    const [fetchAccount] = useLazyQuery<any>(AccountApolloQueries.account())
 
     const [refreshing, setRefreshing] = useState(false);
     const [showDeposit, setShowDeposit] = useState(false);
@@ -196,6 +197,7 @@ const BankingScreen: React.FC = () => {
 
     }, [limits, account])
 
+
     return (
         <VStack variant={"body"} h={"100%"}>
             <ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}  >
@@ -214,7 +216,7 @@ const BankingScreen: React.FC = () => {
                         <VStack>
                             <Heading fontSize={scale(19)} color={colors.white}>Transacciones</Heading>
                             <FlatList
-                                mt={"20px"}
+                                style={{ marginTop: 20 }}
                                 data={transactions}
                                 scrollEnabled={false}
                                 renderItem={({ item, index }) => (

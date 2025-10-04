@@ -18,17 +18,18 @@ import { INPUT_HEIGHT, SCREEN_HEIGHT, TEXT_HEADING_FONT_SIZE, TEXT_PARAGRAPH_FON
 import { VALIDATE_EMAIL } from '@/src/helpers';
 import { router } from 'expo-router';
 import { SessionAuthSchema } from '@/src/auth/sessionAuth';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { SessionApolloQueries } from '@/src/apollo/query';
 import { UserAuthSchema } from '@/src/auth/userAuth';
 import { useDispatch } from 'react-redux';
 import { accountActions } from '@/src/redux/slices/accountSlice';
 import { fetchAllTransactions, fetchRecentTransactions } from '@/src/redux/fetchHelper';
+import { DispatchType } from '@/src/redux';
 
-const LoginComponent: React.FC = (): JSX.Element => {
-    const [verifySession] = useMutation(SessionApolloQueries.verifySession());
+const LoginComponent: React.FC = (): React.JSX.Element => {
+    const [verifySession] = useMutation<any>(SessionApolloQueries.verifySession());
     const { setItem } = useAsyncStorage()
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<DispatchType>()
 
 
     const pageViewRef = useRef<PagerView>(null);

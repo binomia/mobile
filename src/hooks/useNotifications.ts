@@ -11,16 +11,17 @@ export const useNotifications = (): PushNotificationType => {
             shouldShowAlert: true,
             shouldPlaySound: true,
             shouldSetBadge: true,
-
-        }),
+            shouldShowBanner: true,
+            shouldShowList: true
+        })
     });
 
 
     const [expoPushToken, setExpoPushToken] = useState<string>();
     const [notification, setNotification] = useState<Notifications.Notification>();
 
-    const notificationListener = useRef<Notifications.Subscription>();
-    const responseListener = useRef<Notifications.Subscription>();
+    const notificationListener = useRef<Notifications.EventSubscription>(null);
+    const responseListener = useRef<Notifications.EventSubscription>(null);
 
     const registerForPushNotificationsAsync = async () => {
         let token;
@@ -84,8 +85,8 @@ export const useNotifications = (): PushNotificationType => {
 
             return () => {
                 if (notificationListener.current && responseListener.current) {
-                    Notifications.removeNotificationSubscription(notificationListener.current);
-                    Notifications.removeNotificationSubscription(responseListener.current);
+                    notificationListener.current.remove();
+                    responseListener.current.remove();
                 }
             }
         }

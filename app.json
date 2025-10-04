@@ -5,10 +5,10 @@
     "scheme": "binomia",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/img/icon.png",
+    "icon": "./src/assets/img/icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
-      "image": "./assets/img/splash.png",
+      "image": "./src/assets/img/splash.png",
       "resizeMode": "cover",
       "backgroundColor": "#1D9B48"
     },
@@ -28,7 +28,7 @@
       "package": "com.binomia.com",
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/img/adaptive-icon.png",
+        "foregroundImage": "./src/assets/img/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
       "permissions": [
@@ -44,7 +44,7 @@
       ]
     },
     "web": {
-      "favicon": "./assets/img/favicon.png"
+      "favicon": "./src/assets/img/favicon.png"
     },
     "extra": {
       "eas": {
@@ -60,10 +60,12 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/img/notification_icon.png",
+          "icon": "./src/assets/img/notification_icon.png",
           "color": "#ffffff",
           "defaultChannel": "default",
-          "sounds": ["./assets/audio/money.wav"]
+          "sounds": [
+            "./src/assets/audio/money.wav"
+          ]
         }
       ],
       [
@@ -88,12 +90,6 @@
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
-        }
-      ],
-      [
-        "expo-barcode-scanner",
-        {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
         }
       ],
       [
@@ -159,7 +155,8 @@
             ]
           }
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "runtimeVersion": {
       "policy": "appVersion"

@@ -12,7 +12,7 @@ import { scale } from "react-native-size-matters"
 import { Platform } from "react-native"
 import { useSelector } from "react-redux"
 import { EXTRACT_FIRST_LAST_INITIALS, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, MAKE_FULL_NAME_SHORTEN } from "@/src/helpers"
-import { useLazyQuery } from "@apollo/client"
+import { useLazyQuery } from "@apollo/client/react"
 import { AccountApolloQueries } from "@/src/apollo/query"
 
 export const HomeHeaderLeft: React.FC = () => {
@@ -23,7 +23,7 @@ export const HomeHeaderLeft: React.FC = () => {
 
 export const HomeHeaderRight: React.FC = () => {
     const [showBottomSheet, setShowBottomSheet] = useState(false)
-    const [accountStatus] = useLazyQuery(AccountApolloQueries.accountStatus())
+    const [accountStatus] = useLazyQuery<any>(AccountApolloQueries.accountStatus())
 
 
     const onPress = async () => {
@@ -134,13 +134,13 @@ export const LoginRight: React.FC = () => {
 export const CardsRight: React.FC = () => {
     return (
         <Pressable _pressed={{ opacity: 0.5 }} onPress={() => { }}>
-            <AntDesign name="pluscircle" size={22} color="white" />
+            <AntDesign name="plus-circle" size={22} color="white" />
         </Pressable>
     )
 }
 export const TopupsRight: React.FC = () => {
     const [openBottomSheet, setOpenBottomSheet] = useState(false)
-    const [accountStatus] = useLazyQuery(AccountApolloQueries.accountStatus())
+    const [accountStatus] = useLazyQuery<any>(AccountApolloQueries.accountStatus())
 
 
     const onPress = async () => {
@@ -172,7 +172,7 @@ export const BackHeaderIcon: React.FC = () => {
                         </Stack>
                     </HStack>
                     <Pressable w={"35px"} _pressed={{ opacity: 0.5 }} alignItems={"center"} onPress={() => { }}>
-                        <AntDesign name="pluscircle" size={22} color="white" />
+                        <AntDesign name="plus-circle" size={22} color="white" />
                     </Pressable>
                 </HStack>
                 :
@@ -184,7 +184,7 @@ export const BackHeaderIcon: React.FC = () => {
                         <Heading size={"sm"} color={colors.white} textAlign={"center"}>Tarjetas</Heading>
                     </Stack>
                     <Pressable w={"35px"} _pressed={{ opacity: 0.5 }} alignItems={"center"} onPress={() => { }}>
-                        <AntDesign name="pluscircle" size={22} color="white" />
+                        <AntDesign name="plus-circle" size={22} color="white" />
                     </Pressable>
                 </HStack>
             }

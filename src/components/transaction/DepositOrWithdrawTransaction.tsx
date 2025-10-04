@@ -10,6 +10,7 @@ import { transactionActions } from '@/src/redux/slices/transactionSlice';
 import Cards from '../cards';
 import { depositIcon } from '@/src/assets';
 import { useNavigation } from '@react-navigation/native';
+import { DispatchType } from '@/src/redux';
 
 
 type Props = {
@@ -20,7 +21,7 @@ type Props = {
 }
 
 const DepositOrWithdrawTransaction: React.FC<Props> = ({ onCloseFinish = () => { } }) => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<DispatchType>();
     const navigation = useNavigation<any>()
 
     const { card } = useSelector((state: any) => state.accountReducer)

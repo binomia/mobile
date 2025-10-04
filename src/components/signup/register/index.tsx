@@ -1,6 +1,5 @@
 import { useContext, useRef, useState } from 'react';
 import { VStack } from 'native-base';
-import { SafeAreaView } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import colors from '@/src/colors';
 import CreateAccount from './CreateAccount';
@@ -13,9 +12,10 @@ import FaceID from './FaceID';
 import { GlobalContextType } from '@/src/types';
 import { GlobalContext } from '@/src/contexts/globalContext';
 import IDData from './IdData';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-const RegisterComponent: React.FC = (): JSX.Element => {
+const RegisterComponent: React.FC = (): React.JSX.Element => {
     const ref = useRef<PagerView>(null);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const { setShowCloseButton } = useContext<GlobalContextType>(GlobalContext);

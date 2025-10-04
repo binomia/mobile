@@ -11,7 +11,7 @@ import { icon } from '@/src/assets'
 import { useDispatch, useSelector } from 'react-redux'
 import { scale } from 'react-native-size-matters'
 import { MAKE_FULL_NAME_SHORTEN } from '@/src/helpers'
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client/react'
 import { UserApolloQueries } from '@/src/apollo/query'
 import { transactionActions } from '@/src/redux/slices/transactionSlice'
 import { CameraView } from 'expo-camera';
@@ -26,9 +26,9 @@ type Props = {
 
 const { height, width } = Dimensions.get('window')
 const QRScannerScreen: React.FC<Props> = ({ open, onCloseFinish, defaultPage = 0 }: Props) => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<any>()
     const { user } = useSelector((state: any) => state.accountReducer)
-    const [searchSingleUser] = useLazyQuery(UserApolloQueries.searchSingleUser())
+    const [searchSingleUser] = useLazyQuery<any>(UserApolloQueries.searchSingleUser())
 
     const pageFef = useRef<PagerView>(null);
     const [currentPage, setCurrentPage] = useState<number>(defaultPage);
@@ -56,7 +56,8 @@ const QRScannerScreen: React.FC<Props> = ({ open, onCloseFinish, defaultPage = 0
                     }
                 });
 
-                if (singleUser.data.searchSingleUser) {
+
+                if (singleUser?.data?.searchSingleUser) {
                     await dispatch(transactionActions.setReceiver(singleUser.data.searchSingleUser));
 
                     onCloseFinished();

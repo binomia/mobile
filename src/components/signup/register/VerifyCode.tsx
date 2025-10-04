@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { VStack, Heading, Text, HStack } from 'native-base';
-import { SafeAreaView, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
+import {  TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
 import { SessionContext } from '@/src/contexts/sessionContext';
 import colors from '@/src/colors';
 import { INPUT_CODE_HEIGHT, TEXT_HEADING_FONT_SIZE, TEXT_PARAGRAPH_FONT_SIZE } from '@/src/constants';
@@ -11,6 +11,7 @@ import Button from '@/src/components/global/Button';
 import { useSelector } from 'react-redux';
 import { UserAuthSchema } from '@/src/auth/userAuth';
 import { SessionPropsType } from '@/src/types';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {
     nextPage: () => void
@@ -18,7 +19,7 @@ type Props = {
 }
 
 const CELL_COUNT = 6;
-const VerifyCode: React.FC<Props> = ({ nextPage, prevPage }: Props): JSX.Element => {
+const VerifyCode: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.Element => {
     const state = useSelector((state: any) => state.registerReducer)
     const { verificationCode, setVerificationCode, onRegister } = useContext<SessionPropsType>(SessionContext);
     const [disabledButton, setDisabledButton] = useState<boolean>(false);
@@ -109,7 +110,7 @@ const VerifyCode: React.FC<Props> = ({ nextPage, prevPage }: Props): JSX.Element
                             :
                             code.length === 6 && code === verificationCode &&
                             <HStack mt={"20px"}>
-                                <AntDesign style={{ marginTop: 5 }} name="checkcircle" size={24} color={colors.mainGreen} />
+                                <AntDesign style={{ marginTop: 5 }} name="check-circle" size={24} color={colors.mainGreen} />
                                 <Text textAlign={"center"} fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"85%"} color={"mainGreen"}>
                                     As ingresado un código valido. Ahora puede presionar el botón que dice Siguiente.
                                 </Text>

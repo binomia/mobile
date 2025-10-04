@@ -3,7 +3,7 @@ import * as Network from 'expo-network';
 import useAsyncStorage from "@/src/hooks/useAsyncStorage";
 import { createContext, useEffect, useState } from "react";
 import { CreateUserDataType, SessionContextType, SessionPropsType, VerificationDataType } from "@/src/types";
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { SessionApolloQueries, UserApolloQueries } from "@/src/apollo/query";
 import { useSelector, useDispatch } from "react-redux";
 import { globalActions } from "@/src/redux/slices/globalSlice";
@@ -21,6 +21,7 @@ import { useContacts } from "@/src/hooks/useContacts";
 import { HASH } from "cryptografia";
 import { z } from "zod";
 import { SessionAuthSchema } from "@/src/auth/sessionAuth";
+import { DispatchType } from '../redux';
 
 export const SessionContext = createContext<SessionPropsType>({
     onLogin: (_: { email: string, password: string }) => Promise.resolve({}),
@@ -43,7 +44,7 @@ export const SessionContext = createContext<SessionPropsType>({
 
 
 export const SessionContextProvider = ({ children }: SessionContextType) => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<DispatchType>()
     const { device, network, location } = useSelector((state: any) => state.globalReducer)
     const { getLocation } = useLocation()
     const { setItem, getItem, deleteItem } = useAsyncStorage()
@@ -59,9 +60,9 @@ export const SessionContextProvider = ({ children }: SessionContextType) => {
     });
     const [verificationCode, setVerificationCode] = useState<string>("");
     const [invalidCredentials, setInvalidCredentials] = useState<boolean>(false);
-    const [login] = useMutation(SessionApolloQueries.login());
-    const [createUser] = useMutation(UserApolloQueries.createUser());
-    const [getSessionUser] = useLazyQuery(UserApolloQueries.sessionUser());
+    const [login] = useMutation<any>(SessionApolloQueries.login());
+    const [createUser] = useMutation<any>(UserApolloQueries.createUser());
+    const [getSessionUser] = useLazyQuery<any>(UserApolloQueries.sessionUser());
     const { getContacts } = useContacts();
 
 

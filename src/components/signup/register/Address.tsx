@@ -9,6 +9,7 @@ import { GlobalContext } from '@/src/contexts/globalContext';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { registerActions } from '@/src/redux/slices/registerSlice';
 import { useDispatch } from 'react-redux';
+import { DispatchType } from '@/src/redux';
 
 type Props = {
     nextPage: () => void
@@ -16,8 +17,8 @@ type Props = {
 }
 
 
-const Address: React.FC<Props> = ({ nextPage, prevPage }: Props): JSX.Element => {
-    const dispatch = useDispatch()
+const Address: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.Element => {
+    const dispatch = useDispatch<DispatchType>()
     const [disabledButton, setDisabledButton] = useState<boolean>(true);
     const { } = useContext<GlobalContextType>(GlobalContext);
     const [loading, setLoading] = useState<boolean>(false)
@@ -34,7 +35,7 @@ const Address: React.FC<Props> = ({ nextPage, prevPage }: Props): JSX.Element =>
         } else {
             const agreement = addressAgreement
             setAddressAgreement(!agreement)
-            dispatch(registerActions.setAddressAgreement(!agreement))
+            dispatch(registerActions.setUserAgreement(!agreement))
         }
     }
 
@@ -74,6 +75,8 @@ const Address: React.FC<Props> = ({ nextPage, prevPage }: Props): JSX.Element =>
                                 onChangeText={(value) => onChange(value, "address")}
                                 h={`${TEXTAREA_HEIGHT}px`}
                                 color={"white"}
+                                onTextInput={() => {}}
+                                tvParallaxProperties={undefined}
                                 autoCompleteType={"street-address"}
                                 placeholder='Ingresa tu dirección'
                                 style={addressAgreement && address.length > 0 ? styles.InputsSucess : address.length > 0 && !addressAgreement ? styles.InputsFail : {}}

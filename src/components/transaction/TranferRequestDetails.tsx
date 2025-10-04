@@ -2,15 +2,15 @@ import React, { useState } from 'react'
 import colors from '@/src/colors'
 import Button from '@/src/components/global/Button';
 import BottomSheet from '../global/BottomSheet';
-import { Dimensions, Alert } from 'react-native'
-import { Heading, Image, Text, VStack, HStack, Pressable, FlatList, Avatar } from 'native-base'
+import { Dimensions, Alert, FlatList } from 'react-native'
+import { Heading, Image, Text, VStack, HStack, Pressable, Avatar } from 'native-base'
 import { EXTRACT_FIRST_LAST_INITIALS, FORMAT_CURRENCY, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, getMapLocationImage, MAKE_FULL_NAME_SHORTEN } from '@/src/helpers'
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
 import { recurenceMonthlyData, recurenceWeeklyData } from '@/src/mocks';
 import { useLocalAuthentication } from '@/src/hooks/useLocalAuthentication';
 import { TransactionAuthSchema } from '@/src/auth/transactionAuth';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { TransactionApolloQueries } from '@/src/apollo/query/transactionQuery';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { UserApolloQueries } from '@/src/apollo/query';
@@ -19,6 +19,7 @@ import { useLocation } from '@/src/hooks/useLocation';
 import { AccountAuthSchema } from '@/src/auth/accountAuth';
 import { accountActions } from '@/src/redux/slices/accountSlice';
 import { router } from 'expo-router';
+import { DispatchType } from '@/src/redux';
 
 type Props = {
     goBack?: () => void
@@ -28,7 +29,7 @@ type Props = {
 
 const { width, height } = Dimensions.get("screen")
 const TranferRequestDetails: React.FC<Props> = ({ goNext = () => { }, onCloseFinish = () => { }, goBack = () => { } }) => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<DispatchType>();
 
     const { authenticate } = useLocalAuthentication();
     const { getLocation } = useLocation();
@@ -36,8 +37,8 @@ const TranferRequestDetails: React.FC<Props> = ({ goNext = () => { }, onCloseFin
     const { location } = useSelector((state: any) => state.globalReducer)
     const { user } = useSelector((state: any) => state.accountReducer)
 
-    const [createRequestTransaction] = useMutation(TransactionApolloQueries.createRequestTransaction())
-    const [fetchSingleUser] = useLazyQuery(UserApolloQueries.singleUser())
+    const [createRequestTransaction] = useMutation<any>(TransactionApolloQueries.createRequestTransaction())
+    const [fetchSingleUser] = useLazyQuery<any>(UserApolloQueries.singleUser())
 
     const { transactionDeytails } = useSelector((state: any) => state.transactionReducer)
     const [recurrenceSelected, setRecurrenceSelected] = useState<string>("");

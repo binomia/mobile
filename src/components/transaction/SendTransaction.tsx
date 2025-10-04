@@ -10,8 +10,9 @@ import { transactionActions } from '@/src/redux/slices/transactionSlice';
 import { router } from 'expo-router';
 import { pendingClock } from '@/src/assets';
 import { fetchRecentTransactions } from '@/src/redux/fetchHelper';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
 import { UserApolloQueries } from '@/src/apollo/query';
+import { DispatchType, StateType } from '@/src/redux';
 
 type Props = {
     open?: boolean
@@ -21,15 +22,14 @@ type Props = {
 
 const { height } = Dimensions.get('window')
 const SendTransactionScreen: React.FC<Props> = ({ open = false, onCloseFinish = () => { } }) => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<DispatchType>();
     const ref = useRef<PagerView>(null);
     const [input, setInput] = useState<string>("0");
     const [visible, setVisible] = useState<boolean>(open);
     const [currentPage, setCurrentPage] = useState<number>(0);
 
-    const { receiver } = useSelector((state: any) => state.transactionReducer)
-    const [fetchSingleUser] = useLazyQuery(UserApolloQueries.singleUser())
-
+    const { receiver } = useSelector((state: StateType) => state.transactionReducer)
+    const [fetchSingleUser] = useLazyQuery<any>(UserApolloQueries.singleUser())
 
     const handleOnClose = async () => {
         if (currentPage === 2) {

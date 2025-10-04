@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { io } from "socket.io-client";
 import { jwtDecode } from "jwt-decode";
 import { AccountAuthSchema } from "@/src/auth/accountAuth";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client/react";
 import { AccountApolloQueries } from "@/src/apollo/query";
 import { fetchAccountLimit, fetchAllTransactions, fetchRecentTopUps, fetchRecentTransactions } from "@/src/redux/fetchHelper";
 import { accountActions } from "@/src/redux/slices/accountSlice";
@@ -13,11 +13,11 @@ import { accountActions } from "@/src/redux/slices/accountSlice";
 
 export const SocketContext = createContext({});
 
-export const SocketContextProvider = ({ children }: { children: JSX.Element }) => {
-    const [getAccount] = useLazyQuery(AccountApolloQueries.account());
+export const SocketContextProvider = ({ children }: { children: any }) => {
+    const [getAccount] = useLazyQuery<any>(AccountApolloQueries.account());
 
     const { getItem } = useAsyncStorage()
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<any>()
 
     const refreshAccount = useCallback(async () => {
         try {

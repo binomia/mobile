@@ -8,7 +8,7 @@ import { SessionAuthSchema } from "@/src/auth/sessionAuth";
 
 
 export type SessionContextType = {
-    children: JSX.Element
+    children: React.JSX.Element
 }
 
 

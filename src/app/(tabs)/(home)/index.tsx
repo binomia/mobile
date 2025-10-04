@@ -6,7 +6,7 @@ import RecentTransactions from '@/src/components/transaction/RecentTransactions'
 import { Alert, Dimensions, RefreshControl } from 'react-native'
 import { Heading, HStack, Image, Pressable, VStack, Text, ScrollView } from 'native-base';
 import { bagIcon, bills, cars, house, phone, sendIcon } from '@/src/assets';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountApolloQueries } from '@/src/apollo/query';
 import { FORMAT_CURRENCY } from '@/src/helpers';
@@ -17,7 +17,6 @@ import { fetchRecentTopUps, fetchRecentTransactions } from '@/src/redux/fetchHel
 import { accountActions } from '@/src/redux/slices/accountSlice';
 import TransactionSkeleton from '@/src/components/transaction/transactionSkeleton';
 import { useGrafanaCloud } from '@/src/hooks/useGrafanaCloud';
-import { TransactionAuthSchema } from '@/src/auth/transactionAuth';
 import { useSQLite } from '@/src/hooks';
 
 const { width } = Dimensions.get('window');
@@ -28,8 +27,8 @@ const HomeScreen: React.FC = () => {
 	const { SQLite } = useSQLite()
 
 	const dispatch = useDispatch<any>()
-	const [getAccount] = useLazyQuery(AccountApolloQueries.account());
-	const [accountStatus] = useLazyQuery(AccountApolloQueries.accountStatus())
+	const [getAccount] = useLazyQuery<any>(AccountApolloQueries.account());
+	const [accountStatus] = useLazyQuery<any>(AccountApolloQueries.accountStatus())
 
 	const [showBottomSheet, setShowBottomSheet] = useState(false)
 	const [refreshing, setRefreshing] = useState(false);
@@ -37,7 +36,7 @@ const HomeScreen: React.FC = () => {
 	const fetchAccount = async () => {
 		try {
 			const { data } = await getAccount()
-			await dispatch(accountActions.setAccount(data.account))
+			await dispatch(accountActions.setAccount(data?.account))
 		} catch (error) {
 			console.log(error);
 		}

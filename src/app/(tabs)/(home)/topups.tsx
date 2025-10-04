@@ -8,7 +8,7 @@ import { Dimensions, RefreshControl, StyleSheet } from 'react-native'
 import { router, useNavigation } from 'expo-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { topupActions } from '@/src/redux/slices/topupSlice'
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client/react'
 import { TopUpApolloQueries } from '@/src/apollo/query'
 import { TopUpAuthSchema } from '@/src/auth/topUpAuth'
 import { z } from 'zod'
@@ -16,6 +16,7 @@ import { noTransactions } from '@/src/assets'
 import { AntDesign } from '@expo/vector-icons';
 import { FlatGrid } from 'react-native-super-grid';
 import { TopUpContext } from '@/src/contexts/topUpContext'
+import { DispatchType } from '@/src/redux'
 
 
 
@@ -25,8 +26,8 @@ const Topups: React.FC = () => {
 
     const { hasNewTransaction } = useSelector((state: any) => state.topupReducer)
     // const [userTopUps] = useLazyQuery(TopUpApolloQueries.userTopUps());
-    const [topUpPhones] = useLazyQuery(TopUpApolloQueries.topUpPhones());
-    const dispatch = useDispatch();
+    const [topUpPhones] = useLazyQuery<any>(TopUpApolloQueries.topUpPhones());
+    const dispatch = useDispatch<DispatchType>();
     const navigation = useNavigation();
     const isFocused = navigation.isFocused()
 
@@ -137,7 +138,7 @@ const Topups: React.FC = () => {
                         <Text textAlign={"center"} fontSize={scale(14)} color={"white"}>Agrega un nuevo número de teléfono para realizar una recarga</Text>
                     </VStack>
                     <Pressable mt={"30px"} _pressed={{ opacity: 0.5 }} onPress={() => setOpenBottomSheet(true)}>
-                        <AntDesign name="pluscircle" size={50} color={colors.mainGreen} />
+                        <AntDesign name="plus-circle" size={50} color={colors.mainGreen} />
                     </Pressable>
                 </VStack>
             )}

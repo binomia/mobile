@@ -8,7 +8,7 @@ import { Heading, Image, Text, VStack, HStack, Pressable, ZStack, Avatar } from 
 import { EXTRACT_FIRST_LAST_INITIALS, FORMAT_CREATED_DATE, FORMAT_CURRENCY, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, MAKE_FULL_NAME_SHORTEN } from '@/src/helpers'
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { TransactionApolloQueries } from '@/src/apollo/query/transactionQuery';
 import { transactionActions } from '@/src/redux/slices/transactionSlice';
 import { transactionStatus } from '@/src/mocks';
@@ -18,6 +18,7 @@ import { TransactionAuthSchema } from '@/src/auth/transactionAuth';
 import { useLocalAuthentication } from '@/src/hooks/useLocalAuthentication';
 import { accountActions } from '@/src/redux/slices/accountSlice';
 import { fetchAllTransactions, fetchRecentTransactions } from '@/src/redux/fetchHelper';
+import { DispatchType, StateType } from '@/src/redux';
 
 
 type Props = {
@@ -30,13 +31,13 @@ type Props = {
 
 const SingleSentTransaction: React.FC<Props> = ({ title = "Ver Detalles", onClose = async (_?: boolean) => { }, showPayButton = false, goNext = (_?: number) => { } }) => {
 	const ref = useRef<PagerView>(null);
-	const dispatch = useDispatch()
+	const dispatch = useDispatch<DispatchType>()
 	const { authenticate } = useLocalAuthentication()
-	const { transaction: _transaction } = useSelector((state: any) => state.transactionReducer)
+	const { transaction: _transaction } = useSelector((state: StateType) => state.transactionReducer)
 	const { account, user }: { account: any, user: any, location: z.infer<typeof TransactionAuthSchema.transactionLocation> } = useSelector((state: any) => state.accountReducer)
 
-	const [payRequestTransaction] = useMutation(TransactionApolloQueries.payRequestTransaction());
-	const [cancelRequestedTransaction] = useMutation(TransactionApolloQueries.cancelRequestedTransaction());
+	const [payRequestTransaction] = useMutation<any>(TransactionApolloQueries.payRequestTransaction());
+	const [cancelRequestedTransaction] = useMutation<any>(TransactionApolloQueries.cancelRequestedTransaction());
 
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [isPaying, setIsPaying] = useState<boolean>(false)

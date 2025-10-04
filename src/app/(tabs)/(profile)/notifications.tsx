@@ -5,16 +5,17 @@ import { allIcon } from '@/src/assets'
 import { useDispatch, useSelector } from 'react-redux'
 import { scale } from 'react-native-size-matters'
 import { notificationsScreenData } from '@/src/mocks'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { AccountApolloQueries } from '@/src/apollo/query'
 import { accountActions } from '@/src/redux/slices/accountSlice'
+import { DispatchType, StateType } from '@/src/redux'
 
 const NotificationsScreen: React.FC = () => {
-    const dispatch = useDispatch()
-    const { account } = useSelector((state: any) => state.accountReducer)
+    const dispatch = useDispatch<DispatchType>()
+    const { account } = useSelector((state: StateType) => state.accountReducer)
     const { allowWhatsappNotification, allowPushNotification, allowEmailNotification, allowSmsNotification } = account
 
-    const [updateAccountPermissions] = useMutation(AccountApolloQueries.updateAccountPermissions())
+    const [updateAccountPermissions] = useMutation<any>(AccountApolloQueries.updateAccountPermissions())
     const [allNotifications, setAllNotifications] = React.useState<{ id: string, allow: boolean, icon: any }>({
         id: "all",
         allow: true,

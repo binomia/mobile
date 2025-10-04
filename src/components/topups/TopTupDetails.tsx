@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import colors from '@/src/colors'
 import Button from '@/src/components/global/Button';
 import BottomSheet from '../global/BottomSheet';
-import { Dimensions } from 'react-native'
-import { Heading, Image, Text, VStack, HStack, Pressable, FlatList } from 'native-base'
+import { Dimensions, FlatList } from 'react-native'
+import { Heading, Image, Text, VStack, HStack, Pressable } from 'native-base'
 import { FORMAT_CURRENCY, FORMAT_PHONE_NUMBER, MAKE_FULL_NAME_SHORTEN } from '@/src/helpers'
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
 import { recurenceMonthlyData, recurenceWeeklyData } from '@/src/mocks';
 import { useLocalAuthentication } from '@/src/hooks/useLocalAuthentication';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { transactionActions } from '@/src/redux/slices/transactionSlice';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocation } from '@/src/hooks/useLocation';
@@ -20,6 +20,7 @@ import { fetchAllTransactions, fetchRecentTransactions } from '@/src/redux/fetch
 import { accountActions } from '@/src/redux/slices/accountSlice';
 import { AES } from 'cryptografia';
 import { ZERO_ENCRYPTION_KEY } from '@/src/constants';
+import { DispatchType } from '@/src/redux';
 
 type Props = {
     goBack?: () => void
@@ -35,7 +36,7 @@ const TopTupDetails: React.FC<Props> = ({ goBack = () => { }, onClose = (_?: any
     const { location } = useSelector((state: any) => state.globalReducer)
     const { account, user } = useSelector((state: any) => state.accountReducer)
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<DispatchType>();
     const { authenticate } = useLocalAuthentication();
     const { getLocation } = useLocation();
 

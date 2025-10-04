@@ -2,11 +2,9 @@ import { topUpInitialState } from "@/src/mocks";
 import { TopUpContextType } from "@/src/types";
 import { createContext, useState } from "react";
 
-
-
 export const TopUpContext = createContext<TopUpContextType>(topUpInitialState);
 
-export const TopUpContextProvider = ({ children }: { children: JSX.Element }) => {
+export const TopUpContextProvider = ({ children }: { children: React.JSX.Element }) => {
     const [phoneNumber, setPhoneNumber] = useState<string>(topUpInitialState.phoneNumber)
     const [amount, setAmount] = useState<number>(topUpInitialState.amount)
     const [fullName, setFullName] = useState<string>(topUpInitialState.fullName)

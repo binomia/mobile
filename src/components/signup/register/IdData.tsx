@@ -13,6 +13,7 @@ import moment from 'moment';
 import { registerActions } from '@/src/redux/slices/registerSlice';
 import { useDispatch } from 'react-redux';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { DispatchType } from '@/src/redux';
 
 
 type Props = {
@@ -24,8 +25,8 @@ type Props = {
 
 const { width, height } = Dimensions.get("window");
 
-const IDData: React.FC<Props> = ({ nextPage, prevPage }: Props): JSX.Element => {
-    const dispatch = useDispatch()
+const IDData: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.Element => {
+    const dispatch = useDispatch<DispatchType>()
 
     const [showDNIError, setShowDNIError] = useState<boolean>(false);
     const [showDNIErroreMessage, setShowDNErrorMessage] = useState<string>("");
@@ -151,7 +152,7 @@ const IDData: React.FC<Props> = ({ nextPage, prevPage }: Props): JSX.Element => 
                             </Pressable>
                         </VStack>
                         {isInvalidDate ? <HStack space={2} w={"100%"} mt={"10px"} justifyContent={"center"}>
-                            <AntDesign style={{ marginTop: 5 }} name="exclamationcircleo" size={24} color={colors.red} />
+                            <AntDesign style={{ marginTop: 5 }} name="exclamation-circle" size={24} color={colors.red} />
                             <Text fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"80%"} color={"white"}>{isInvalidDate} </Text>
                         </HStack> : null}
                     </VStack>

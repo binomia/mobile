@@ -3,15 +3,16 @@ import colors from '@/src/colors'
 import TransactionSkeleton from '@/src/components/transaction/transactionSkeleton';
 import Entypo from '@expo/vector-icons/Entypo';
 import SingleTopTup from '@/src/components/topups/SingleTopTup';
-import { RefreshControl, NativeSyntheticEvent, NativeScrollEvent } from 'react-native'
-import { Heading, Image, Text, VStack, FlatList, HStack, Spinner, Pressable, ScrollView } from 'native-base'
-import { useLazyQuery } from '@apollo/client'
+import { RefreshControl, NativeSyntheticEvent, FlatList, NativeScrollEvent } from 'react-native'
+import { Heading, Image, Text, VStack, HStack, Spinner, Pressable, ScrollView } from 'native-base'
+import { useLazyQuery } from '@apollo/client/react'
 import { TopUpApolloQueries } from '@/src/apollo/query'
 import { FORMAT_CREATED_DATE, FORMAT_CURRENCY, FORMAT_PHONE_NUMBER } from '@/src/helpers'
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
 import { transactionActions } from '@/src/redux/slices/transactionSlice';
 import { router, useNavigation } from 'expo-router';
+import { DispatchType, StateType } from '@/src/redux';
 
 
 type Props = {
@@ -19,12 +20,12 @@ type Props = {
 }
 
 const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: Props) => {
-    const dispatch = useDispatch()
-    const { topup } = useSelector((state: any) => state.topupReducer)
+    const dispatch = useDispatch<DispatchType>()
+    const { topup } = useSelector((state: StateType) => state.topupReducer)
     const { hasNewTransaction } = useSelector((state: any) => state.transactionReducer)
     const navigation = useNavigation();
     const isFocused = navigation.isFocused()
-    const [topUps, { refetch: reFetchTopUps }] = useLazyQuery(TopUpApolloQueries.topUps())
+    const [topUps, { refetch: reFetchTopUps }] = useLazyQuery<any>(TopUpApolloQueries.topUps())
 
     const [openBottomSheet, setOpenBottomSheet] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
@@ -151,8 +152,7 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
                             </Pressable> : null}
                         </HStack>
                         <FlatList
-                            px={showNewTransaction ? "20px" : "0px"}
-                            mt={"10px"}
+                            style={{ marginTop: 10, paddingHorizontal: showNewTransaction ? 20 : 0 }}
                             scrollEnabled={false}
                             data={topups}
                             renderItem={({ item, index }: any) => (

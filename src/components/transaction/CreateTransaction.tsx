@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import KeyNumberPad from '../global/KeyNumberPad';
 import { transactionActions } from '@/src/redux/slices/transactionSlice';
 import { TransactionAuthSchema } from '@/src/auth/transactionAuth';
+import { DispatchType } from '@/src/redux';
 
 
 type Props = {
@@ -21,7 +22,7 @@ type Props = {
 }
 
 const CreateTransaction: React.FC<Props> = ({ input, title = "Siguiente", showBalance = true, setInput, nextPage = () => { } }) => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<DispatchType>();
     const { receiver } = useSelector((state: any) => state.transactionReducer)
     const { account } = useSelector((state: any) => state.accountReducer)
     const [showPayButton, setShowPayButton] = useState<boolean>(false);

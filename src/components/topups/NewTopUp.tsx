@@ -8,6 +8,7 @@ import { Dimensions } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { topupActions } from '@/src/redux/slices/topupSlice'
 import { useNavigation } from 'expo-router'
+import { DispatchType } from '@/src/redux'
 
 type Props = {
     open: boolean
@@ -16,10 +17,9 @@ type Props = {
 
 const { height } = Dimensions.get('window')
 const NewTopUp: React.FC<Props> = ({ open, onClose = () => { } }: Props) => {
-    const navigation = useNavigation()
-    const dispatch = useDispatch()
+    const navigation = useNavigation<any>()
+    const dispatch = useDispatch<DispatchType>()
     const ref = useRef<PagerView>(null)
-
 
     const onCloseFinish = async () => {
         if (navigation.getState().index === 1)

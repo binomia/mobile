@@ -4,7 +4,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import KeyNumberPad from '@/src/components/global/KeyNumberPad';
 import Cards from '@/src/components/cards';
 import Button from '@/src/components/global/Button';
-import { SafeAreaView } from 'react-native'
 import { Heading, Image, Text, VStack, HStack, Pressable } from 'native-base'
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,6 +11,8 @@ import { mastercardLogo, americanExpressLogo, jcbLogo, visaLogo } from '@/src/as
 import { FORMAT_CURRENCY } from '@/src/helpers';
 import { MaterialIcons } from '@expo/vector-icons';
 import { accountActions } from '@/src/redux/slices/accountSlice';
+import { DispatchType } from '@/src/redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 type Props = {
@@ -30,7 +31,7 @@ const DepositOrWithdrawTransaction: React.FC<Props> = ({ title = "Depositar", sh
     const [payFromCard, setPayFromCard] = useState<any>(card);
     const [warningMessage, setWarningMessage] = useState<string>("");
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<DispatchType>();
 
     const onChange = (value: number) => {
         if (title === "Retirar") {

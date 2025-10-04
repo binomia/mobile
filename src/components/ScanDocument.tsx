@@ -2,7 +2,7 @@ import React, { useRef } from "react"
 import Scanner from "react-native-rectangle-scanner"
 
 const DocumentScanner = () => {
-	const camera = useRef<any>();
+	const camera = useRef<any>(null);
 
 	const onCapture = () => {
 		if (camera?.current.capture) return

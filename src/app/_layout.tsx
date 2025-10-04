@@ -7,7 +7,7 @@ import { NativeBaseProvider } from 'native-base';
 import { theme } from '@/src/themes';
 import { Provider } from 'react-redux';
 import { store } from '@/src/redux';
-import { ApolloProvider } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
 import { apolloClient } from '@/src/apollo';
 import { SessionContextProvider } from '@/src/contexts/sessionContext';
 import { GlobalContextProvider } from '@/src/contexts/globalContext';

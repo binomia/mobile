@@ -8,9 +8,9 @@ import PagerView from 'react-native-pager-view';
 import SingleSentTransaction from '@/src/components/transaction/SingleSentTransaction';
 import SingleTopTup from '@/src/components/topups/SingleTopTup';
 import { z } from 'zod'
-import { StyleSheet, Keyboard, Dimensions, TouchableWithoutFeedback, RefreshControl } from 'react-native'
-import { Heading, Image, Text, VStack, FlatList, HStack, Pressable, ScrollView, Avatar } from 'native-base'
-import { useLazyQuery } from '@apollo/client'
+import { StyleSheet, Keyboard, Dimensions, FlatList, TouchableWithoutFeedback, RefreshControl } from 'react-native'
+import { Heading, Image, Text, VStack, HStack, Pressable, ScrollView, Avatar } from 'native-base'
+import { useLazyQuery } from '@apollo/client/react'
 import { AccountApolloQueries, UserApolloQueries } from '@/src/apollo/query'
 import { UserAuthSchema } from '@/src/auth/userAuth'
 import { EXTRACT_FIRST_LAST_INITIALS, FORMAT_CREATED_DATE, FORMAT_CURRENCY, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, MAKE_FULL_NAME_SHORTEN } from '@/src/helpers'
@@ -20,18 +20,18 @@ import { transactionActions } from '@/src/redux/slices/transactionSlice';
 import { noTransactions, pendingClock } from '@/src/assets';
 import { router } from 'expo-router';
 import { fetchAllTransactions, searchAccountTransactions } from '@/src/redux/fetchHelper';
+import { DispatchType } from '@/src/redux';
 
 
 const { height, width } = Dimensions.get('window')
 const Transactions: React.FC = () => {
 	const ref = useRef<PagerView>(null);
-	const dispatch = useDispatch()
+	const dispatch = useDispatch<DispatchType>()
 	const { user } = useSelector((state: any) => state.accountReducer)
 	const { transactions } = useSelector((state: any) => state.transactionReducer)
 
-	const [getSugestedUsers] = useLazyQuery(UserApolloQueries.sugestedUsers())
-	const [accountStatus] = useLazyQuery(AccountApolloQueries.accountStatus())
-
+	const [getSugestedUsers] = useLazyQuery<any>(UserApolloQueries.sugestedUsers())
+	const [accountStatus] = useLazyQuery<any>(AccountApolloQueries.accountStatus())
 
 	const [singleTransactionTitle, setSingleTransactionTitle] = useState<string>("Ver Detalles");
 	const [refreshing, setRefreshing] = useState(false);
@@ -231,8 +231,7 @@ const Transactions: React.FC = () => {
 							<Heading px={"20px"} fontSize={scale(18)} color={"white"}>{"Transacciones"}</Heading>
 						</HStack>
 						<FlatList
-							mt={"10px"}
-							px={"20px"}
+							style={{ marginTop: 10, paddingHorizontal: 20 }}
 							scrollEnabled={false}
 							data={transactions}
 							renderItem={({ item: { data, type }, index }: any) => (

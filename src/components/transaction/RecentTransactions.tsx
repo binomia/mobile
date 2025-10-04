@@ -4,8 +4,8 @@ import BottomSheet from '@/src/components/global/BottomSheet';
 import PagerView from 'react-native-pager-view';
 import SingleSentTransaction from '@/src/components/transaction/SingleSentTransaction';
 import SingleTopTup from '../topups/SingleTopTup';
-import { Dimensions } from 'react-native'
-import { Heading, Image, Text, VStack, FlatList, HStack, Pressable, Avatar } from 'native-base'
+import { Dimensions, FlatList } from 'react-native'
+import { Heading, Image, Text, VStack, HStack, Pressable, Avatar } from 'native-base'
 import { EXTRACT_FIRST_LAST_INITIALS, FORMAT_CREATED_DATE, FORMAT_CURRENCY, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, MAKE_FULL_NAME_SHORTEN } from '@/src/helpers'
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,12 +13,13 @@ import { transactionActions } from '@/src/redux/slices/transactionSlice';
 import { noTransactions, pendingClock } from '@/src/assets';
 import { router, useNavigation } from 'expo-router';
 import { fetchRecentTopUps, fetchRecentTransactions } from '@/src/redux/fetchHelper';
+import { DispatchType } from '@/src/redux';
 
 
 const { height, width } = Dimensions.get('window')
 const RecentTransactions: React.FC = () => {
 	const ref = useRef<PagerView>(null);
-	const dispatch = useDispatch()
+	const dispatch = useDispatch<DispatchType>()
 	const { user } = useSelector((state: any) => state.accountReducer)
 	const { hasNewTransaction, recentTransactions } = useSelector((state: any) => state.transactionReducer)
 	const isFocused = useNavigation().isFocused()
@@ -134,7 +135,7 @@ const RecentTransactions: React.FC = () => {
 						</Pressable>
 					</HStack>
 					<FlatList
-						mt={"10px"}
+						style={{ marginTop: 10 }}
 						scrollEnabled={false}
 						data={recentTransactions}
 						renderItem={({ item: { data, type }, index }: any) => (

@@ -12,6 +12,7 @@ import { registerActions } from '@/src/redux/slices/registerSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import CameraComponent from '@/src/components/global/Camera';
 import { useCloudinary } from '@/src/hooks/useCloudinary';
+import { DispatchType } from '@/src/redux';
 
 type Props = {
     nextPage: () => void
@@ -21,8 +22,8 @@ type Props = {
 
 
 const { width, height } = Dimensions.get("window");
-const FaceID: React.FC<Props> = ({ nextPage, prevPage }: Props): JSX.Element => {
-    const dispatch = useDispatch()
+const FaceID: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.Element => {
+    const dispatch = useDispatch<DispatchType>()
     const state = useSelector((state: any) => state.registerReducer)
     const { sendVerificationCode, setVerificationData } = useContext<SessionPropsType>(SessionContext);
     const [openBottomSheet, setOpenBottomSheet] = useState<boolean>(false);
@@ -100,14 +101,14 @@ const FaceID: React.FC<Props> = ({ nextPage, prevPage }: Props): JSX.Element => 
                     </TouchableOpacity>
                 </HStack>
                 {videoUrl && !error && isVideoFinishedUploaded ? <HStack space={2} w={"100%"} justifyContent={"center"}>
-                    <AntDesign style={{ marginTop: 5 }} name="exclamationcircleo" size={24} color={colors.mainGreen} />
+                    <AntDesign style={{ marginTop: 5 }} name="exclamation-circle" size={24} color={colors.mainGreen} />
                     <Text fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"80%"} color={"white"}>
                         Los datos biométricos han sido escaneados con éxito, y ahora puedes continuar con tu registro.
                     </Text>
                 </HStack>
                     : error && videoUrl && isVideoFinishedUploaded ?
                         <HStack space={2} w={"100%"} justifyContent={"center"}>
-                            <AntDesign style={{ marginTop: 5 }} name="exclamationcircleo" size={24} color={colors.red} />
+                            <AntDesign style={{ marginTop: 5 }} name="exclamation-circle" size={24} color={colors.red} />
                             <Text fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"80%"} color={"white"}>
                                 Haz ocurrido un error al escanear los datos biométricos por favor vuelve a intentarlo.
                             </Text>

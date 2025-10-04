@@ -1,7 +1,8 @@
 import React, { } from 'react'
 import colors from '@/src/colors'
-import { SafeAreaView, Dimensions } from 'react-native'
+import { Dimensions } from 'react-native'
 import { HStack, Skeleton, VStack } from 'native-base'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 
 const { } = Dimensions.get('window')

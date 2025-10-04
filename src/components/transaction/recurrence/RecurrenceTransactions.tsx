@@ -4,10 +4,10 @@ import moment from 'moment';
 import BottomSheet from '@/src/components/global/BottomSheet';
 import PagerView from 'react-native-pager-view';
 import Button from '@/src/components/global/Button';
-import { Dimensions, RefreshControl } from 'react-native'
-import { Heading, Image, Text, VStack, HStack, Pressable, Spinner, ScrollView, FlatList, Avatar } from 'native-base'
+import { Dimensions, FlatList, RefreshControl } from 'react-native'
+import { Heading, Image, Text, VStack, HStack, Pressable, Spinner, ScrollView, Avatar } from 'native-base'
 import { scale } from 'react-native-size-matters';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { TransactionApolloQueries } from '@/src/apollo/query/transactionQuery';
 import { deleteIcon, editIcon, noTransactions } from '@/src/assets';
 import { Entypo } from '@expo/vector-icons';
@@ -28,9 +28,9 @@ const { height, width } = Dimensions.get('window')
 const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish = () => { } }) => {
     const ref = useRef<PagerView>(null);
 
-    const [getAccountRecurrentTransactions] = useLazyQuery(TransactionApolloQueries.accountRecurrentTransactions())
-    const [deleteRecurrentTransactions] = useMutation(TransactionApolloQueries.deleteRecurrentTransactions())
-    const [updateRecurrentTransactions] = useMutation(TransactionApolloQueries.updateRecurrentTransactions())
+    const [getAccountRecurrentTransactions] = useLazyQuery<any>(TransactionApolloQueries.accountRecurrentTransactions())
+    const [deleteRecurrentTransactions] = useMutation<any>(TransactionApolloQueries.deleteRecurrentTransactions())
+    const [updateRecurrentTransactions] = useMutation<any>(TransactionApolloQueries.updateRecurrentTransactions())
 
     const [visible, setVisible] = useState<boolean>(false);
     const [recurrence, setRecurrence] = useState<string>("");
@@ -213,7 +213,6 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
         return (
             <VStack px={"10px"} w={"100%"}>
                 <Heading w={"100%"} mb={"20px"} px={"5px"} textAlign={"left"} fontSize={scale(20)} color={"white"}>Selecciona un día</Heading>
-
                 <FlatList
                     scrollEnabled={false}
                     data={recurenceWeeklyData}
@@ -340,7 +339,7 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
                                     <FlatList
                                         scrollEnabled={false}
                                         data={transactions}
-                                        mt={"20px"}
+                                        style={{ marginTop: 20 }}
                                         renderItem={({ item, index }) => (
                                             <Pressable key={`${item?.repeatJobKey}-${index}`} onPress={() => onSelectTransaction(item)} my={"10px"} _pressed={{ opacity: 0.5 }} flexDirection={"row"} justifyContent={"space-between"}>
                                                 <HStack alignItems={"center"}>

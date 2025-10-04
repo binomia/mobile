@@ -12,19 +12,20 @@ import { EXTRACT_FIRST_LAST_INITIALS, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, MAKE_F
 import { scale } from 'react-native-size-matters'
 import { SessionContext } from '@/src/contexts/sessionContext'
 import { useCloudinary } from '@/src/hooks/useCloudinary'
-import { useLazyQuery, useMutation } from '@apollo/client'
+import { useLazyQuery, useMutation } from '@apollo/client/react'
 import { AccountApolloQueries, UserApolloQueries } from '@/src/apollo/query'
 import { profileScreenData } from '@/src/mocks'
 import { router, useNavigation } from 'expo-router'
 import { accountActions } from '@/src/redux/slices/accountSlice'
+import { DispatchType, StateType } from '@/src/redux';
 
 
 const ProfileScreen: React.FC = () => {
 	const { onLogout } = useContext(SessionContext)
 
-	const dispatch = useDispatch()
-	const { user } = useSelector((state: any) => state.accountReducer)
-	const [fetchAccount] = useLazyQuery(AccountApolloQueries.account())
+	const dispatch = useDispatch<DispatchType>()
+	const { user } = useSelector((state: StateType) => state.accountReducer)
+	const [fetchAccount] = useLazyQuery<any>(AccountApolloQueries.account())
 
 	const isFocused = useNavigation().isFocused()
 
@@ -32,7 +33,7 @@ const ProfileScreen: React.FC = () => {
 	const { uploadImage } = useCloudinary()
 	const [profileImage, setProfileImage] = useState<string | null>(null)
 	const [isLoading, setIsLoading] = useState<boolean>(false)
-	const [updateUser] = useMutation(UserApolloQueries.updateUser())
+	const [updateUser] = useMutation<any>(UserApolloQueries.updateUser())
 	const [visible, setIsVisible] = useState(false);
 	const [previewImage, setPreviewImage] = useState<string | null>(null);
 

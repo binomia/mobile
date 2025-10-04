@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FORMAT_CURRENCY, FORMAT_PHONE_NUMBER } from '@/src/helpers';
 import { scale } from 'react-native-size-matters';
 import { topupActions } from '@/src/redux/slices/topupSlice';
+import { DispatchType } from '@/src/redux';
 
 
 
@@ -17,7 +18,7 @@ type Props = {
 }
 
 const NewTopUpQuantity: React.FC<Props> = ({ next, back }: Props) => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<DispatchType>();
     const { newTopUp } = useSelector((state: any) => state.topupReducer)
     const { account } = useSelector((state: any) => state.accountReducer)
 

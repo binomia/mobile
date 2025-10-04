@@ -4,6 +4,7 @@ import { globalReducer } from './slices/globalSlice'
 import { transactionReducer } from './slices/transactionSlice'
 import { topupReducer } from './slices/topupSlice'
 import { accountReducer } from './slices/accountSlice'
+import { useDispatch } from 'react-redux'
 
 
 export const store = configureStore({
@@ -20,3 +21,8 @@ export const store = configureStore({
         thunk: true, // Ensure thunk is enabled for async actions like createAsyncThunk
     }),
 })
+
+export type DispatchType = typeof store.dispatch
+export const useAppDispatch = useDispatch.withTypes<DispatchType>() // Export a hook that can be reused to resolve types
+
+export type StateType = ReturnType<typeof store.getState>

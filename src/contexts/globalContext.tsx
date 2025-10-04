@@ -1,13 +1,14 @@
 import useAsyncStorage from "@/src/hooks/useAsyncStorage";
 import { globalContextInitialState } from "@/src/mocks";
 import { GlobalContextType } from "@/src/types";
+import React from "react";
 import { createContext, useEffect, useState } from "react";
 import { AppState } from "react-native";
 
 
 export const GlobalContext = createContext<GlobalContextType>(globalContextInitialState);
 
-export const GlobalContextProvider = ({ children }: { children: JSX.Element }) => {
+export const GlobalContextProvider = ({ children }: { children: React.JSX.Element }) => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [names, setNames] = useState<string>("");

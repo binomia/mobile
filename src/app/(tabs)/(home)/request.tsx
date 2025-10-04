@@ -6,9 +6,9 @@ import BottomSheet from '@/src/components/global/BottomSheet';
 import PagerView from 'react-native-pager-view';
 import TranferRequestDetails from '@/src/components/transaction/TranferRequestDetails';
 import SingleSentTransaction from '@/src/components/transaction/SingleSentTransaction';
-import { SafeAreaView, Keyboard, TouchableWithoutFeedback, TouchableOpacity, Dimensions, Alert } from 'react-native'
-import { Heading, Image, Text, VStack, FlatList, HStack, Avatar } from 'native-base'
-import { useLazyQuery } from '@apollo/client'
+import { SafeAreaView, Keyboard, TouchableWithoutFeedback, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native'
+import { Heading, Image, Text, VStack, HStack, Avatar } from 'native-base'
+import { useLazyQuery } from '@apollo/client/react'
 import { UserApolloQueries } from '@/src/apollo/query'
 import { UserAuthSchema } from '@/src/auth/userAuth'
 import { z } from 'zod'
@@ -19,17 +19,18 @@ import { transactionActions } from '@/src/redux/slices/transactionSlice';
 import { router } from 'expo-router';
 import { pendingClock } from '@/src/assets';
 import { fetchRecentTransactions } from '@/src/redux/fetchHelper';
+import { DispatchType, StateType } from '@/src/redux';
 
 const { height } = Dimensions.get('window')
 
 const Request: React.FC = () => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<DispatchType>()
     const ref = useRef<PagerView>(null);
-    const { receiver } = useSelector((state: any) => state.transactionReducer)
-    const [fetchSingleUser] = useLazyQuery(UserApolloQueries.singleUser())
+    const { receiver } = useSelector((state: StateType) => state.transactionReducer)
+    const [fetchSingleUser] = useLazyQuery<any>(UserApolloQueries.singleUser())
 
-    const [searchUser] = useLazyQuery(UserApolloQueries.searchUser())
-    const [getSugestedUsers] = useLazyQuery(UserApolloQueries.sugestedUsers())
+    const [searchUser] = useLazyQuery<any>(UserApolloQueries.searchUser())
+    const [getSugestedUsers] = useLazyQuery<any>(UserApolloQueries.sugestedUsers())
 
     const [input, setInput] = useState<string>("0");
     const [openRequest, setOpenRequest] = useState<boolean>(false);
@@ -167,8 +168,7 @@ const Request: React.FC = () => {
                     </VStack>
                     <Heading mt={"40px"} size={"lg"} color={"white"}>Recomendados</Heading>
                     <FlatList
-                        h={"100%"}
-                        mt={"10px"}
+                        style={{ height: "100%", marginTop: 10 }}
                         data={users}
                         renderItem={({ item, index }) => (
                             <TouchableOpacity key={`search_user_${index}-${item.username}`} onPress={() => onSelectUser(item)}>

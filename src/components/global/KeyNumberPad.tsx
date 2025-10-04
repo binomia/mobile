@@ -1,6 +1,6 @@
 import React from 'react'
-import { Text, StyledProps, Pressable, FlatList, VStack, Heading } from 'native-base';
-import { StyleSheet, Dimensions } from 'react-native';
+import { Text, StyledProps, Pressable, VStack, Heading } from 'native-base';
+import { StyleSheet, Dimensions, FlatList } from 'react-native';
 import colors from '@/src/colors';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { FORMAT_CURRENCY } from '@/src/helpers';
@@ -15,7 +15,7 @@ interface Props extends StyledProps {
 
 
 const { height } = Dimensions.get("window")
-const KeyNumberPad: React.FC<Props> = ({ onChange = (_: string) => { }, maxAmount = 1e6 }): JSX.Element => {
+const KeyNumberPad: React.FC<Props> = ({ onChange = (_: string) => { }, maxAmount = 1e6 }): React.JSX.Element => {
     const [value, setValue] = React.useState<string>("0")
     const [valueScale, setValueScale] = React.useState<number>(0)
 

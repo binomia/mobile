@@ -1,10 +1,11 @@
 import React from 'react'
 import colors from '@/src/colors'
-import { Image, VStack, HStack, FlatList, Heading } from 'native-base'
+import { Image, VStack, HStack, Heading } from 'native-base'
 import { addressIcon } from '@/src/assets'
 import { useSelector } from 'react-redux'
 import { scale } from 'react-native-size-matters'
 import { personalScreenData } from '@/src/mocks'
+import { FlatList } from 'react-native'
 
 
 const PersonalScreen: React.FC = () => {

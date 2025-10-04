@@ -7,11 +7,12 @@ import BottomSheet from '../global/BottomSheet'
 import { useDispatch, useSelector } from 'react-redux'
 import { americanExpressLogo, deleteIcon, editIcon, jcbLogo, mastercardLogo, visaLogo } from '@/src/assets'
 import PagerView from 'react-native-pager-view'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { CardApolloQueries } from '@/src/apollo/query/cardQuery'
 import { CardAuthSchema } from '@/src/auth/cardAuth'
 import EditCard from './EditCard'
 import { accountActions } from '@/src/redux/slices/accountSlice'
+import { DispatchType } from '@/src/redux'
 
 type Props = {
     open?: boolean
@@ -22,12 +23,12 @@ const { height } = Dimensions.get('window')
 
 const CardModification: React.FC<Props> = ({ open = false, onCloseFinish = () => { } }) => {
     const ref = useRef<PagerView>(null);
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<DispatchType>()
     const { card, cards } = useSelector((state: any) => state.accountReducer)
     const [bottomSheetHeight, setBottomSheetHeight] = useState<number>(height * 0.42)
     const [currentPage, setCurrentPage] = useState<number>(0)
-    const [deleteCard] = useMutation(CardApolloQueries.deleteCard())
-    const [updateCard] = useMutation(CardApolloQueries.updateCard())
+    const [deleteCard] = useMutation<any>(CardApolloQueries.deleteCard())
+    const [updateCard] = useMutation<any>(CardApolloQueries.updateCard())
     const [isDeleting, setIsDeleting] = useState<boolean>(false)
 
     const delay = async (ms: number) => new Promise(res => setTimeout(res, ms))

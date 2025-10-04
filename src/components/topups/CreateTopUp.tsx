@@ -12,11 +12,12 @@ import { scale } from 'react-native-size-matters'
 import { useDispatch } from 'react-redux'
 import { topupActions } from '@/src/redux/slices/topupSlice'
 import { FlatGrid } from 'react-native-super-grid'
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client/react'
 import { TopUpApolloQueries } from '@/src/apollo/query'
 import { TopUpAuthSchema } from '@/src/auth/topUpAuth'
 import { z } from 'zod'
 import { TopUpContext } from '@/src/contexts/topUpContext'
+import { DispatchType } from '@/src/redux'
 
 
 type Props = {
@@ -27,8 +28,8 @@ const { height, width } = Dimensions.get('window')
 const CreateTopUp: React.FC<Props> = ({ next }: Props) => {
     const { phoneNumber, fullName, company, setCompany, setFullName, setPhoneNumber } = useContext(TopUpContext)
 
-    const [topUpCompanies] = useLazyQuery(TopUpApolloQueries.topUpCompanies())
-    const dispatch = useDispatch()
+    const [topUpCompanies] = useLazyQuery<any>(TopUpApolloQueries.topUpCompanies())
+    const dispatch = useDispatch<DispatchType>()
 
     const [openBottomSheet, setOpenBottomSheet] = useState(false);
     const [enabledButton, setEnabledButton] = useState(false);

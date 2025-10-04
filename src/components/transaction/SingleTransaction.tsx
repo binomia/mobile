@@ -9,7 +9,7 @@ import { Heading, Image, Text, VStack, HStack, Pressable, ZStack, Avatar } from 
 import { EXTRACT_FIRST_LAST_INITIALS, FORMAT_CURRENCY, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, getMapLocationImage, MAKE_FULL_NAME_SHORTEN } from '@/src/helpers'
 import { scale } from 'react-native-size-matters';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { TransactionApolloQueries } from '@/src/apollo/query/transactionQuery';
 import { transactionActions } from '@/src/redux/slices/transactionSlice';
 import { transactionStatus } from '@/src/mocks';
@@ -20,6 +20,7 @@ import { TransactionAuthSchema } from '@/src/auth/transactionAuth';
 import { useLocalAuthentication } from '@/src/hooks/useLocalAuthentication';
 import { accountActions } from '@/src/redux/slices/accountSlice';
 import { fetchRecentTransactions } from '@/src/redux/fetchHelper';
+import { DispatchType } from '@/src/redux';
 
 
 
@@ -34,7 +35,7 @@ type Props = {
 const { height } = Dimensions.get('window')
 const SingleSentTransaction: React.FC<Props> = ({ title = "Ver Detalles", onClose = () => { }, showPayButton = false, goNext = (_?: number) => { } }) => {
 	const ref = useRef<PagerView>(null);
-	const dispatch = useDispatch()
+	const dispatch = useDispatch<DispatchType>()
 	const { authenticate } = useLocalAuthentication()
 	const { location } = useSelector((state: any) => state.globalReducer)
 	const { transaction, recentTransactions, transactionDeytails, receiver } = useSelector((state: any) => state.transactionReducer)
@@ -42,8 +43,9 @@ const SingleSentTransaction: React.FC<Props> = ({ title = "Ver Detalles", onClos
 
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [isCancelLoading, setIsCancelLoading] = useState<boolean>(false)
-	const [payRequestTransaction] = useMutation(TransactionApolloQueries.payRequestTransaction());
-	const [cancelRequestedTransaction] = useMutation(TransactionApolloQueries.cancelRequestedTransaction());
+	
+	const [payRequestTransaction] = useMutation<any>(TransactionApolloQueries.payRequestTransaction());
+	const [cancelRequestedTransaction] = useMutation<any>(TransactionApolloQueries.cancelRequestedTransaction());
 
 	const handleShare = async () => {
 		const isAvailableAsync = await Sharing.isAvailableAsync()

@@ -1,7 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { fetchAccountLimit } from '../fetchHelper'
 
-const initialState = {
+type InitialStateType = {
+    limits: any,
+    haveAccountChanged: boolean,
+    account: any,
+    card: any,
+    cards: any,
+    kyc: any,
+    user: any
+}
+
+const initialState: InitialStateType = {
     limits: {},
     haveAccountChanged: false,
     account: {},

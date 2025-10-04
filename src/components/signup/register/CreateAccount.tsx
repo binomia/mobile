@@ -14,6 +14,7 @@ import { GlobalContext } from '@/src/contexts/globalContext';
 import { GlobalContextType } from '@/src/types';
 import { useDispatch } from 'react-redux';
 import { registerActions } from '@/src/redux/slices/registerSlice';
+import { DispatchType } from '@/src/redux';
 
 
 
@@ -23,8 +24,8 @@ type Props = {
 
 
 const { width, height } = Dimensions.get("window");
-const CreateAccount: React.FC<Props> = ({ nextPage }: Props): JSX.Element => {
-    const dispatch = useDispatch()
+const CreateAccount: React.FC<Props> = ({ nextPage }: Props): React.JSX.Element => {
+    const dispatch = useDispatch<DispatchType>()
     const { } = useContext<GlobalContextType>(GlobalContext);
 
     const [showEmailError, setShowEmailError] = useState<boolean>(false);

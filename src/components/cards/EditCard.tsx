@@ -11,12 +11,13 @@ import { cardBackHolder, cardHolder, noCard } from '@/src/assets';
 import { scale } from 'react-native-size-matters';
 import { MaterialIcons } from '@expo/vector-icons';
 import { TEXT_PARAGRAPH_FONT_SIZE } from '@/src/constants';
-import { CreditCardFormField, CreditCardIssuer } from 'react-native-credit-card-input/lib/typescript/src/useCreditCardForm';
-import { useLazyQuery } from '@apollo/client';
+import { CreditCardFormField } from 'react-native-credit-card-input';
+import { useLazyQuery } from '@apollo/client/react';
 import { CardApolloQueries } from '@/src/apollo/query/cardQuery';
 import { useDispatch, useSelector } from 'react-redux';
 import { CardType } from '@/src/types';
 import { accountActions } from '@/src/redux/slices/accountSlice';
+import { DispatchType } from '@/src/redux';
 
 
 type Props = {
@@ -29,9 +30,9 @@ type Props = {
 const { height } = Dimensions.get('window')
 const EditCard: React.FC<Props> = ({ onPress = async (_: any) => { }, onClose = () => { }, openToEdit = false }: Props) => {
     const ref = useRef<PagerView>(null);
-    const [fetchCards] = useLazyQuery(CardApolloQueries.cards())
-    const [fetchCard] = useLazyQuery(CardApolloQueries.card())
-    const dispatch = useDispatch()
+    const [fetchCards] = useLazyQuery<any>(CardApolloQueries.cards())
+    const [fetchCard] = useLazyQuery<any>(CardApolloQueries.card())
+    const dispatch = useDispatch<DispatchType>()
     const { card }: { card: CardType } = useSelector((state: any) => state.accountReducer)
 
 
@@ -46,7 +47,7 @@ const EditCard: React.FC<Props> = ({ onPress = async (_: any) => { }, onClose = 
     const [asPrimary, setAsPrimary] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>("")
-    const [type, setType] = useState<CreditCardIssuer>()
+    const [type, setType] = useState<any>()
 
 
     const cardPlaceholders = {

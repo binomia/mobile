@@ -11,6 +11,7 @@ import { registerActions } from '@/src/redux/slices/registerSlice'
 // import { Skia, Image as SkiaImage, useImage, PaintStyle, Canvas } from '@shopify/react-native-skia'
 import { runOnJS } from 'react-native-reanimated'
 import BottomSheet from './BottomSheet'
+import { DispatchType } from '@/src/redux'
 
 type Props = {
     open?: boolean
@@ -25,7 +26,7 @@ type Props = {
 const { width, height } = Dimensions.get('window')
 const CameraComponent: React.FC<Props> = ({ open, onCloseFinish, setVideo, setImage, cameraType = "back", video = false }: Props) => {
     const ref = useRef<Camera>(null);
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<DispatchType>()
 
     const [progress, setProgress] = useState<number>(5);
     const [recording, setRecording] = useState<boolean>(false);

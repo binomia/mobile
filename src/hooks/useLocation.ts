@@ -5,9 +5,10 @@ import { globalActions } from '@/src/redux/slices/globalSlice';
 import { useDispatch } from 'react-redux';
 import { Client } from "@googlemaps/google-maps-services-js";
 import { GOOGLE_MAPS_API_KEY } from '@/src/constants';
+import { DispatchType } from '../redux';
 
 export const useLocation = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<DispatchType>();
     const client = new Client();
 
     const requestPermissions = async () => {

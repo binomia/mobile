@@ -17,9 +17,9 @@ const httpLink = createHttpLink({
 });
 
 const errorLink = onError((errorHandlers) => {
-    const { graphQLErrors } = errorHandlers;
+    const { graphQLErrors }: any = errorHandlers;
     if (graphQLErrors)
-        graphQLErrors.forEach(async (error) => {
+        graphQLErrors.forEach(async (error: any) => {
             const { message } = error;
 
             if (message.includes("INVALID_SESSION")) {

@@ -1,18 +1,20 @@
 import React from 'react'
 import colors from '@/src/colors'
-import { Image, VStack, HStack, Switch, FlatList, Heading } from 'native-base'
+import { Image, VStack, HStack, Switch, Heading } from 'native-base'
 import { useDispatch, useSelector } from 'react-redux'
 import { scale } from 'react-native-size-matters'
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { AccountApolloQueries } from '@/src/apollo/query'
 import { privacyScreenData } from '@/src/mocks'
 import { accountActions } from '@/src/redux/slices/accountSlice'
 import { allIcon } from '@/src/assets'
+import { DispatchType, StateType } from '@/src/redux'
+import { FlatList } from 'react-native'
 
 const PrivacyScreen: React.FC = () => {
-    const dispatch = useDispatch()
-    const { account } = useSelector((state: any) => state.accountReducer)
-    const [updateAccountPermissions] = useMutation(AccountApolloQueries.updateAccountPermissions())
+    const dispatch = useDispatch<DispatchType>()
+    const { account } = useSelector((state: StateType) => state.accountReducer)
+    const [updateAccountPermissions] = useMutation<any>(AccountApolloQueries.updateAccountPermissions())
 
     const { allowSend, allowReceive, allowWithdraw, allowDeposit, allowRequestMe } = account
     const [allPrivacy, setAllPrivacy] = React.useState<{ id: string, allow: boolean, icon: any }>({

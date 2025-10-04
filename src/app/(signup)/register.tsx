@@ -15,7 +15,7 @@ import { GlobalContext } from '@/src/contexts/globalContext';
 import IDData from '@/src/components/signup/register/IdData';
 
 
-const RegisterComponent: React.FC = (): JSX.Element => {
+const RegisterComponent: React.FC = (): React.JSX.Element => {
     const ref = useRef<PagerView>(null);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const { setShowCloseButton } = useContext<GlobalContextType>(GlobalContext);

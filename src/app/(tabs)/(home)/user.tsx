@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import colors from '@/src/colors'
 import Input from '@/src/components/global/Input'
 import SendTransaction from '@/src/components/transaction/SendTransaction';
-import { SafeAreaView, Keyboard, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
-import { Heading, Image, Text, VStack, FlatList, HStack, Avatar } from 'native-base'
-import { useLazyQuery } from '@apollo/client'
+import { Keyboard, FlatList, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
+import { Heading, Image, Text, VStack, HStack, Avatar } from 'native-base'
+import { useLazyQuery } from '@apollo/client/react'
 import { AccountApolloQueries, UserApolloQueries } from '@/src/apollo/query'
 import { UserAuthSchema } from '@/src/auth/userAuth'
 import { z } from 'zod'
@@ -12,16 +12,17 @@ import { EXTRACT_FIRST_LAST_INITIALS, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, MAKE_F
 import { scale } from 'react-native-size-matters';
 import { useDispatch } from 'react-redux';
 import { transactionActions } from '@/src/redux/slices/transactionSlice';
-
 import { router } from 'expo-router';
+import { DispatchType } from '@/src/redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const SearchUserScreen: React.FC = () => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<DispatchType>()
 
-    const [searchUser] = useLazyQuery(UserApolloQueries.searchUser())
-    const [getSugestedUsers] = useLazyQuery(UserApolloQueries.sugestedUsers())
-    const [accountStatus] = useLazyQuery(AccountApolloQueries.accountStatus())
+    const [searchUser] = useLazyQuery<any>(UserApolloQueries.searchUser())
+    const [getSugestedUsers] = useLazyQuery<any>(UserApolloQueries.sugestedUsers())
+    const [accountStatus] = useLazyQuery<any>(AccountApolloQueries.accountStatus())
 
     const [users, setUsers] = useState<z.infer<typeof UserAuthSchema.searchUserData>>([])
     const [showSendTransaction, setShowSendTransaction] = useState<boolean>(false);
@@ -81,8 +82,7 @@ const SearchUserScreen: React.FC = () => {
                     </VStack>
                     <Heading mt={"40px"} size={"lg"} color={"white"}>Recomendados</Heading>
                     <FlatList
-                        h={"100%"}
-                        mt={"10px"}
+                        style={{ height: '100%', marginTop: 10 }}
                         data={users}
                         renderItem={({ item, index }) => (
                             <TouchableOpacity key={`search_user_${index}-${item.username}`} onPress={() => onSelectUser(item)}>

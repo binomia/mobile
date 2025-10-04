@@ -5,17 +5,19 @@ import CardModification from './CardModification'
 import Button from '../global/Button'
 import PagerView from 'react-native-pager-view';
 import CreateCard from './CreateCard';
-import { VStack, Text, HStack, FlatList, Heading, Image, Pressable } from 'native-base'
+import { VStack, Text, HStack, Heading, Image, Pressable } from 'native-base'
 import { scale } from 'react-native-size-matters'
-import { Dimensions, SafeAreaView } from 'react-native'
+import { Dimensions, FlatList } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { CardType } from '@/src/types'
 import { americanExpressLogo, jcbLogo, mastercardLogo, noCard, visaLogo } from '@/src/assets'
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { CardApolloQueries } from '@/src/apollo/query/cardQuery';
 import { CardAuthSchema } from '@/src/auth/cardAuth';
 import { accountActions } from '@/src/redux/slices/accountSlice';
 import { Entypo } from '@expo/vector-icons';
+import { DispatchType, StateType } from '@/src/redux'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = {
     open?: boolean
@@ -26,12 +28,11 @@ type Props = {
 const { height } = Dimensions.get('window')
 
 const Cards: React.FC<Props> = ({ open = false, onCloseFinish = () => { }, justSelecting = false }) => {
-    const ref = useRef<typeof FlatList>(null);
     const pagerRef = useRef<PagerView>(null);
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<DispatchType>()
     const [showCardModification, setShowCardModification] = useState<boolean>(false)
-    const { cards }: { cards: CardType[] } = useSelector((state: any) => state.accountReducer)
-    const [createCard] = useMutation(CardApolloQueries.createCard())
+    const { cards }: { cards: CardType[] } = useSelector((state: StateType) => state.accountReducer)
+    const [createCard] = useMutation<any>(CardApolloQueries.createCard())
 
 
     const onPressCard = async (card: any) => {
@@ -103,8 +104,7 @@ const Cards: React.FC<Props> = ({ open = false, onCloseFinish = () => { }, justS
                             </HStack>
                             {cards.length > 0 ? (
                                 <FlatList
-                                    ref={ref}
-                                    mt={"10px"}
+                                    style={{marginTop: 10}}
                                     data={cards}
                                     contentContainerStyle={{ paddingBottom: 100 }}
                                     showsVerticalScrollIndicator={false}

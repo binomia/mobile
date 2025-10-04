@@ -6,7 +6,6 @@ export const useOCRSpace = () => {
     const extractTextFromImage = async (image: string) => {
         const api_url = `https://api.ocr.space/parse/imageurl?apikey=${OCR_SPACE_API_KEY}&url=${image}&language=spa&isOverlayRequired=true&detectOrientation=true&scale=true&OCREngine=2`
 
-
         return fetch(api_url).then(response => response.json()).then(data => {
             const response = data.ParsedResults[0].ParsedText
             return response

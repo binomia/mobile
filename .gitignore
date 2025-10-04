@@ -1,7 +1,8 @@
 node_modules
 google-services.json
 yarn.lock
-
+ios/*
+android/*
 .env*
 .vscode
 .expo

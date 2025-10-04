@@ -1,38 +1,59 @@
 import { createSlice } from '@reduxjs/toolkit'
 import * as Device from 'expo-device';
 
+type InitialStateType = {
+    signingKey: string,
+    appInBackgroundTime: number,
+    applicationId: string,
+    expoNotificationToken: string,
+    jwt: string,
+    allowFaceId: boolean,
+    whatsappNotifications: boolean,
+    emailNotifications: boolean,
+    smsNotifications: boolean,
+    pushNotifications: boolean,
+    isVPNConnected: boolean,
+    contacts: any[],
+    network: any,
+    location: any,
+    geoLocation: any,
+    device: any
+}
+
+const initialState: InitialStateType = {
+    signingKey: "",
+    appInBackgroundTime: 0,
+    applicationId: "",
+    expoNotificationToken: "",
+    jwt: "",
+    allowFaceId: true,
+    whatsappNotifications: true,
+    emailNotifications: true,
+    smsNotifications: true,
+    pushNotifications: true,
+    isVPNConnected: true,
+    contacts: [],
+    network: {
+        isConnected: false,
+        type: "unknown",
+        isInternetReachable: false,
+        ip: ""
+    },
+    location: {},
+    geoLocation: {},
+    device: {
+        isDevice: Device.isDevice,
+        deviceBrand: Device.brand,
+        deviceName: Device.deviceName,
+        deviceModelName: Device.modelName,
+        deviceOsName: Device.osName,
+        deviceOsVersion: Device.osVersion,
+    }
+}
+
 const globalSlice = createSlice({
     name: 'global',
-    initialState: {
-        signingKey: "",
-        appInBackgroundTime: 0,       
-        applicationId: "",
-        expoNotificationToken: "",
-        jwt: "",
-        allowFaceId: true,
-        whatsappNotifications: true,
-        emailNotifications: true,
-        smsNotifications: true,
-        pushNotifications: true,
-        isVPNConnected: true,
-        contacts: [],
-        network: {
-            isConnected: false,
-            type: "unknown",
-            isInternetReachable: false,
-            ip: ""
-        },
-        location: {},
-        geoLocation: {},
-        device: {
-            isDevice: Device.isDevice,
-            deviceBrand: Device.brand,
-            deviceName: Device.deviceName,
-            deviceModelName: Device.modelName,
-            deviceOsName: Device.osName,
-            deviceOsVersion: Device.osVersion,
-        }
-    },
+    initialState ,
     reducers: {
         setSigningKey: (state, action) => {
             state.signingKey = action.payload
@@ -45,7 +66,7 @@ const globalSlice = createSlice({
         },
         setExpoNotificationToken: (state, action) => {
             state.expoNotificationToken = action.payload
-        },      
+        },
         setAppInBackgroundTime: (state, action) => {
             state.appInBackgroundTime = action.payload
         },
@@ -63,7 +84,7 @@ const globalSlice = createSlice({
         },
         setAllowFaceId: (state, action) => {
             state.allowFaceId = action.payload
-        },      
+        },
         setNetwork: (state, action) => {
             state.network = action.payload
         },

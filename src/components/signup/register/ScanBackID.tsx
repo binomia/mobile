@@ -11,6 +11,7 @@ import { useOCRSpace } from '@/src/hooks/useOCRSpace';
 import { useCloudinary } from '@/src/hooks/useCloudinary';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import colors from '@/src/colors';
+import { DispatchType } from '@/src/redux';
 
 
 type Props = {
@@ -20,8 +21,8 @@ type Props = {
 
 const { width } = Dimensions.get("window");
 
-const ScanBackID: React.FC<Props> = ({ nextPage, prevPage }: Props): JSX.Element => {
-    const dispatch = useDispatch()
+const ScanBackID: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.Element => {
+    const dispatch = useDispatch<DispatchType>()
     const state = useSelector((state: any) => state.registerReducer)
     const [disabledButton, setDisabledButton] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(false);
@@ -104,7 +105,7 @@ const ScanBackID: React.FC<Props> = ({ nextPage, prevPage }: Props): JSX.Element
                                 title={"Volver a Escanear"}
                             /> : null}
                             {isInValidIdImageMessage ? <HStack mt={"30px"} space={2} w={"100%"} justifyContent={"center"}>
-                                <AntDesign style={{ marginTop: 5 }} name="exclamationcircleo" size={24} color={colors.red} />
+                                <AntDesign style={{ marginTop: 5 }} name="exclamation-circle" size={24} color={colors.red} />
                                 <Text fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"80%"} color={"white"}>{isInValidIdImageMessage}</Text>
                             </HStack> : null}
                         </VStack>

@@ -8,7 +8,7 @@ import * as Updates from 'expo-updates';
 
 
 const { width } = Dimensions.get("window");
-const AccountCreated: React.FC = (): JSX.Element => {
+const AccountCreated: React.FC = (): React.JSX.Element => {
     const onPress = async () => {
         await Updates.reloadAsync();
     }

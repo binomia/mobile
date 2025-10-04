@@ -1,12 +1,14 @@
-import * as FileSystem from 'expo-file-system';
+import { Directory, Paths, File } from 'expo-file-system';
 
+
+const directory = new Directory(Paths.cache, "binomia");
 
 export const useFileSystem = () => {
 
     const listFiles = async () => {
         try {
-            if (FileSystem.documentDirectory) {
-                const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
+            if (directory.exists) {
+                const files = directory.list();
                 return files
             }
         } catch (error) {
@@ -14,12 +16,12 @@ export const useFileSystem = () => {
         }
     }
 
-    const deleteFile = async (file: string) => {
+    const deleteFile = async (fileUrl: string) => {
         try {
-            const { exists } = await FileSystem.getInfoAsync(file);
+            const file = new File(Paths.cache, "binomia", fileUrl);
 
-            if (exists) {
-                await FileSystem.deleteAsync(`${file}`);
+            if (file.exists) {
+                file.delete();
             }
 
         } catch (error: any) {
@@ -30,6 +32,6 @@ export const useFileSystem = () => {
     return {
         listFiles,
         deleteFile,
-        dir: FileSystem.documentDirectory
+        dir: directory
     }
 }
