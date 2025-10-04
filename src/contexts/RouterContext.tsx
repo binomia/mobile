@@ -12,7 +12,7 @@ export const RouterContext = createContext({});
 
 export const RouterContextProvider = () => {
     const navigation = useNavigation<any>()
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<any>()
     const { isVPNConnected } = useSelector((state: any) => state.globalReducer)
 
     useEffect(() => {
