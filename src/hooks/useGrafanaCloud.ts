@@ -1,15 +1,17 @@
 import { LOKI_PASSWORD, LOKI_URL, LOKI_USERNAME } from "@/src/constants";
 import axios from 'axios';
-
+import * as Network from 'expo-network';
 
 
 export const useGrafanaCloud = () => {
     class Loki {
         static push = async (message: string, labels: Record<string, any>) => {
+            const ipAddress = await Network.getIpAddressAsync();
+
             try {
                 const streams = [
                     {
-                        stream: labels,
+                        stream: {...labels, ipAddress},
                         values: [
                             [
                                 (Date.now() * 1_000_000).toString(), // Loki expects nanosecond timestamp

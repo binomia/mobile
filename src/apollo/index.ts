@@ -3,20 +3,20 @@ import * as Network from 'expo-network';
 import * as SecureStore from 'expo-secure-store';
 import * as Application from 'expo-application';
 import * as Device from 'expo-device';
-import { ApolloClient, from, createHttpLink, InMemoryCache, DefaultOptions } from '@apollo/client';
-import { setContext } from "@apollo/client/link/context";
-import { onError } from "@apollo/client/link/error";
+import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/client';
+import { SetContextLink } from "@apollo/client/link/context";
+import { ErrorLink } from "@apollo/client/link/error";
 import { Alert, Platform } from 'react-native';
 import { router } from 'expo-router';
 import { HASH } from 'cryptografia';
 
-const httpLink = createHttpLink({
+const httpLink = new HttpLink({
     uri: `http://192.168.1.93:8000/graphql`,
     credentials: "include",
     preserveHeaderCase: true,
 });
 
-const errorLink = onError((errorHandlers) => {
+const errorLink = new ErrorLink((errorHandlers) => {
     const { graphQLErrors }: any = errorHandlers;
     if (graphQLErrors)
         graphQLErrors.forEach(async (error: any) => {
@@ -34,7 +34,7 @@ const errorLink = onError((errorHandlers) => {
         });
 });
 
-const setAuthorizationLink = setContext(async (_, previousContext) => {
+const setAuthorizationLink = new SetContextLink(async (previousContext) => {
     const jwt = await useAsyncStorage().getItem("jwt");
     const ipAddress = await Network.getIpAddressAsync();
     const deviceId = await Application.getInstallationTimeAsync();
@@ -64,7 +64,7 @@ const setAuthorizationLink = setContext(async (_, previousContext) => {
     };
 });
 
-const defaultOptions: DefaultOptions = {
+const defaultOptions: ApolloClient.DefaultOptions = {
     watchQuery: {
         fetchPolicy: 'no-cache',
         errorPolicy: 'ignore',
@@ -77,7 +77,7 @@ const defaultOptions: DefaultOptions = {
 
 
 export const apolloClient = new ApolloClient({
-    link: from([setAuthorizationLink, errorLink, httpLink]),
+    link: ApolloLink.from([setAuthorizationLink, errorLink, httpLink]),
     defaultOptions: defaultOptions,
     cache: new InMemoryCache({
         resultCaching: false,
