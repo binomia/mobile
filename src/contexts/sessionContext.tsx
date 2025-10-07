@@ -22,7 +22,6 @@ import { HASH } from "cryptografia";
 import { z } from "zod";
 import { SessionAuthSchema } from "@/src/auth/sessionAuth";
 import { DispatchType } from '../redux';
-import { useSQLite } from '../hooks';
 
 export const SessionContext = createContext<SessionPropsType>({
     onLogin: (_: { email: string, password: string }) => Promise.resolve({}),
@@ -59,7 +58,6 @@ export const SessionContextProvider = ({ children }: SessionContextType) => {
     const [getSessionUser] = useLazyQuery<any>(UserApolloQueries.sessionUser());
     const { getContacts } = useContacts();
     const { registerForPushNotificationsAsync } = useNotifications()
-    const { SQLite } = useSQLite()
 
     const [sessionVerificationData, setSessionVerificationData] = useState<z.infer<typeof SessionAuthSchema.verifySession>>({
         signature: "",
@@ -72,7 +70,6 @@ export const SessionContextProvider = ({ children }: SessionContextType) => {
     const fetchSessionUser = async () => {
         try {
             const user = await getSessionUser()
-            // const { SQLite } = useSQLite()
 
             const userProfileData = await UserAuthSchema.userProfileData.parseAsync(user.data.sessionUser)
             const kycData = await UserAuthSchema.kycData.parseAsync(user.data.sessionUser.kyc)
@@ -81,31 +78,6 @@ export const SessionContextProvider = ({ children }: SessionContextType) => {
             const primaryCard = cardsData.find((card: any) => card.isPrimary === true)
 
             const contacts = await getContacts()
-
-            const recentTransactions = await dispatch(fetchRecentTransactions())
-            const recentTransactionsPayload: any = recentTransactions.payload
-
-            if (recentTransactionsPayload.length)
-                for (let i = 0; i < recentTransactionsPayload.length; i++) {
-                    const { hash: accountId } = accountsData
-                    const { uuid, status, timestamp, type, data } = recentTransactionsPayload[i]
-
-                    console.log(JSON.stringify({ uuid, status, timestamp, type, data }, null, 2));
-                    
-
-                    await SQLite.execute(/*sql*/ `
-                        INSERT OR IGNORE INTO transactions (uuid, accountId, status, timestamp, type, data) VALUES (
-                            '${uuid}', 
-                            '${accountId}', 
-                            '${status}', 
-                            '${new Date(timestamp)}', 
-                            '${type}', 
-                            '${JSON.stringify(data)}'
-                        );
-                    `)
-
-                    // console.log(`Transaction ${uuid} inserted successfully`);
-                }
 
             await Promise.all([
                 dispatch(accountActions.setUser(userProfileData ?? {})),
@@ -116,6 +88,7 @@ export const SessionContextProvider = ({ children }: SessionContextType) => {
 
                 dispatch(globalActions.setContacts(contacts)),
 
+                dispatch(fetchRecentTransactions()),
                 dispatch(fetchAllTransactions({ page: 1, pageSize: 10 })),
                 dispatch(fetchAccountBankingTransactions({ page: 1, pageSize: 30 })),
                 dispatch(fetchRecentTopUps()),

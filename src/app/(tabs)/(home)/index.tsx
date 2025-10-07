@@ -17,14 +17,12 @@ import { fetchRecentTopUps, fetchRecentTransactions } from '@/src/redux/fetchHel
 import { accountActions } from '@/src/redux/slices/accountSlice';
 import TransactionSkeleton from '@/src/components/transaction/transactionSkeleton';
 import { useGrafanaCloud } from '@/src/hooks/useGrafanaCloud';
-import { useSQLite } from '@/src/hooks';
 
 const { width } = Dimensions.get('window');
 const HomeScreen: React.FC = () => {
 	const { account } = useSelector((state: any) => state.accountReducer)
 	const { recentTransactionsLoading } = useSelector((state: any) => state.transactionReducer)
 	const { Loki } = useGrafanaCloud()
-	const { SQLite } = useSQLite()
 
 	const dispatch = useDispatch<any>()
 	const [getAccount] = useLazyQuery<any>(AccountApolloQueries.account());
@@ -86,14 +84,7 @@ const HomeScreen: React.FC = () => {
 			id: 1,
 			name: "Seguros",
 			image: cars,
-			onPress: async () => {
-				await SQLite.execute(/*sql*/ `
-					INSERT INTO transactions (transactionId, timestamp, data) VALUES (
-						'62a6bdcc241d4b83e54364ebb9e54364ebbcc46cf',
-						'${new Date()}',
-						'{"amount": 200, "currency": "MXN"}'
-					);
-				`)
+			onPress: async () => {				
 				console.log("Transaction created");
 			}
 		},
@@ -102,9 +93,7 @@ const HomeScreen: React.FC = () => {
 			name: "Electricidad",
 			image: house,
 			onPress: async () => {
-				const transactions = await SQLite.getAll(`SELECT * FROM transactions`)
-
-				console.log(JSON.stringify(transactions, null, 2));
+				console.log("Transaction created");
 			}
 		},
 		{
@@ -112,7 +101,7 @@ const HomeScreen: React.FC = () => {
 			name: "Facturas",
 			image: bills,
 			onPress: async () => {
-				await Loki.create("warn", {
+				await Loki.push("warn", {
 					message: "Hello world",
 					action: "TAB_NAVIGATION",
 					from: "Home",

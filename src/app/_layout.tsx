@@ -14,8 +14,6 @@ import { ActivityIndicator, LogBox, View } from 'react-native';
 import { SocketContextProvider } from '@/src/contexts/socketContext';
 import { TopUpContextProvider } from '@/src/contexts/topUpContext';
 import { RouterContextProvider } from '@/src/contexts/RouterContext';
-import { SQLiteDatabase, SQLiteProvider } from 'expo-sqlite';
-import { generateAccountTable, generateLogsTable, generateTransactionTable } from '@/src/sql';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const SpaceMono = require('../fonts/SpaceMono-Regular.ttf');
@@ -28,18 +26,8 @@ const Layout = () => {
 		SpaceMono
 	});
 
-	const onInitSQLite = async (db: SQLiteDatabase) => {
-		const drop = false
-		await Promise.all([
-			db.execAsync(generateLogsTable(drop)),
-			db.execAsync(generateTransactionTable(drop)),
-			db.execAsync(generateAccountTable(drop)),
-		])
-	}
-
 	return (
 		<Suspense fallback={<ActivityIndicator size={"large"} />}>
-			<SQLiteProvider onInit={onInitSQLite} options={{ useNewConnection: false }} databaseName='binomia.db'>
 				<NativeBaseProvider theme={theme}>
 					<Provider store={store}>
 						<ApolloProvider client={apolloClient}>
@@ -57,7 +45,6 @@ const Layout = () => {
 						</ApolloProvider>
 					</Provider >
 				</NativeBaseProvider>
-			</SQLiteProvider>
 		</Suspense>
 	);
 }

@@ -19,7 +19,6 @@ export const RouterContextProvider = () => {
 
     const cameraPermission = useCameraPermission()
     const microphonePermission = useMicrophonePermission()
-   
 
     const onLayoutRootView = useCallback(async () => {
         try {
@@ -37,7 +36,6 @@ export const RouterContextProvider = () => {
 
     }, []);
 
-
     const initializeAllAppData = async () => {
         const jwt = await getItem('jwt')
         dispatch(globalActions.setIsLoggedIn(!!jwt))
@@ -47,11 +45,8 @@ export const RouterContextProvider = () => {
         ])
     }
 
-
     useEffect(() => {
         const unsubscribe = NetInfo.addEventListener(async () => {
-            console.log("NetInfo", ExpoVpnChecker.checkVpn());
-
             dispatch(globalActions.setIsVPNConnected(ExpoVpnChecker.checkVpn()))
         });
 
