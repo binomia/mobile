@@ -57,8 +57,6 @@ const TransactionDetails: React.FC<Props> = ({ onClose = () => { }, goNext = () 
                 location: Object.assign({}, location, {})
             })
 
-            console.log(JSON.stringify({ data, recurrence }, null, 2));
-
             const { data: createdTransaction } = await createTransaction({
                 variables: { data, recurrence }
             })
@@ -70,8 +68,8 @@ const TransactionDetails: React.FC<Props> = ({ onClose = () => { }, goNext = () 
 
                 const formatedTransaction = formatTransaction(transaction)
 
-                await dispatch(accountActions.setAccount(accountsData))
-                await dispatch(transactionActions.setTransaction({
+                dispatch(accountActions.setAccount(accountsData))
+                dispatch(transactionActions.setTransaction({
                     ...transaction,
                     amountColor: colors.red,
                     fullName: formatedTransaction.fullName,

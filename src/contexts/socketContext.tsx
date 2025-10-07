@@ -10,7 +10,6 @@ import { AccountApolloQueries } from "@/src/apollo/query";
 import { fetchAccountLimit, fetchAllTransactions, fetchRecentTopUps, fetchRecentTransactions } from "@/src/redux/fetchHelper";
 import { accountActions } from "@/src/redux/slices/accountSlice";
 
-
 export const SocketContext = createContext({});
 
 export const SocketContextProvider = ({ children }: { children: any }) => {

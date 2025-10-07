@@ -37,7 +37,7 @@ const NotificationsScreen: React.FC = () => {
                     }
                 })
 
-                await dispatch(accountActions.setAccount(data.updateAccountPermissions))
+                 dispatch(accountActions.setAccount(data.updateAccountPermissions))
                 setAllNotifications(Object.assign({}, allNotifications, { allow }))
 
             } else {
@@ -49,7 +49,7 @@ const NotificationsScreen: React.FC = () => {
                     }
                 })
 
-                await dispatch(accountActions.setAccount(data.updateAccountPermissions))
+                 dispatch(accountActions.setAccount(data.updateAccountPermissions))
 
                 const { allowEmailNotification, allowPushNotification, allowSmsNotification, allowWhatsappNotification } = data.updateAccountPermissions
                 setAllNotifications(Object.assign({}, allNotifications, {

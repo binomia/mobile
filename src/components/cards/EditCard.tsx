@@ -61,7 +61,7 @@ const EditCard: React.FC<Props> = ({ onPress = async (_: any) => { }, onClose = 
     const onRefreshCards = useCallback(async () => {
         try {
             const { data } = await fetchCards()
-            await dispatch(accountActions.setCards(data.cards))
+            dispatch(accountActions.setCards(data.cards))
 
         } catch (error) {
             console.log({

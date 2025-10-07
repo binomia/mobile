@@ -37,7 +37,7 @@ const PrivacyScreen: React.FC = () => {
                         }
                     }
                 })
-                await dispatch(accountActions.setAccount(data.updateAccountPermissions))
+                dispatch(accountActions.setAccount(data.updateAccountPermissions))
                 setAllPrivacy(Object.assign({}, allPrivacy, { allow }))
 
             } else {
@@ -49,7 +49,7 @@ const PrivacyScreen: React.FC = () => {
                     }
                 })
 
-                await dispatch(accountActions.setAccount(data.updateAccountPermissions))
+                dispatch(accountActions.setAccount(data.updateAccountPermissions))
                 const { allowSend, allowReceive, allowWithdraw, allowDeposit, allowRequestMe } = data.updateAccountPermissions
                 setAllPrivacy(Object.assign({}, allPrivacy, {
                     allow: allowSend && allowReceive && allowWithdraw && allowDeposit && allowRequestMe ? true : false

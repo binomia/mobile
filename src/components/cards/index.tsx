@@ -36,7 +36,7 @@ const Cards: React.FC<Props> = ({ open = false, onCloseFinish = () => { }, justS
 
 
     const onPressCard = async (card: any) => {
-        await dispatch(accountActions.setCard(card))
+        dispatch(accountActions.setCard(card))
 
         if (justSelecting) {
             onCloseFinish()
@@ -74,7 +74,7 @@ const Cards: React.FC<Props> = ({ open = false, onCloseFinish = () => { }, justS
             const validatedCardData = await CardAuthSchema.createCard.parseAsync(cardData)
             const { data } = await createCard({ variables: { data: validatedCardData } })
 
-            await dispatch(accountActions.setCards([...cards, data.createCard]))
+            dispatch(accountActions.setCards([...cards, data.createCard]))
 
             setShowCardModification(false)
             pagerRef.current?.setPage(0)
@@ -104,7 +104,7 @@ const Cards: React.FC<Props> = ({ open = false, onCloseFinish = () => { }, justS
                             </HStack>
                             {cards.length > 0 ? (
                                 <FlatList
-                                    style={{marginTop: 10}}
+                                    style={{ marginTop: 10 }}
                                     data={cards}
                                     contentContainerStyle={{ paddingBottom: 100 }}
                                     showsVerticalScrollIndicator={false}

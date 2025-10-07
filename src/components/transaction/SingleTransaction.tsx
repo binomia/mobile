@@ -43,7 +43,7 @@ const SingleSentTransaction: React.FC<Props> = ({ title = "Ver Detalles", onClos
 
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [isCancelLoading, setIsCancelLoading] = useState<boolean>(false)
-	
+
 	const [payRequestTransaction] = useMutation<any>(TransactionApolloQueries.payRequestTransaction());
 	const [cancelRequestedTransaction] = useMutation<any>(TransactionApolloQueries.cancelRequestedTransaction());
 
@@ -111,8 +111,9 @@ const SingleSentTransaction: React.FC<Props> = ({ title = "Ver Detalles", onClos
 						}
 					})
 
-					await dispatch(transactionActions.setTransaction(Object.assign({}, transaction, { ...data.payRequestTransaction, ...formatTransaction(data.payRequestTransaction) })))
-					await dispatch(accountActions.setAccount(Object.assign({}, account, { balance: Number(account.balance) - Number(transaction?.amount) })))
+					dispatch(transactionActions.setTransaction(Object.assign({}, transaction, { ...data.payRequestTransaction, ...formatTransaction(data.payRequestTransaction) })))
+					dispatch(accountActions.setAccount(Object.assign({}, account, { balance: Number(account.balance) - Number(transaction?.amount) })))
+					
 					await dispatch(fetchRecentTransactions())
 
 					setIsLoading(false)

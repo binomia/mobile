@@ -72,14 +72,14 @@ const Request: React.FC = () => {
     }
 
     const onSelectUser = async (user: z.infer<typeof UserAuthSchema.singleSearchUserData>) => {
-        await dispatch(transactionActions.setReceiver(user))
+         dispatch(transactionActions.setReceiver(user))
         setOpenRequest(true)
     }
 
     const onCloseFinish = async () => {
         setOpenRequest(false)
 
-        await dispatch(transactionActions.setReceiver({}))
+         dispatch(transactionActions.setReceiver({}))
         setInput("0")
 
         if (currentPage === 2) {
@@ -141,8 +141,8 @@ const Request: React.FC = () => {
         if (status !== "active") {
             Alert.alert("Advertencia", `${receiver.fullName}  no se encuentra activo.`, [{
                 onPress: async () => {
+                    dispatch(transactionActions.setTransactionDetails({}))
                     await onCloseFinish()
-                    await dispatch(transactionActions.setTransactionDetails({}))
                     await fetchSugestedUsers()
 
                     ref.current?.setPage(0)

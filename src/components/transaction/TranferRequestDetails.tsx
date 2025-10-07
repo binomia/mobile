@@ -106,8 +106,8 @@ const TranferRequestDetails: React.FC<Props> = ({ goNext = () => { }, onCloseFin
             if (transaction) {
                 const accountsData = await AccountAuthSchema.account.parseAsync(transaction.from)
 
-                await dispatch(accountActions.setAccount(accountsData))
-                await dispatch(transactionActions.setTransaction(Object.assign({}, transaction, {
+                dispatch(accountActions.setAccount(accountsData))
+                dispatch(transactionActions.setTransaction(Object.assign({}, transaction, {
                     ...formatTransaction(Object.assign({}, transaction, {
                         status: "pending",
                         to: receiver,

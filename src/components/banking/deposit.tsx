@@ -92,7 +92,7 @@ const DepositOrWithdrawTransaction: React.FC<Props> = ({ title = "Depositar", sh
     }
 
     const onCardPress = async (card: any) => {
-        await dispatch(accountActions.setCard(card))
+        dispatch(accountActions.setCard(card))
         setShowAllCards(true)
     }
 

@@ -98,8 +98,9 @@ const TopTupDetails: React.FC<Props> = ({ goBack = () => { }, onClose = (_?: any
     }
 
     const onNext = async () => {
-        await dispatch(accountActions.setAccount(Object.assign({}, account, { balance: account.balance - Number(newTopUp.amount) })))
-        await dispatch(topupActions.setHasNewTransaction(true))
+        dispatch(topupActions.setHasNewTransaction(true))
+        dispatch(accountActions.setAccount(Object.assign({}, account, { balance: account.balance - Number(newTopUp.amount) })))
+        
         await dispatch(fetchRecentTransactions())
         await dispatch(fetchAllTransactions({ page: 1, pageSize: 5 }))
 

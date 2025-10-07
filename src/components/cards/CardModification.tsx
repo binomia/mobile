@@ -34,7 +34,7 @@ const CardModification: React.FC<Props> = ({ open = false, onCloseFinish = () =>
     const delay = async (ms: number) => new Promise(res => setTimeout(res, ms))
 
     const onClose = async () => {
-        await dispatch(accountActions.setCard({}))
+        dispatch(accountActions.setCard({}))
         onCloseFinish()
         setBottomSheetHeight(height * 0.4)
         ref.current?.setPage(0)
@@ -75,7 +75,7 @@ const CardModification: React.FC<Props> = ({ open = false, onCloseFinish = () =>
 
                 const cardsFiltered = cards.filter((item: any) => item.hash !== card.hash)
                 if (data.deleteCard) {
-                    await dispatch(accountActions.setCards(cardsFiltered))
+                    dispatch(accountActions.setCards(cardsFiltered))
 
                     onClose()
                     setIsDeleting(false)

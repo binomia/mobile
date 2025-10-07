@@ -38,7 +38,7 @@ const LimitsScreen: React.FC = () => {
         (async () => {
             if (haveAccountChanged) {
                 await dispatch(fetchAccountLimit())
-                await dispatch(accountActions.setHaveAccountChanged(false))
+                 dispatch(accountActions.setHaveAccountChanged(false))
             }
         })()
 

@@ -74,7 +74,7 @@ export const useLocation = () => {
 
     const watchPositionAsync = async () => {
         await Location.watchPositionAsync({ accuracy: Location.Accuracy.Highest }, async (location) => {
-            await dispatch(globalActions.setLocation({
+            dispatch(globalActions.setLocation({
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
                 latitudeDelta: 0.0922,
@@ -97,7 +97,7 @@ export const useLocation = () => {
                 longitudeDelta: 0.0421,
             }
 
-            await dispatch(globalActions.setLocation(newLocation));
+            dispatch(globalActions.setLocation(newLocation));
 
             return newLocation
 

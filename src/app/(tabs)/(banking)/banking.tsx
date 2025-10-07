@@ -112,7 +112,7 @@ const BankingScreen: React.FC = (): React.JSX.Element => {
 
         if (cards.length > 0) {
             const primaryCard = cards.find((card: any) => card.isPrimary)
-            await dispatch(accountActions.setCard(primaryCard))
+            dispatch(accountActions.setCard(primaryCard))
 
             if (title === "Deposito")
                 setShowDeposit(true)
@@ -156,7 +156,7 @@ const BankingScreen: React.FC = (): React.JSX.Element => {
                 }
             }
 
-            await dispatch(transactionActions.setTransaction(Object.assign({}, transaction, data)))
+            dispatch(transactionActions.setTransaction(Object.assign({}, transaction, data)))
             setShowSingleTransaction(true)
 
         } catch (error) {
@@ -168,7 +168,7 @@ const BankingScreen: React.FC = (): React.JSX.Element => {
     const onCloseFinishSingleTransaction = async () => {
         setShowSingleTransaction(false)
 
-        await dispatch(transactionActions.setTransaction({}))
+        dispatch(transactionActions.setTransaction({}))
     }
 
     const onRefresh = useCallback(async () => {
@@ -185,7 +185,7 @@ const BankingScreen: React.FC = (): React.JSX.Element => {
         if (isFocused) {
             (async () => {
                 const { data } = await fetchAccount()
-                await dispatch(accountActions.setAccount(data.account))
+                dispatch(accountActions.setAccount(data.account))
             })()
         }
 

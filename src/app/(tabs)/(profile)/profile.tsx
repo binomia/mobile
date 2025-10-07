@@ -56,7 +56,7 @@ const ProfileScreen: React.FC = () => {
 				}
 			})
 
-			await dispatch(accountActions.setUser(updatedUser.data.updateUser))
+			dispatch(accountActions.setUser(updatedUser.data.updateUser))
 
 			setProfileImage(url);
 			setIsLoading(false)
@@ -80,7 +80,7 @@ const ProfileScreen: React.FC = () => {
 		if (isFocused) {
 			(async () => {
 				const { data } = await fetchAccount()
-				await dispatch(accountActions.setAccount(data.account))
+				dispatch(accountActions.setAccount(data.account))
 			})()
 		}
 
