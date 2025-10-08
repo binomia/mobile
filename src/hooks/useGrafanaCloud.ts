@@ -21,7 +21,7 @@ export const useGrafanaCloud = () => {
                     },
                 ];
 
-                const res = await axios.post(
+                await axios.post(
                     LOKI_URL,
                     { streams },
                     {
@@ -35,12 +35,10 @@ export const useGrafanaCloud = () => {
                     }
                 );
 
-                console.log("Log sent:", res.data);
             } catch (error: any) {
                 console.error({ Loki: error?.toString() });
             }
         }
-
     }
 
     return {
