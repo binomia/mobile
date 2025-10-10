@@ -149,7 +149,7 @@ const ScanID: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.Eleme
                             title={"Siguiente"}
                         />
                     </HStack>
-                    <CameraComponent setImage={setImageUrl} open={openCamera} onCloseFinish={() => setOpenCamera(false)} />
+                    <CameraComponent expoCamera={true} setImage={setImageUrl} open={openCamera} onCloseFinish={() => setOpenCamera(false)} />
                 </VStack>
             </TouchableWithoutFeedback>
         </ScrollView>

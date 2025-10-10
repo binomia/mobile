@@ -3,7 +3,7 @@ import colors from '@/src/colors'
 import BottomSheet from '@/src/components/global/BottomSheet';
 import moment from 'moment';
 import * as Sharing from 'expo-sharing';
-import { SafeAreaView, Dimensions, FlatList } from 'react-native'
+import {  Dimensions, FlatList } from 'react-native'
 import { Heading, Image, Text, VStack, HStack, Pressable, ZStack } from 'native-base'
 import { FORMAT_CREATED_DATE, FORMAT_CURRENCY } from '@/src/helpers'
 import { scale } from 'react-native-size-matters';
@@ -12,6 +12,7 @@ import { americanExpressLogo, cancelIcon, checked, jcbLogo, mastercardLogo, pend
 import { Entypo } from '@expo/vector-icons';
 import { TEXT_HEADING_FONT_SIZE } from '@/src/constants';
 import { transactionStatus } from '@/src/mocks';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 type Props = {

@@ -19,7 +19,8 @@ import { RouterContextProvider } from '@/src/contexts/RouterContext';
 const SpaceMono = require('../fonts/SpaceMono-Regular.ttf');
 
 LogBox.ignoreAllLogs(true);
-LogBox.ignoreLogs(['In React 18']);
+LogBox.ignoreLogs(['Reanimated']);
+LogBox.ignoreLogs(['createAnimatedPropAdapter']);
 
 const Layout = () => {
 	useFonts({
@@ -37,6 +38,7 @@ const Layout = () => {
 										<TopUpContextProvider>
 											<View style={{ flex: 1 }}>
 												<RouterContextProvider />
+												{/* <CameraComponent  open={true} /> */}
 											</View>
 										</TopUpContextProvider>
 									</SocketContextProvider>

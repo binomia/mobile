@@ -11,7 +11,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import colors from '@/src/colors';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { VStack, Heading, HStack, Text, Stack } from 'native-base';
-import { SafeAreaView, TouchableOpacity, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
+import {  TouchableOpacity, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
 import { SessionContext } from '@/src/contexts/sessionContext';
 import { SessionPropsType } from '@/src/types';
 import { INPUT_HEIGHT, SCREEN_HEIGHT, TEXT_HEADING_FONT_SIZE, TEXT_PARAGRAPH_FONT_SIZE } from '@/src/constants';
@@ -25,6 +25,7 @@ import { useDispatch } from 'react-redux';
 import { accountActions } from '@/src/redux/slices/accountSlice';
 import { fetchAllTransactions, fetchRecentTransactions } from '@/src/redux/fetchHelper';
 import { DispatchType } from '@/src/redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const LoginComponent: React.FC = (): React.JSX.Element => {
     const [verifySession] = useMutation<any>(SessionApolloQueries.verifySession());

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { VStack, Heading, Text, HStack } from 'native-base';
-import { SafeAreaView, TextInput, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
+import { TextInput, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
 import { SessionContext } from '@/src/contexts/sessionContext';
 import { SessionPropsType } from '@/src/types';
 import colors from '@/src/colors';
@@ -12,6 +12,7 @@ import Button from '@/src/components/global/Button';
 import { useDispatch } from 'react-redux';
 import { DispatchType } from '@/src/redux';
 import { globalActions } from '@/src/redux/slices/globalSlice';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {
     nextPage: () => void
@@ -92,11 +93,10 @@ const VerifyCode: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.E
                             textContentType="oneTimeCode"
                             autoComplete={"sms-otp"}
                             renderCell={({ index, symbol, isFocused }) => (
-                                <HStack justifyContent={"center"} alignItems={"center"} style={[styles.cell, isFocused && styles.focusCell]}>
+                                <HStack key={index} justifyContent={"center"} alignItems={"center"} style={[styles.cell, isFocused && styles.focusCell]}>
                                     <Text
                                         color={colors.white}
                                         fontSize={"28px"}
-                                        key={index}
                                         onLayout={getCellOnLayoutHandler(index)}>
                                         {symbol || (isFocused ? <Cursor /> : null)}
                                     </Text>

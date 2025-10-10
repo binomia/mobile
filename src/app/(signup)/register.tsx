@@ -1,6 +1,5 @@
 import { useContext, useRef, useState } from 'react';
 import { VStack } from 'native-base';
-import { SafeAreaView } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import colors from '@/src/colors';
 import CreateAccount from '@/src/components/signup/register/CreateAccount';
@@ -13,6 +12,7 @@ import FaceID from '@/src/components/signup/register/FaceID';
 import { GlobalContextType } from '@/src/types';
 import { GlobalContext } from '@/src/contexts/globalContext';
 import IDData from '@/src/components/signup/register/IdData';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const RegisterComponent: React.FC = (): React.JSX.Element => {

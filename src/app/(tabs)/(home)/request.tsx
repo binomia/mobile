@@ -6,7 +6,7 @@ import BottomSheet from '@/src/components/global/BottomSheet';
 import PagerView from 'react-native-pager-view';
 import TranferRequestDetails from '@/src/components/transaction/TranferRequestDetails';
 import SingleSentTransaction from '@/src/components/transaction/SingleSentTransaction';
-import { SafeAreaView, Keyboard, TouchableWithoutFeedback, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native'
+import {  Keyboard, TouchableWithoutFeedback, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native'
 import { Heading, Image, Text, VStack, HStack, Avatar } from 'native-base'
 import { useLazyQuery } from '@apollo/client/react'
 import { UserApolloQueries } from '@/src/apollo/query'
@@ -20,6 +20,7 @@ import { router } from 'expo-router';
 import { pendingClock } from '@/src/assets';
 import { fetchRecentTransactions } from '@/src/redux/fetchHelper';
 import { DispatchType, StateType } from '@/src/redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { height } = Dimensions.get('window')
 

@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import { Camera, DrawableFrame, useCameraDevice, useSkiaFrameProcessor } from 'react-native-vision-camera'
+import { DrawableFrame, Camera, useCameraDevice, useSkiaFrameProcessor } from 'react-native-vision-camera'
 import { Face, FaceDetectionOptions, useFaceDetector } from 'react-native-vision-camera-face-detector'
 import { Heading, HStack, VStack, ZStack } from 'native-base'
 import Fade from 'react-native-fade'
@@ -9,13 +9,15 @@ import { ImageEditor } from "expo-crop-image";
 import { useDispatch } from 'react-redux'
 import { registerActions } from '@/src/redux/slices/registerSlice'
 // import { Skia, Image as SkiaImage, useImage, PaintStyle, Canvas } from '@shopify/react-native-skia'
-import { runOnJS } from 'react-native-reanimated'
 import BottomSheet from './BottomSheet'
 import { DispatchType } from '@/src/redux'
+import { runOnJS } from 'react-native-worklets'
+import { CameraView as ExpoCamera } from 'expo-camera'
 
 type Props = {
     open?: boolean
     video?: boolean
+    expoCamera?: boolean
     onCloseFinish?: () => void
     setVideo?: (video: string) => void
     setImage?: (video: string) => void
@@ -24,9 +26,11 @@ type Props = {
 }
 
 const { width, height } = Dimensions.get('window')
-const CameraComponent: React.FC<Props> = ({ open, onCloseFinish, setVideo, setImage, cameraType = "back", video = false }: Props) => {
+const CameraComponent: React.FC<Props> = ({ open, onCloseFinish, setVideo, setImage, cameraType = "back", expoCamera = false, video = false }: Props) => {
     const ref = useRef<Camera>(null);
+    const expoCameraFef = useRef<ExpoCamera>(null);
     const dispatch = useDispatch<DispatchType>()
+
 
     const [progress, setProgress] = useState<number>(5);
     const [recording, setRecording] = useState<boolean>(false);
@@ -133,9 +137,15 @@ const CameraComponent: React.FC<Props> = ({ open, onCloseFinish, setVideo, setIm
     }, [recording])
 
     const takePicture = async () => {
-        if (ref.current) {
-            const photo = await ref.current.takePhoto();
-            setPreviewUrl(photo.path)
+        if (expoCamera && expoCameraFef.current) {
+            const photo = await expoCameraFef.current.takePictureAsync();
+            setPreviewUrl(photo.uri)
+
+        } else {
+            if (ref.current) {
+                const photo = await ref.current.takePhoto();
+                setPreviewUrl(photo.path)
+            }
         }
     }
 
@@ -143,18 +153,23 @@ const CameraComponent: React.FC<Props> = ({ open, onCloseFinish, setVideo, setIm
         <BottomSheet showDragIcon={false} height={height * 0.90} open={open} onCloseFinish={onCloseFinish}>
             {device &&
                 <ZStack w={"100%"} h={"100%"} flex={1}>
-                    <Camera
-
-                        preview={true}
-                        ref={ref}
-                        photo={true}
-                        video={true}
-                        style={StyleSheet.absoluteFillObject}
-                        device={device}
-                        frameProcessor={frameProcessor}
-                        pixelFormat="rgb"
-                        isActive
-                    />
+                    {expoCamera ?
+                        <ExpoCamera
+                            facing={cameraType}
+                            style={StyleSheet.absoluteFillObject}
+                            ref={expoCameraFef}
+                        /> :
+                        <Camera
+                            preview={true}
+                            ref={ref}
+                            photo={true}
+                            video={true}
+                            style={StyleSheet.absoluteFillObject}
+                            device={device}
+                            frameProcessor={frameProcessor}
+                            pixelFormat="rgb"
+                            isActive
+                        />}
                     <VStack w={"100%"} h={"100%"}>
                         {previewUrl ?
                             <HStack w={"100%"} h={"90%"} bg={"black"} justifyContent={"center"} alignItems={"center"} p={"20px"}>

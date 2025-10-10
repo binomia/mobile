@@ -4,7 +4,7 @@ import PagerView from 'react-native-pager-view';
 import CreateTransaction from './CreateTransaction';
 import TransactionDetails from './TranferDetails';
 import SingleTransaction from './SingleTransaction';
-import { Dimensions, SafeAreaView, Alert } from 'react-native'
+import { Dimensions, Alert } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import { transactionActions } from '@/src/redux/slices/transactionSlice';
 import { router } from 'expo-router';
@@ -13,6 +13,7 @@ import { fetchRecentTransactions } from '@/src/redux/fetchHelper';
 import { useLazyQuery } from '@apollo/client/react';
 import { UserApolloQueries } from '@/src/apollo/query';
 import { DispatchType, StateType } from '@/src/redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {
     open?: boolean

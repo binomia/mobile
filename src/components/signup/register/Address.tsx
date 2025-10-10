@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { VStack, Heading, Text, HStack, TextArea } from 'native-base';
-import { StyleSheet, Keyboard, SafeAreaView, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import { StyleSheet, Keyboard,  TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import colors from '@/src/colors';
 import { TEXT_HEADING_FONT_SIZE, TEXT_PARAGRAPH_FONT_SIZE, TEXTAREA_HEIGHT } from '@/src/constants';
 import Button from '@/src/components/global/Button';
@@ -10,6 +10,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { registerActions } from '@/src/redux/slices/registerSlice';
 import { useDispatch } from 'react-redux';
 import { DispatchType } from '@/src/redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {
     nextPage: () => void

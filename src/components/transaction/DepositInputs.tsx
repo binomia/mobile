@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import colors from '@/src/colors'
-import { SafeAreaView } from 'react-native'
 import { Heading, Image, Text, VStack, HStack, Pressable } from 'native-base'
 import { scale } from 'react-native-size-matters';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -9,6 +8,7 @@ import KeyNumberPad from '@/src/components/global/KeyNumberPad';
 import Cards from '@/src/components/cards';
 import { mastercardLogo, visaLogo } from '@/src/assets';
 import Button from '@/src/components/global/Button';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 type Props = {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import colors from '@/src/colors'
-import { TouchableOpacity, SafeAreaView } from 'react-native'
+import { TouchableOpacity} from 'react-native'
 import { Heading, Image, Text, VStack, HStack, Stack, Pressable } from 'native-base'
 import { scale } from 'react-native-size-matters';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -11,6 +11,7 @@ import Cards from '../cards';
 import { depositIcon } from '@/src/assets';
 import { useNavigation } from '@react-navigation/native';
 import { DispatchType } from '@/src/redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 type Props = {

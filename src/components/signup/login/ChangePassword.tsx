@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { VStack, Heading, Text, HStack } from 'native-base';
-import { SafeAreaView, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from 'react-native';
+import {  TouchableWithoutFeedback, Keyboard, TouchableOpacity } from 'react-native';
 import colors from '@/src/colors';
 import { INPUT_HEIGHT, TEXT_HEADING_FONT_SIZE, TEXT_PARAGRAPH_FONT_SIZE } from '@/src/constants';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Input from '@/src/components/global/Input';
 import Button from '@/src/components/global/Button';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 type Props = {
