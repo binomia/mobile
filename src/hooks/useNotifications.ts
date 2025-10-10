@@ -7,8 +7,7 @@ import { PushNotificationType } from '@/src/types';
 
 export const useNotifications = (): PushNotificationType => {
     Notifications.setNotificationHandler({
-        handleNotification: async () => ({
-            shouldShowAlert: true,
+        handleNotification: async () => ({            
             shouldPlaySound: true,
             shouldSetBadge: true,
             shouldShowBanner: true,
