@@ -122,6 +122,7 @@ export const SessionContextProvider = ({ children }: SessionContextType) => {
             dispatch(transactionActions.reSetAllState())
 
             dispatch(globalActions.setIsLoggedIn(false))
+            router.setParams({ resetSession: "false" })
 
         } catch (error) {
             console.log({ onLogout: error });

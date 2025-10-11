@@ -15,6 +15,13 @@ export class SessionApolloQueries {
             }
         `
     }
+    static logout = () => {
+        return gql`
+            mutation Mutation {
+                logout
+            }
+        `
+    }
     static verifySession = () => {
         return gql`
             mutation VerifySession($sid: String!, $signature: String!, $code: String!) {

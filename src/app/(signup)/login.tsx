@@ -16,7 +16,7 @@ import { SessionContext } from '@/src/contexts/sessionContext';
 import { SessionPropsType } from '@/src/types';
 import { INPUT_HEIGHT, SCREEN_HEIGHT, TEXT_HEADING_FONT_SIZE, TEXT_PARAGRAPH_FONT_SIZE } from '@/src/constants';
 import { VALIDATE_EMAIL } from '@/src/helpers';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { SessionAuthSchema } from '@/src/auth/sessionAuth';
 import { useMutation } from '@apollo/client/react';
 import { SessionApolloQueries } from '@/src/apollo/query';
@@ -31,6 +31,7 @@ const LoginComponent: React.FC = (): React.JSX.Element => {
     const [verifySession] = useMutation<any>(SessionApolloQueries.verifySession());
     const { setItem } = useAsyncStorage()
     const dispatch = useDispatch<DispatchType>()
+    const params = useLocalSearchParams<{param: string}>()
 
 
     const pageViewRef = useRef<PagerView>(null);
@@ -154,8 +155,9 @@ const LoginComponent: React.FC = (): React.JSX.Element => {
                 setDisabledButton(false)
         }
 
+        console.log({params});
+        
     }, [email, password])
-
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.darkGray }}>

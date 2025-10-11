@@ -20,7 +20,6 @@ const Signup = () => {
 		headerTintColor: colors.white,
 		headerStyle: { ...defaultHeaderStyles },
 		tabBarStyle: { ...defaultTabStyles }
-
 	}
 	return (
 		<Stack screenOptions={{ ...defaultscreenOptions }}>

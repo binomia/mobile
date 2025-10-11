@@ -6,7 +6,7 @@ import colors from "@/src/colors"
 import { creditCard, logo, qrIcon, recurrenceIcon } from "@/src/assets"
 import { VStack, Image, Pressable, HStack, Text, Stack, Heading, Avatar } from "native-base"
 import { useState } from "react"
-import { router } from "expo-router"
+import { Link, router } from "expo-router"
 import { AntDesign, Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { scale } from "react-native-size-matters"
 import { Platform } from "react-native"
@@ -119,16 +119,16 @@ export const WelcomeLeft: React.FC = () => {
 }
 export const WelcomeRight: React.FC = () => {
     return (
-        <Pressable onPress={() => router.navigate("/login")}>
+        <Link asChild href={{ pathname: "/login" }}>
             <Text fontSize={"16px"} fontWeight={"extrabold"} color={"mainGreen"}>Iniciar Sesión</Text>
-        </Pressable>
+        </Link>
     )
 }
 export const LoginRight: React.FC = () => {
     return (
-        <Pressable onPress={() => router.navigate("/register")}>
+        <Link href={{ pathname: "/register" }}>
             <Text fontSize={"16px"} fontWeight={"extrabold"} color={"mainGreen"}>Registrarse</Text>
-        </Pressable>
+        </Link>
     )
 }
 export const CardsRight: React.FC = () => {

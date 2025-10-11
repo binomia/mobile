@@ -26,7 +26,9 @@ const errorLink = new ErrorLink((errorHandlers) => {
                 await SecureStore.deleteItemAsync("jwt").then(async () => {
                     // Alert.alert("Your session has expired. Please login again.");
                     // await Updates.reloadAsync();
-                    router.navigate("/login");
+
+                   router.navigate("/login/true")
+                    
                 });
             } else if (message.includes("no puede recibir pagos")) {
                 Alert.alert(message);
