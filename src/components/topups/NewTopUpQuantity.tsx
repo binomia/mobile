@@ -1,15 +1,14 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import KeyNumberPad from '../global/KeyNumberPad'
 import Button from '../global/Button';
 import colors from '@/src/colors';
-import { Heading, HStack, VStack, Image, Text, Pressable } from 'native-base'
-import { MaterialIcons } from "@expo/vector-icons";
-import { useDispatch, useSelector } from 'react-redux';
-import { FORMAT_CURRENCY, FORMAT_PHONE_NUMBER } from '@/src/helpers';
-import { scale } from 'react-native-size-matters';
-import { topupActions } from '@/src/redux/slices/topupSlice';
-import { DispatchType } from '@/src/redux';
-
+import {Heading, HStack, VStack, Image, Text, Pressable} from 'native-base'
+import {MaterialIcons} from "@expo/vector-icons";
+import {useDispatch, useSelector} from 'react-redux';
+import {FORMAT_CURRENCY, FORMAT_PHONE_NUMBER} from '@/src/helpers';
+import {scale} from 'react-native-size-matters';
+import {topupActions} from '@/src/redux/slices/topupSlice';
+import {DispatchType} from '@/src/redux';
 
 
 type Props = {
@@ -17,17 +16,17 @@ type Props = {
     back: () => void
 }
 
-const NewTopUpQuantity: React.FC<Props> = ({ next, back }: Props) => {
+const NewTopUpQuantity: React.FC<Props> = ({next, back}: Props) => {
     const dispatch = useDispatch<DispatchType>();
-    const { newTopUp } = useSelector((state: any) => state.topupReducer)
-    const { account } = useSelector((state: any) => state.accountReducer)
+    const {newTopUp} = useSelector((state: any) => state.topupReducer)
+    const {account} = useSelector((state: any) => state.accountReducer)
 
     const [showPayButton, setShowPayButton] = useState<boolean>(false);
     const [input, setInput] = useState<string>("0");
 
     const onNextPage = async () => {
         try {
-            await dispatch(topupActions.setNewTopUp({
+            dispatch(topupActions.setNewTopUp({
                 ...newTopUp,
                 amount: Number(input)
             }))
@@ -52,19 +51,23 @@ const NewTopUpQuantity: React.FC<Props> = ({ next, back }: Props) => {
         <VStack px={"20px"} variant={"body"} justifyContent={"space-between"} h={"100%"}>
             <VStack>
                 <HStack w={"100%"} mt={"10px"} alignItems={"center"} justifyContent={"space-between"}>
-                    <Pressable _pressed={{ opacity: 0.5 }} onPress={() => back()} right={"7px"}>
-                        <MaterialIcons name="arrow-back-ios" size={30} color={colors.white} />
+                    <Pressable _pressed={{opacity: 0.5}} onPress={() => back()} right={"7px"}>
+                        <MaterialIcons name="arrow-back-ios" size={30} color={colors.white}/>
                         {/* <Ionicons name="chevron-back-outline" size={35} color={colors.white} /> */}
                     </Pressable>
-                    <Heading size={"md"} color={colors.mainGreen} textAlign={"center"}>{FORMAT_CURRENCY(account.balance)}</Heading>
-                    <HStack w={"35px"} />
+                    <Heading size={"md"} color={colors.mainGreen}
+                             textAlign={"center"}>{FORMAT_CURRENCY(account.balance)}</Heading>
+                    <HStack w={"35px"}/>
                 </HStack>
                 <HStack w={"100%"} h={"100px"} justifyContent={"space-between"} alignItems={"center"}>
                     <HStack alignItems={"center"}>
-                        <Image w={"40px"} h={"40px"} alt='logo-selectedCompany-image' borderRadius={100} resizeMode='contain' source={{ uri: newTopUp.company?.logo }} />
+                        <Image w={"40px"} h={"40px"} alt='logo-selectedCompany-image' borderRadius={100}
+                               resizeMode='contain' source={{uri: newTopUp.company?.logo}}/>
                         <VStack>
-                            <Heading textTransform={"capitalize"} px={"10px"} fontSize={18} color={colors.white}>{newTopUp?.fullName || ""}</Heading>
-                            <Text px={"10px"} fontSize={18} color={colors.white}>{FORMAT_PHONE_NUMBER(newTopUp?.phone || "")}</Text>
+                            <Heading textTransform={"capitalize"} px={"10px"} fontSize={18}
+                                     color={colors.white}>{newTopUp?.fullName || ""}</Heading>
+                            <Text px={"10px"} fontSize={18}
+                                  color={colors.white}>{FORMAT_PHONE_NUMBER(newTopUp?.phone || "")}</Text>
                         </VStack>
                     </HStack>
                     <Button
@@ -82,7 +85,7 @@ const NewTopUpQuantity: React.FC<Props> = ({ next, back }: Props) => {
                 </HStack>
 
             </VStack>
-            <KeyNumberPad onChange={(value: string) => onChange(value)} />
+            <KeyNumberPad onChange={(value: string) => onChange(value)}/>
         </VStack>
     )
 }

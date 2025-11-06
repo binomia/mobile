@@ -34,10 +34,6 @@ const transactionSlice = createSlice({
     name: 'transaction',
     initialState,
     reducers: {
-        reSetAllState: (state) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            state = initialState
-        },
         setSender: (state, action) => {
             state.sender = action.payload
         },

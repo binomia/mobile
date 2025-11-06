@@ -25,10 +25,6 @@ const topupSlice = createSlice({
     name: 'topups',
     initialState,
     reducers: {
-        reSetAllState: (state) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            state = initialState
-        },
         setPhoneNumber: (state, action) => {
             state.phoneNumber = action.payload
         },

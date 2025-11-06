@@ -3,19 +3,18 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Input from '@/src/components/global/Input';
 import Button from '@/src/components/global/Button';
-import { useContext, useEffect, useState } from 'react';
-import { VStack, Heading, Text, HStack, Box } from 'native-base';
-import { Keyboard, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Dimensions, View } from 'react-native';
-import { phone } from 'phone';
-import { FORMAT_PHONE_NUMBER, VALIDATE_EMAIL } from '@/src/helpers';
-import { KeyboardAvoidingScrollView } from '@cassianosch/react-native-keyboard-sticky-footer-avoiding-scroll-view';
-import { INPUT_HEIGHT, TEXT_HEADING_FONT_SIZE, TEXT_PARAGRAPH_FONT_SIZE } from '@/src/constants';
-import { GlobalContext } from '@/src/contexts/globalContext';
-import { GlobalContextType } from '@/src/types';
-import { useDispatch } from 'react-redux';
-import { registerActions } from '@/src/redux/slices/registerSlice';
-import { DispatchType } from '@/src/redux';
-
+import React, {useContext, useEffect, useState} from 'react';
+import {VStack, Heading, Text, HStack, Box} from 'native-base';
+import {Keyboard, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Dimensions, View} from 'react-native';
+import {phone} from 'phone';
+import {FORMAT_PHONE_NUMBER, VALIDATE_EMAIL} from '@/src/helpers';
+import {KeyboardAvoidingScrollView} from '@cassianosch/react-native-keyboard-sticky-footer-avoiding-scroll-view';
+import {INPUT_HEIGHT, TEXT_HEADING_FONT_SIZE, TEXT_PARAGRAPH_FONT_SIZE} from '@/src/constants';
+import {GlobalContext} from '@/src/contexts/globalContext';
+import {GlobalContextType} from '@/src/types';
+import {useDispatch} from 'react-redux';
+import {registerActions} from '@/src/redux/slices/registerSlice';
+import {DispatchType} from '@/src/redux';
 
 
 type Props = {
@@ -23,10 +22,10 @@ type Props = {
 }
 
 
-const { width, height } = Dimensions.get("window");
-const CreateAccount: React.FC<Props> = ({ nextPage }: Props): React.JSX.Element => {
+const {width, height} = Dimensions.get("window");
+const CreateAccount: React.FC<Props> = ({nextPage}: Props): React.JSX.Element => {
     const dispatch = useDispatch<DispatchType>()
-    const { } = useContext<GlobalContextType>(GlobalContext);
+    const {} = useContext<GlobalContextType>(GlobalContext);
 
     const [showEmailError, setShowEmailError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false)
@@ -42,7 +41,7 @@ const CreateAccount: React.FC<Props> = ({ nextPage }: Props): React.JSX.Element 
 
 
     const isAValidPhoneNumber = (value: string) => {
-        const { isValid } = phone(value, { country: "DO" });
+        const {isValid} = phone(value, {country: "DO"});
         return isValid
     };
 
@@ -91,7 +90,9 @@ const CreateAccount: React.FC<Props> = ({ nextPage }: Props): React.JSX.Element 
     }
 
     useEffect(() => {
-        checkIfEmailExists()
+        (async () => {
+            await checkIfEmailExists()
+        })()
 
     }, [email])
 
@@ -108,17 +109,18 @@ const CreateAccount: React.FC<Props> = ({ nextPage }: Props): React.JSX.Element 
 
 
     return (
-        <KeyboardAvoidingScrollView >
+        <KeyboardAvoidingScrollView>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={{ width, height: height - 130, display: "flex", justifyContent: "space-between" }} >
+                <View style={{width, height: height - 130, display: "flex", justifyContent: "space-between"}}>
                     <VStack mt={"30px"} w={"100%"} alignItems={"center"}>
                         <VStack px={"20px"} w={"100%"} alignItems={"flex-start"}>
-                            <Heading fontSize={`${TEXT_HEADING_FONT_SIZE - 2}px`} color={"white"}>Crea tu cuenta</Heading>
+                            <Heading fontSize={`${TEXT_HEADING_FONT_SIZE - 2}px`} color={"white"}>Crea tu
+                                cuenta</Heading>
                             <Text fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"80%"} color={"white"}>
                                 Gestiona tu dinero de manera segura, eficiente y sin complicaciones.
                             </Text>
                         </VStack>
-                        <VStack w={"100%"} px={"20px"} mt={"30px"} >
+                        <VStack w={"100%"} px={"20px"} mt={"30px"}>
                             <Input
                                 h={`${INPUT_HEIGHT}px`}
                                 style={names.length >= 2 ? styles.InputsSucess : {}}
@@ -154,7 +156,9 @@ const CreateAccount: React.FC<Props> = ({ nextPage }: Props): React.JSX.Element 
                                 onChangeText={(value) => onChangeText(value.toLowerCase().trim(), "email")}
                                 placeholder="Correo Electrónico*"
                             />
-                            <Box borderRadius={"10px"} my={"5px"} borderWidth={1} borderColor={password.length >= 6 ? colors.mainGreen : password ? colors.alert : "transparent"} w={"100%"}>
+                            <Box borderRadius={"10px"} my={"5px"} borderWidth={1}
+                                 borderColor={password.length >= 6 ? colors.mainGreen : password ? colors.alert : "transparent"}
+                                 w={"100%"}>
                                 <Input
                                     m={"0px"}
                                     h={`${INPUT_HEIGHT}px`}
@@ -166,7 +170,9 @@ const CreateAccount: React.FC<Props> = ({ nextPage }: Props): React.JSX.Element 
                                     rightElement={
                                         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                                             <HStack mr={"15px"}>
-                                                <MaterialCommunityIcons name={showPassword ? "eye-outline" : "eye-off-outline"} size={20} color={password.length >= 6 ? colors.mainGreen : password ? colors.alert : "gray"} />
+                                                <MaterialCommunityIcons
+                                                    name={showPassword ? "eye-outline" : "eye-off-outline"} size={20}
+                                                    color={password.length >= 6 ? colors.mainGreen : password ? colors.alert : "gray"}/>
                                             </HStack>
                                         </TouchableOpacity>
                                     }
@@ -179,10 +185,14 @@ const CreateAccount: React.FC<Props> = ({ nextPage }: Props): React.JSX.Element 
                                 dispatch(registerActions.setUserAgreement(!userAgreement))
                                 setUserAgreement(!userAgreement)
                             }}>
-                                <MaterialIcons style={{ marginTop: 3 }} name={userAgreement ? "check-box" : "check-box-outline-blank"} size={28} color={colors.mainGreen} />
+                                <MaterialIcons style={{marginTop: 3}}
+                                               name={userAgreement ? "check-box" : "check-box-outline-blank"} size={28}
+                                               color={colors.mainGreen}/>
                             </TouchableOpacity>
                             <Text mx={"5px"} fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"90%"} color={"white"}>
-                                Certifico que tengo más de 18 años de edad y acepto el <Text onPress={() => { }} color={"mainGreen"} underline>Acuerdo de Usuario</Text> y la <Text onPress={() => { }} color={"mainGreen"} underline>Política de Privacidad</Text>.
+                                Certifico que tengo más de 18 años de edad y acepto el <Text onPress={() => {
+                            }} color={"mainGreen"} underline>Acuerdo de Usuario</Text> y la <Text onPress={() => {
+                            }} color={"mainGreen"} underline>Política de Privacidad</Text>.
                             </Text>
 
                         </HStack>

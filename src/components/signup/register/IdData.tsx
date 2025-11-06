@@ -2,18 +2,18 @@ import colors from '@/src/colors';
 import Input from '@/src/components/global/Input';
 import Button from '@/src/components/global/Button';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { VStack, Heading, Text, HStack, Pressable } from 'native-base';
-import { Keyboard, StyleSheet, TouchableWithoutFeedback, Dimensions, View } from 'react-native';
-import { FORMAT_CEDULA } from '@/src/helpers';
-import { KeyboardAvoidingScrollView } from '@cassianosch/react-native-keyboard-sticky-footer-avoiding-scroll-view';
-import { INPUT_HEIGHT, TEXT_HEADING_FONT_SIZE, TEXT_PARAGRAPH_FONT_SIZE } from '@/src/constants';
+import React, {useEffect, useState} from 'react';
+import {VStack, Heading, Text, HStack, Pressable} from 'native-base';
+import {Keyboard, StyleSheet, TouchableWithoutFeedback, Dimensions, View} from 'react-native';
+import {FORMAT_CEDULA} from '@/src/helpers';
+import {KeyboardAvoidingScrollView} from '@cassianosch/react-native-keyboard-sticky-footer-avoiding-scroll-view';
+import {INPUT_HEIGHT, TEXT_HEADING_FONT_SIZE, TEXT_PARAGRAPH_FONT_SIZE} from '@/src/constants';
 import DatePicker from 'react-native-date-picker'
 import moment from 'moment';
-import { registerActions } from '@/src/redux/slices/registerSlice';
-import { useDispatch } from 'react-redux';
+import {registerActions} from '@/src/redux/slices/registerSlice';
+import {useDispatch} from 'react-redux';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { DispatchType } from '@/src/redux';
+import {DispatchType} from '@/src/redux';
 
 
 type Props = {
@@ -23,13 +23,13 @@ type Props = {
 }
 
 
-const { width, height } = Dimensions.get("window");
+const {width, height} = Dimensions.get("window");
 
-const IDData: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.Element => {
+const IDData: React.FC<Props> = ({nextPage, prevPage}: Props): React.JSX.Element => {
     const dispatch = useDispatch<DispatchType>()
 
     const [showDNIError, setShowDNIError] = useState<boolean>(false);
-    const [showDNIErroreMessage, setShowDNErrorMessage] = useState<string>("");
+    const [showDNIErrorMessage, setShowDNErrorMessage] = useState<string>("");
     const [disabledButton, setDisabledButton] = useState<boolean>(true);
     const [isInvalid, setIsInvalid] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
@@ -48,7 +48,7 @@ const IDData: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.Eleme
         try {
             await axios.get(`https://api.digital.gob.do/v3/cedulas/${id.replace(/-/g, '')}/validate`)
             setIsInvalid(false)
-            checkIfDNIExists()
+            await checkIfDNIExists()
 
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
@@ -87,8 +87,7 @@ const IDData: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.Eleme
             }
             setExp(dateString)
             dispatch(registerActions.setDniExpiration(dateString))
-        }
-        else if (openedDateTitle === "dob") {
+        } else if (openedDateTitle === "dob") {
             setDob(dateString)
             dispatch(registerActions.setDniDOB(dateString))
         }
@@ -101,13 +100,16 @@ const IDData: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.Eleme
     }
 
     useEffect(() => {
-        setIsInvalid(false)
-
-        if (id.length === 13) {
+        (async () => {
             setIsInvalid(false)
-            validateCedula()
-            setDisabledButton(false)
-        }
+
+            if (id.length === 13) {
+                await validateCedula()
+
+                setIsInvalid(false)
+                setDisabledButton(false)
+            }
+        })()
 
     }, [id])
 
@@ -121,20 +123,21 @@ const IDData: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.Eleme
     }, [dob, exp, id])
 
     return (
-        <KeyboardAvoidingScrollView >
+        <KeyboardAvoidingScrollView>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={{ width, height: height - 130, display: "flex", justifyContent: "space-between" }} >
+                <View style={{width, height: height - 130, display: "flex", justifyContent: "space-between"}}>
                     <VStack mt={"30px"} w={"100%"} alignItems={"center"}>
                         <VStack px={"20px"} w={"100%"} alignItems={"flex-start"}>
-                            <Heading fontSize={`${TEXT_HEADING_FONT_SIZE - 2}px`} color={"white"}>Datos De Cédula</Heading>
+                            <Heading fontSize={`${TEXT_HEADING_FONT_SIZE - 2}px`} color={"white"}>Datos De
+                                Cédula</Heading>
                             <Text fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"80%"} color={"white"}>
                                 Para continuar con el proceso, ingrese los datos de su cédula.
                             </Text>
                         </VStack>
-                        <VStack w={"100%"} px={"20px"} mt={"30px"} >
+                        <VStack w={"100%"} px={"20px"} mt={"30px"}>
                             <Input
                                 isInvalid={isInvalid}
-                                errorMessage={showDNIErroreMessage}
+                                errorMessage={showDNIErrorMessage}
                                 h={`${INPUT_HEIGHT}px`}
                                 autoComplete="off"
                                 maxLength={12}
@@ -144,16 +147,23 @@ const IDData: React.FC<Props> = ({ nextPage, prevPage }: Props): React.JSX.Eleme
                                 value={id}
                                 placeholder="Numero De Cédula*"
                             />
-                            <Pressable borderColor={"mainGreen"} borderWidth={dob ? 1 : 0} my={"5px"} px={"20px"} h={`${INPUT_HEIGHT}px`} borderRadius={"10px"} bg={"lightGray"} justifyContent={"center"} onPress={() => onOpenDate("dob")}>
-                                <Text color={dob ? "white" : colors.placeholderTextColor}>{dob ? moment(dob).format("ll") : "Fecha De Nacimiento*"}</Text>
+                            <Pressable borderColor={"mainGreen"} borderWidth={dob ? 1 : 0} my={"5px"} px={"20px"}
+                                       h={`${INPUT_HEIGHT}px`} borderRadius={"10px"} bg={"lightGray"}
+                                       justifyContent={"center"} onPress={() => onOpenDate("dob")}>
+                                <Text
+                                    color={dob ? "white" : colors.placeholderTextColor}>{dob ? moment(dob).format("ll") : "Fecha De Nacimiento*"}</Text>
                             </Pressable>
-                            <Pressable borderColor={hasExpError ? "red" : "mainGreen"} borderWidth={exp ? 1 : 0} my={"5px"} px={"20px"} h={`${INPUT_HEIGHT}px`} borderRadius={"10px"} bg={"lightGray"} justifyContent={"center"} onPress={() => onOpenDate("exp")}>
-                                <Text color={exp ? "white" : colors.placeholderTextColor}>{exp ? moment(exp).format("ll") : "Fecha De Expiración*"}</Text>
+                            <Pressable borderColor={hasExpError ? "red" : "mainGreen"} borderWidth={exp ? 1 : 0}
+                                       my={"5px"} px={"20px"} h={`${INPUT_HEIGHT}px`} borderRadius={"10px"}
+                                       bg={"lightGray"} justifyContent={"center"} onPress={() => onOpenDate("exp")}>
+                                <Text
+                                    color={exp ? "white" : colors.placeholderTextColor}>{exp ? moment(exp).format("ll") : "Fecha De Expiración*"}</Text>
                             </Pressable>
                         </VStack>
                         {isInvalidDate ? <HStack space={2} w={"100%"} mt={"10px"} justifyContent={"center"}>
-                            <AntDesign style={{ marginTop: 5 }} name="exclamation-circle" size={24} color={colors.red} />
-                            <Text fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"80%"} color={"white"}>{isInvalidDate} </Text>
+                            <AntDesign style={{marginTop: 5}} name="exclamation-circle" size={24} color={colors.red}/>
+                            <Text fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"80%"}
+                                  color={"white"}>{isInvalidDate} </Text>
                         </HStack> : null}
                     </VStack>
                     <HStack bg={"red.100"} px={"20px"} w={"100%"} justifyContent={"space-between"}>

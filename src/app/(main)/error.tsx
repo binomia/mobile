@@ -12,8 +12,6 @@ const { width, height } = Dimensions.get('window')
 const FlaggedScreen: React.FC = () => {
 	const { message, title } = useLocalSearchParams()
 
-
-
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: colors.darkGray }}>
 			<VStack variant={"body"} justifyContent={'space-between'} alignItems={'center'} flex={1}>

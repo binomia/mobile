@@ -1,13 +1,13 @@
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { useState, useEffect, useRef } from 'react';
-import { Platform } from 'react-native';
-import { PushNotificationType } from '@/src/types';
+import {useState, useEffect, useRef} from 'react';
+import {Platform} from 'react-native';
+import {PushNotificationType} from '@/src/types';
 
 export const useNotifications = (): PushNotificationType => {
     Notifications.setNotificationHandler({
-        handleNotification: async () => ({            
+        handleNotification: async () => ({
             shouldPlaySound: true,
             shouldSetBadge: true,
             shouldShowBanner: true,
@@ -38,10 +38,10 @@ export const useNotifications = (): PushNotificationType => {
                 });
             }
 
-            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            const {status: existingStatus} = await Notifications.getPermissionsAsync();
             let finalStatus = existingStatus;
             if (existingStatus !== 'granted') {
-                const { status } = await Notifications.requestPermissionsAsync();
+                const {status} = await Notifications.requestPermissionsAsync();
                 finalStatus = status;
             }
             if (finalStatus !== 'granted') {
@@ -72,24 +72,24 @@ export const useNotifications = (): PushNotificationType => {
     }
 
     useEffect(() => {
+        (async () => {
+            if (Device.isDevice && Platform.OS !== 'android') {
+                await registerForPushNotificationsAsync()
+                notificationListener.current = Notifications.addNotificationReceivedListener(async notification => {
+                    setNotification(notification);
+                });
 
-        if (Device.isDevice && Platform.OS !== 'android') {
-            registerForPushNotificationsAsync()
-            notificationListener.current = Notifications.addNotificationReceivedListener(async notification => {
-                setNotification(notification);
-            });
+                responseListener.current = Notifications.addNotificationResponseReceivedListener(async (_) => {
+                });
 
-            responseListener.current = Notifications.addNotificationResponseReceivedListener(async (_) => {
-            });
-
-            return () => {
-                if (notificationListener.current && responseListener.current) {
-                    notificationListener.current.remove();
-                    responseListener.current.remove();
+                return () => {
+                    if (notificationListener.current && responseListener.current) {
+                        notificationListener.current.remove();
+                        responseListener.current.remove();
+                    }
                 }
             }
-        }
-
+        })()
     }, [])
 
     return {

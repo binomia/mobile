@@ -1,31 +1,31 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import colors from '@/src/colors'
 import TransactionSkeleton from '@/src/components/transaction/transactionSkeleton';
 import Entypo from '@expo/vector-icons/Entypo';
 import SingleTopTup from '@/src/components/topups/SingleTopTup';
-import { RefreshControl, NativeSyntheticEvent, FlatList, NativeScrollEvent } from 'react-native'
-import { Heading, Image, Text, VStack, HStack, Spinner, Pressable, ScrollView } from 'native-base'
-import { useLazyQuery } from '@apollo/client/react'
-import { TopUpApolloQueries } from '@/src/apollo/query'
-import { FORMAT_CREATED_DATE, FORMAT_CURRENCY, FORMAT_PHONE_NUMBER } from '@/src/helpers'
-import { scale } from 'react-native-size-matters';
-import { useDispatch, useSelector } from 'react-redux';
-import { transactionActions } from '@/src/redux/slices/transactionSlice';
-import { router, useNavigation } from 'expo-router';
-import { DispatchType, StateType } from '@/src/redux';
+import {RefreshControl, NativeSyntheticEvent, FlatList, NativeScrollEvent} from 'react-native'
+import {Heading, Image, Text, VStack, HStack, Spinner, Pressable, ScrollView} from 'native-base'
+import {useLazyQuery} from '@apollo/client/react'
+import {TopUpApolloQueries} from '@/src/apollo/query'
+import {FORMAT_CREATED_DATE, FORMAT_CURRENCY, FORMAT_PHONE_NUMBER} from '@/src/helpers'
+import {scale} from 'react-native-size-matters';
+import {useDispatch, useSelector} from 'react-redux';
+import {transactionActions} from '@/src/redux/slices/transactionSlice';
+import {router, useNavigation} from 'expo-router';
+import {DispatchType, StateType} from '@/src/redux';
 
 
 type Props = {
     showNewTransaction?: boolean;
 }
 
-const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: Props) => {
+const TopUpPhoneTransactions: React.FC<Props> = ({showNewTransaction = true}: Props) => {
     const dispatch = useDispatch<DispatchType>()
-    const { topup } = useSelector((state: StateType) => state.topupReducer)
-    const { hasNewTransaction } = useSelector((state: any) => state.transactionReducer)
+    const {topup} = useSelector((state: StateType) => state.topupReducer)
+    const {hasNewTransaction} = useSelector((state: any) => state.transactionReducer)
     const navigation = useNavigation();
     const isFocused = navigation.isFocused()
-    const [topUps, { refetch: reFetchTopUps }] = useLazyQuery<any>(TopUpApolloQueries.topUps())
+    const [topUps, {refetch: reFetchTopUps}] = useLazyQuery<any>(TopUpApolloQueries.topUps())
 
     const [openBottomSheet, setOpenBottomSheet] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
@@ -39,7 +39,7 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
 
     const fetchPhoneTopUps = async (page: number = 1, pageSize: number = showNewTransaction ? 20 : 10) => {
         try {
-            const { data } = await topUps({
+            const {data} = await topUps({
                 variables: {
                     phoneId: Number(topup.id),
                     page,
@@ -79,8 +79,8 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
         setRefreshing(false);
     }, []);
 
-    const onScroll = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const { contentOffset, layoutMeasurement, contentSize } = nativeEvent;
+    const onScroll = ({nativeEvent}: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const {contentOffset, layoutMeasurement, contentSize} = nativeEvent;
         const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 20; // Adjust the threshold as needed
 
         setIsBottom(isAtBottom);
@@ -101,15 +101,18 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
 
             if (hasNewTransaction) {
                 await fetchPhoneTopUps()
-                await dispatch(transactionActions.setHasNewTransaction(false))
+                dispatch(transactionActions.setHasNewTransaction(false))
             }
         })()
 
     }, [isFocused, hasNewTransaction])
 
     useEffect(() => {
-        setIsLoading(true)
-        fetchPhoneTopUps()
+        (async () => {
+            setIsLoading(true)
+            await fetchPhoneTopUps()
+        })()
+
     }, [])
 
     useEffect(() => {
@@ -118,7 +121,7 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
                 try {
                     setIsLoadingMore(true)
 
-                    const { data } = await reFetchTopUps({ page: page + 1, pageSize: 20 })
+                    const {data} = await reFetchTopUps({page: page + 1, pageSize: 20})
 
                     if (data.accountTransactions.length > 0) {
                         setPage(page + 1)
@@ -136,35 +139,48 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
     }, [isBottom])
 
     return (
-        isLoading ? <TransactionSkeleton /> : (
+        isLoading ? <TransactionSkeleton/> : (
             <VStack flex={1} bg={colors.darkGray}>
                 <VStack px={"20px"} w={"100%"} alignItems={"center"}>
-                    <Image borderRadius={"100px"} w={"70px"} h={"70px"} alt={topup.fullName + "logo"} resizeMode='contain' source={{ uri: topup.company?.logo }} />
-                    <Heading mt={"10px"} fontSize={scale(18)} textTransform={"capitalize"} color={colors.white}>{topup.fullName}</Heading>
+                    <Image borderRadius={"100px"} w={"70px"} h={"70px"} alt={topup.fullName + "logo"}
+                           resizeMode='contain' source={{uri: topup.company?.logo}}/>
+                    <Heading mt={"10px"} fontSize={scale(18)} textTransform={"capitalize"}
+                             color={colors.white}>{topup.fullName}</Heading>
                     <Text fontSize={scale(14)} color={colors.white}>{FORMAT_PHONE_NUMBER(topup.phone || "")}</Text>
                 </VStack>
-                <ScrollView mt={"50px"} onScroll={onScroll} flex={1} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} contentContainerStyle={{ paddingBottom: 80 }}>
-                    <VStack w={"100%"} >
+                <ScrollView mt={"50px"} onScroll={onScroll} flex={1}
+                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
+                            contentContainerStyle={{paddingBottom: 80}}>
+                    <VStack w={"100%"}>
                         <HStack w={"100%"} justifyContent={"space-between"}>
-                            <Heading px={showNewTransaction ? "20px" : "0px"} fontSize={scale(20)} color={"white"}>{"Recargas"}</Heading>
-                            {!showNewTransaction ? <Pressable _pressed={{ opacity: 0.5 }} onPress={() => router.navigate("/transactions")}>
-                                <Heading px={showNewTransaction ? "20px" : "0px"} underline fontSize={scale(17)} color={colors.pureGray}>{"Ver más"}</Heading>
-                            </Pressable> : null}
+                            <Heading px={showNewTransaction ? "20px" : "0px"} fontSize={scale(20)}
+                                     color={"white"}>{"Recargas"}</Heading>
+                            {!showNewTransaction ?
+                                <Pressable _pressed={{opacity: 0.5}} onPress={() => router.navigate("/transactions")}>
+                                    <Heading px={showNewTransaction ? "20px" : "0px"} underline fontSize={scale(17)}
+                                             color={colors.pureGray}>{"Ver más"}</Heading>
+                                </Pressable> : null}
                         </HStack>
                         <FlatList
-                            style={{ marginTop: 10, paddingHorizontal: showNewTransaction ? 20 : 0 }}
+                            style={{marginTop: 10, paddingHorizontal: showNewTransaction ? 20 : 0}}
                             scrollEnabled={false}
                             data={topups}
-                            renderItem={({ item, index }: any) => (
-                                <Pressable bg={colors.lightGray} my={"5px"} borderRadius={10} px={"15px"} py={"10px"} key={`transactions(tgrtgnrhbfhrbgr)-${item.transactionId}-${index}-${item.transactionId}`} onPress={() => onOpenBottomSheet(item)}>
-                                    <HStack alignItems={"center"} justifyContent={"space-between"} my={"10px"} borderRadius={10}>
+                            renderItem={({item, index}: any) => (
+                                <Pressable bg={colors.lightGray} my={"5px"} borderRadius={10} px={"15px"} py={"10px"}
+                                           key={`transactions(tgrtgnrhbfhrbgr)-${item.transactionId}-${index}-${item.transactionId}`}
+                                           onPress={() => onOpenBottomSheet(item)}>
+                                    <HStack alignItems={"center"} justifyContent={"space-between"} my={"10px"}
+                                            borderRadius={10}>
                                         <HStack alignItems={"center"}>
-                                            <HStack w={scale(40)} h={scale(40)} bg={colors.darkGray} alignItems={"center"} justifyContent={"center"} borderRadius={100}>
-                                                <Entypo name="phone" size={24} color={colors.mainGreen} />
+                                            <HStack w={scale(40)} h={scale(40)} bg={colors.darkGray}
+                                                    alignItems={"center"} justifyContent={"center"} borderRadius={100}>
+                                                <Entypo name="phone" size={24} color={colors.mainGreen}/>
                                             </HStack>
                                             <VStack ml={"10px"} justifyContent={"center"}>
-                                                <Heading textTransform={"capitalize"} fontSize={scale(13)} color={"white"}>{FORMAT_CURRENCY(item.amount)}</Heading>
-                                                <Text fontSize={scale(12)} color={colors.lightSkyGray}>{FORMAT_CREATED_DATE(item?.createdAt)}</Text>
+                                                <Heading textTransform={"capitalize"} fontSize={scale(13)}
+                                                         color={"white"}>{FORMAT_CURRENCY(item.amount)}</Heading>
+                                                <Text fontSize={scale(12)}
+                                                      color={colors.lightSkyGray}>{FORMAT_CREATED_DATE(item?.createdAt)}</Text>
                                             </VStack>
                                         </HStack>
                                     </HStack>
@@ -172,7 +188,7 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
                             )}
                         />
                     </VStack>
-                    {isLoadingMore ? <Spinner mt={"10px"} size={"lg"} /> : null}
+                    {isLoadingMore ? <Spinner mt={"10px"} size={"lg"}/> : null}
                 </ScrollView>
                 {/* <BottomSheet height={height * 0.50} open={openBottomSheet} onCloseFinish={onCloseFinish}>
                     <VStack px={"20px"} pt={"30px"} w={"100%"} h={"80%"} justifyContent={"space-between"}>
@@ -198,10 +214,10 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
                         </VStack>
                     </VStack>
                 </BottomSheet> */}
-                <SingleTopTup open={openBottomSheet} onClose={onCloseFinish} topup={transaction} />
+                <SingleTopTup open={openBottomSheet} onClose={onCloseFinish} topup={transaction}/>
             </VStack>
         )
     )
 }
 
-export default TopupPhoneTransactions
+export default TopUpPhoneTransactions

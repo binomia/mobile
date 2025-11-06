@@ -3,7 +3,7 @@ import { Stack } from 'expo-router';
 import colors from '@/src/colors';
 
 
-const TabLayout: React.FC = () => {
+const TabLayout = () => {
 	const defaultHeaderStyles = {
 		backgroundColor: colors.darkGray,
 		shadowOpacity: 0,
@@ -15,7 +15,7 @@ const TabLayout: React.FC = () => {
 		elevation: 0,
 	}
 
-	const defaultscreenOptions = {
+	const defaultScreenOptions = {
 		headerBackTitleVisible: false,
 		headerTintColor: colors.white,
 		headerStyle: { ...defaultHeaderStyles },
@@ -23,7 +23,7 @@ const TabLayout: React.FC = () => {
 
 	}
 	return (
-		<Stack screenOptions={{ ...defaultscreenOptions }}>
+		<Stack screenOptions={{ ...defaultScreenOptions }}>
 			<Stack.Screen name='location' options={{ headerShown: false }} />
 			<Stack.Screen name='flagged' options={{ headerShown: false }} />
 			<Stack.Screen name='error' options={{ headerShown: false }} />

@@ -5,12 +5,12 @@ import z from "zod";
 import * as Notifications from 'expo-notifications';
 import { TopUpAuthSchema } from "@/src/auth/topUpAuth";
 import { SessionAuthSchema } from "@/src/auth/sessionAuth";
+import React from "react";
 
 
 export type SessionContextType = {
     children: React.JSX.Element
 }
-
 
 export type CardType = {
     id: number
@@ -23,12 +23,12 @@ export type CardType = {
     updatedAt: string
 }
 
-
 export type VerificationDataType = {
     token: string
     signature: string,
     email: string
 }
+
 export type SessionVerificationDataType = {
     token: string
     sid: string
@@ -56,12 +56,10 @@ export type SessionPropsType = {
     applicationId: string
 }
 
-
 export type SecureStoreType = {
     save: (key: string, value: string) => void
     get: (key: string) => Promise<any>
 }
-
 
 export type Address = {
     street: string

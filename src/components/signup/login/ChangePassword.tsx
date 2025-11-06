@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { VStack, Heading, Text, HStack } from 'native-base';
 import {  TouchableWithoutFeedback, Keyboard, TouchableOpacity } from 'react-native';
 import colors from '@/src/colors';

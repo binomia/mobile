@@ -22,7 +22,7 @@ export class UserAuthSchema {
         fullName: z.string(),
         username: z.string(),
         email: z.string().email(),
-        dniNumber: z.string().regex(/^[0-9]{3}-[0-9]{7}-[0-9]{1}$/),
+        dniNumber: z.string().regex(/^[0-9]{3}-[0-9]{7}-[0-9]$/),
         phone: z.string().length(10),
         profileImageUrl: z.string().nullish().transform(v => v ?? ""),
         userAgreementSigned: z.boolean().default(false),
@@ -39,7 +39,7 @@ export class UserAuthSchema {
         fullName: z.string(),
         username: z.string(),
         email: z.string().email(),
-        dniNumber: z.string().regex(/^[0-9]{3}-[0-9]{7}-[0-9]{1}$/),
+        dniNumber: z.string().regex(/^[0-9]{3}-[0-9]{7}-[0-9]$/),
         profileImageUrl: z.string().nullish().transform(v => v ?? ""),
         status: z.string(),
     })
@@ -79,7 +79,7 @@ export class UserAuthSchema {
 
     static kycData = z.object({
         id: z.number(),
-        dniNumber: z.string().regex(/^[0-9]{3}-[0-9]{7}-[0-9]{1}$/),
+        dniNumber: z.string().regex(/^[0-9]{3}-[0-9]{7}-[0-9]$/),
         dob: z.string(),
         status: z.string(),
         expiration: z.string(),
@@ -109,7 +109,7 @@ export class UserAuthSchema {
         faceVideoUrl: z.string().url(),
         address: z.string(),
 
-        dniNumber: z.string().regex(/^[0-9]{3}-[0-9]{7}-[0-9]{1}$/),
+        dniNumber: z.string().regex(/^[0-9]{3}-[0-9]{7}-[0-9]$/),
         dob: z.string(),
         dniExpiration: z.string(),
         occupation: z.string().optional().nullable().default(null),

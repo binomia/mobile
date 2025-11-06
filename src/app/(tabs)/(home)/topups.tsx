@@ -1,30 +1,29 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, {useCallback, useContext, useEffect, useState} from 'react'
 import colors from '@/src/colors'
 import NewTopUp from '@/src/components/topups/NewTopUp'
-import { Text, Image, Pressable, Heading, VStack } from 'native-base'
-import { scale } from 'react-native-size-matters'
-import { FORMAT_PHONE_NUMBER } from '@/src/helpers'
-import { Dimensions, RefreshControl, StyleSheet } from 'react-native'
-import { router, useNavigation } from 'expo-router'
-import { useDispatch, useSelector } from 'react-redux'
-import { topupActions } from '@/src/redux/slices/topupSlice'
-import { useLazyQuery } from '@apollo/client/react'
-import { TopUpApolloQueries } from '@/src/apollo/query'
-import { TopUpAuthSchema } from '@/src/auth/topUpAuth'
-import { z } from 'zod'
-import { noTransactions } from '@/src/assets'
-import { AntDesign } from '@expo/vector-icons';
-import { FlatGrid } from 'react-native-super-grid';
-import { TopUpContext } from '@/src/contexts/topUpContext'
-import { DispatchType } from '@/src/redux'
+import {Text, Image, Pressable, Heading, VStack} from 'native-base'
+import {scale} from 'react-native-size-matters'
+import {FORMAT_PHONE_NUMBER} from '@/src/helpers'
+import {Dimensions, RefreshControl, StyleSheet} from 'react-native'
+import {router, useNavigation} from 'expo-router'
+import {useDispatch, useSelector} from 'react-redux'
+import {topupActions} from '@/src/redux/slices/topupSlice'
+import {useLazyQuery} from '@apollo/client/react'
+import {TopUpApolloQueries} from '@/src/apollo/query'
+import {TopUpAuthSchema} from '@/src/auth/topUpAuth'
+import {z} from 'zod'
+import {noTransactions} from '@/src/assets'
+import {AntDesign} from '@expo/vector-icons';
+import {FlatGrid} from 'react-native-super-grid';
+import {TopUpContext} from '@/src/contexts/topUpContext'
+import {DispatchType} from '@/src/redux'
 
 
+const {height, width} = Dimensions.get('window')
+const TopUps: React.FC = () => {
+    const {setCompany, setFullName, setPhoneNumber, setAmount} = useContext(TopUpContext)
 
-const { height, width } = Dimensions.get('window')
-const Topups: React.FC = () => {
-    const { setCompany, setFullName, setPhoneNumber, setAmount } = useContext(TopUpContext)
-
-    const { hasNewTransaction } = useSelector((state: any) => state.topupReducer)
+    const {hasNewTransaction} = useSelector((state: any) => state.topupReducer)
     // const [userTopUps] = useLazyQuery(TopUpApolloQueries.userTopUps());
     const [topUpPhones] = useLazyQuery<any>(TopUpApolloQueries.topUpPhones());
     const dispatch = useDispatch<DispatchType>();
@@ -37,7 +36,7 @@ const Topups: React.FC = () => {
 
     const fetchTopUpPhones = async (page: number = 1, pageSize: number = 10) => {
         try {
-            const { data } = await topUpPhones({
+            const {data} = await topUpPhones({
                 variables: {
                     page,
                     pageSize
@@ -61,7 +60,7 @@ const Topups: React.FC = () => {
             setRefreshing(true);
 
             await fetchTopUpPhones();
-            await dispatch(topupActions.setHasNewTransaction(false))
+            dispatch(topupActions.setHasNewTransaction(false))
 
             setTimeout(() => {
                 setRefreshing(false);
@@ -74,7 +73,7 @@ const Topups: React.FC = () => {
     }, []);
 
     const onSelectedPhone = async (phone: any) => {
-        await dispatch(topupActions.setTopUp(phone))
+        dispatch(topupActions.setTopUp(phone))
 
         setCompany(phone.company)
         setFullName(phone.fullName)
@@ -93,20 +92,23 @@ const Topups: React.FC = () => {
 
 
     useEffect(() => {
-        fetchTopUpPhones()
-        navigation.addListener("focus", async () => {
-            setCompany({})
-            setFullName("")
-            setPhoneNumber("")
-            setAmount(0)
-        })
+        (async () => {
+            await fetchTopUpPhones()
+
+            navigation.addListener("focus", async () => {
+                setCompany({})
+                setFullName("")
+                setPhoneNumber("")
+                setAmount(0)
+            })
+        })()
 
     }, [])
 
     useEffect(() => {
         (async () => {
             if (hasNewTransaction)
-                fetchTopUpPhones()
+                await fetchTopUpPhones()
         })()
 
     }, [isFocused, hasNewTransaction])
@@ -116,33 +118,40 @@ const Topups: React.FC = () => {
         <VStack flex={1} bg={colors.darkGray} pt={"20px"}>
             {phones?.length > 0 ? (
                 <FlatGrid
-                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
                     refreshing={refreshing}
                     itemDimension={width / 3}
                     data={phones}
                     style={styles.gridView}
                     spacing={15}
-                    renderItem={({ item: topUp }) => (
-                        <Pressable key={topUp.phone} style={[styles.itemContainer]} _pressed={{ opacity: 0.5 }} onPress={() => onSelectedPhone(topUp)}>
-                            <Image borderRadius={"100px"} w={"50px"} h={"50px"} alt={`${topUp.phone}-image`} resizeMode='contain' source={{ uri: topUp.company?.logo }} />
-                            <Heading mt={"10px"} textTransform={"capitalize"} fontSize={scale(12)} color={colors.white}>{topUp.fullName}</Heading>
+                    renderItem={({item: topUp}) => (
+                        <Pressable key={topUp.phone} style={[styles.itemContainer]} _pressed={{opacity: 0.5}}
+                                   onPress={() => onSelectedPhone(topUp)}>
+                            <Image borderRadius={"100px"} w={"50px"} h={"50px"} alt={`${topUp.phone}-image`}
+                                   resizeMode='contain' source={{uri: topUp.company?.logo}}/>
+                            <Heading mt={"10px"} textTransform={"capitalize"} fontSize={scale(12)}
+                                     color={colors.white}>{topUp.fullName}</Heading>
                             <Text fontSize={scale(11)} color={colors.white}>{FORMAT_PHONE_NUMBER(topUp.phone)}</Text>
                         </Pressable>
                     )}
                 />
             ) : (
-                <VStack mt={"100px"} w={"100%"} h={height / 3} px={"20px"} justifyContent={"flex-end"} alignItems={"center"}>
-                    <Image resizeMode='contain' alt='logo-image-fetchTopUpPhones' w={"100%"} h={"100%"} source={noTransactions} />
+                <VStack mt={"100px"} w={"100%"} h={height / 3} px={"20px"} justifyContent={"flex-end"}
+                        alignItems={"center"}>
+                    <Image resizeMode='contain' alt='logo-image-fetchTopUpPhones' w={"100%"} h={"100%"}
+                           source={noTransactions}/>
                     <VStack justifyContent={"center"} alignItems={"center"}>
-                        <Heading textTransform={"capitalize"} fontSize={scale(20)} color={"white"}>No tienes recargas</Heading>
-                        <Text textAlign={"center"} fontSize={scale(14)} color={"white"}>Agrega un nuevo número de teléfono para realizar una recarga</Text>
+                        <Heading textTransform={"capitalize"} fontSize={scale(20)} color={"white"}>No tienes
+                            recargas</Heading>
+                        <Text textAlign={"center"} fontSize={scale(14)} color={"white"}>Agrega un nuevo número de
+                            teléfono para realizar una recarga</Text>
                     </VStack>
-                    <Pressable mt={"30px"} _pressed={{ opacity: 0.5 }} onPress={() => setOpenBottomSheet(true)}>
-                        <AntDesign name="plus-circle" size={50} color={colors.mainGreen} />
+                    <Pressable mt={"30px"} _pressed={{opacity: 0.5}} onPress={() => setOpenBottomSheet(true)}>
+                        <AntDesign name="plus-circle" size={50} color={colors.mainGreen}/>
                     </Pressable>
                 </VStack>
             )}
-            <NewTopUp onClose={onClose} open={openBottomSheet} />
+            <NewTopUp onClose={onClose} open={openBottomSheet}/>
         </VStack>
 
 
@@ -164,4 +173,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Topups
+export default TopUps

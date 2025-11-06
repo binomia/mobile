@@ -625,16 +625,16 @@ export class TransactionApolloQueries {
         `
     }
 
-    static recentTransactions = () => {
-        return gql`
-            query RecentTransactions {
-                recentTransactions {
-                    type
-                    data
-                }
-            }
-        `
-    }
+    // static recentTransactions = () => {
+    //     return gql`
+    //         query RecentTransactions {
+    //             recentTransactions {
+    //                 type
+    //                 data
+    //             }
+    //         }
+    //     `
+    // }
 
     static cancelRequestedTransaction = () => {
         return gql`

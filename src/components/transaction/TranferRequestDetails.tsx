@@ -28,7 +28,7 @@ type Props = {
 }
 
 const { width, height } = Dimensions.get("screen")
-const TranferRequestDetails: React.FC<Props> = ({ goNext = () => { }, onCloseFinish = () => { }, goBack = () => { } }) => {
+const TransferRequestDetails: React.FC<Props> = ({ goNext = () => { }, onCloseFinish = () => { }, goBack = () => { } }) => {
     const dispatch = useDispatch<DispatchType>();
 
     const { authenticate } = useLocalAuthentication();
@@ -282,4 +282,4 @@ const TranferRequestDetails: React.FC<Props> = ({ goNext = () => { }, onCloseFin
     )
 }
 
-export default TranferRequestDetails
+export default TransferRequestDetails

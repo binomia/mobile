@@ -1,20 +1,20 @@
 import * as Location from 'expo-location';
 import axios from 'axios';
-import { useEffect } from 'react';
-import { globalActions } from '@/src/redux/slices/globalSlice';
-import { useDispatch } from 'react-redux';
-import { Client } from "@googlemaps/google-maps-services-js";
-import { GOOGLE_MAPS_API_KEY } from '@/src/constants';
-import { DispatchType } from '../redux';
+import {useEffect} from 'react';
+import {globalActions} from '@/src/redux/slices/globalSlice';
+import {useDispatch} from 'react-redux';
+import {Client} from "@googlemaps/google-maps-services-js";
+import {GOOGLE_MAPS_API_KEY} from '@/src/constants';
+import {DispatchType} from '../redux';
 
 export const useLocation = () => {
     const dispatch = useDispatch<DispatchType>();
     const client = new Client();
 
     const requestPermissions = async () => {
-        const { status: foregroundStatus } = await Location.requestForegroundPermissionsAsync();
+        const {status: foregroundStatus} = await Location.requestForegroundPermissionsAsync();
         if (foregroundStatus === 'granted') {
-            const { status: backgroundStatus } = await Location.requestBackgroundPermissionsAsync();
+            const {status: backgroundStatus} = await Location.requestBackgroundPermissionsAsync();
 
             if (backgroundStatus !== 'granted') {
                 console.log('Permission to access background location was denied');
@@ -25,7 +25,7 @@ export const useLocation = () => {
     };
 
 
-    const fetchGeoLocation = async ({ latitude, longitude }: { latitude: number, longitude: number }) => {
+    const fetchGeoLocation = async ({latitude, longitude}: { latitude: number, longitude: number }) => {
         try {
             const response = await client.reverseGeocode({
                 adapter: 'fetch',
@@ -62,8 +62,7 @@ export const useLocation = () => {
                 longitude
             }
 
-            await dispatch(globalActions.setGeoLocation(address));
-
+            dispatch(globalActions.setGeoLocation(address));
             return address
 
         } catch (error: any) {
@@ -73,7 +72,7 @@ export const useLocation = () => {
     }
 
     const watchPositionAsync = async () => {
-        await Location.watchPositionAsync({ accuracy: Location.Accuracy.Highest }, async (location) => {
+        await Location.watchPositionAsync({accuracy: Location.Accuracy.Highest}, async (location) => {
             dispatch(globalActions.setLocation({
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
@@ -110,7 +109,9 @@ export const useLocation = () => {
 
 
     useEffect(() => {
-        watchPositionAsync();
+        (async () => {
+            await watchPositionAsync();
+        })()
     }, []);
 
 

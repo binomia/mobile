@@ -1,4 +1,4 @@
-import { Directory, Paths, File } from 'expo-file-system';
+import {Directory, File, Paths} from 'expo-file-system';
 
 
 const directory = new Directory(Paths.cache, "binomia");
@@ -8,8 +8,7 @@ export const useFileSystem = () => {
     const listFiles = async () => {
         try {
             if (directory.exists) {
-                const files = directory.list();
-                return files
+                return directory.list()
             }
         } catch (error) {
             console.error('Error listing files:', error);

@@ -19,7 +19,7 @@ const PrivacyScreen: React.FC = () => {
     const { allowSend, allowReceive, allowWithdraw, allowDeposit, allowRequestMe } = account
     const [allPrivacy, setAllPrivacy] = React.useState<{ id: string, allow: boolean, icon: any }>({
         id: "all",
-        allow: allowSend && allowReceive && allowWithdraw && allowDeposit && allowRequestMe ? true : false,
+        allow: !!(allowSend && allowReceive && allowWithdraw && allowDeposit && allowRequestMe),
         icon: allIcon
     })
 
@@ -52,7 +52,7 @@ const PrivacyScreen: React.FC = () => {
                 dispatch(accountActions.setAccount(data.updateAccountPermissions))
                 const { allowSend, allowReceive, allowWithdraw, allowDeposit, allowRequestMe } = data.updateAccountPermissions
                 setAllPrivacy(Object.assign({}, allPrivacy, {
-                    allow: allowSend && allowReceive && allowWithdraw && allowDeposit && allowRequestMe ? true : false
+                    allow: !!(allowSend && allowReceive && allowWithdraw && allowDeposit && allowRequestMe)
                 }))
 
             }

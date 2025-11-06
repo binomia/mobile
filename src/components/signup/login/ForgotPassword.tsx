@@ -1,27 +1,26 @@
-import { useContext, useEffect, useState } from 'react';
-import { VStack, Heading, Text, HStack } from 'native-base';
-import { TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
-import { SessionContext } from '@/src/contexts/sessionContext';
-import { SessionPropsType } from '@/src/types';
+import React, {useContext, useEffect, useState} from 'react';
+import {VStack, Heading, Text, HStack} from 'native-base';
+import {TouchableWithoutFeedback, Keyboard, StyleSheet} from 'react-native';
+import {SessionContext} from '@/src/contexts/sessionContext';
+import {SessionPropsType} from '@/src/types';
 import colors from '@/src/colors';
-import { INPUT_HEIGHT, TEXT_HEADING_FONT_SIZE, TEXT_PARAGRAPH_FONT_SIZE } from '@/src/constants';
-import { VALIDATE_EMAIL } from '@/src/helpers';
+import {INPUT_HEIGHT, TEXT_HEADING_FONT_SIZE, TEXT_PARAGRAPH_FONT_SIZE} from '@/src/constants';
+import {VALIDATE_EMAIL} from '@/src/helpers';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
-import { UserApolloQueries } from '@/src/apollo/query';
-import { useLazyQuery } from '@apollo/client/react';
+import {UserApolloQueries} from '@/src/apollo/query';
+import {useLazyQuery} from '@apollo/client/react';
 import Input from '@/src/components/global/Input';
 import Button from '@/src/components/global/Button';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 
 type Props = {
     nextPage: () => void
 }
 
-const ForgotPassword: React.FC<Props> = ({ nextPage }: Props): React.JSX.Element => {
-    const { sendVerificationCode, setVerificationData } = useContext<SessionPropsType>(SessionContext);
+const ForgotPassword: React.FC<Props> = ({nextPage}: Props): React.JSX.Element => {
+    const {sendVerificationCode, setVerificationData} = useContext<SessionPropsType>(SessionContext);
     const [email, setEmail] = useState<string>("");
     const [disabledButton, setDisabledButton] = useState<boolean>(true);
     const [showEmailError, setShowEmailError] = useState<boolean>(false);
@@ -34,7 +33,7 @@ const ForgotPassword: React.FC<Props> = ({ nextPage }: Props): React.JSX.Element
             const message = await sendVerificationCode(email.toLowerCase())
 
             if (message)
-                setVerificationData({ ...message, email: email.toLowerCase() })
+                setVerificationData({...message, email: email.toLowerCase()})
 
 
             nextPage()
@@ -48,7 +47,7 @@ const ForgotPassword: React.FC<Props> = ({ nextPage }: Props): React.JSX.Element
 
     const verifyUserEmail = async (_email: string) => {
         try {
-            const user = await getUserByEmail({ variables: { email: email.toLowerCase() } })
+            const user = await getUserByEmail({variables: {email: email.toLowerCase()}})
             setShowEmailError(!user.data.userByEmail)
 
         } catch (error) {
@@ -57,51 +56,57 @@ const ForgotPassword: React.FC<Props> = ({ nextPage }: Props): React.JSX.Element
     }
 
     useEffect(() => {
-        setDisabledButton(true)
-        setShowEmailError(false)
+        (async () => {
+            setDisabledButton(true)
+            setShowEmailError(false)
 
-        if (VALIDATE_EMAIL(email))
-            verifyUserEmail(email)
+            if (VALIDATE_EMAIL(email))
+                await verifyUserEmail(email)
 
-
-        if (email && VALIDATE_EMAIL(email))
-            setDisabledButton(false)
-
+            if (email && VALIDATE_EMAIL(email))
+                setDisabledButton(false)
+        })()
 
     }, [email])
 
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: colors.darkGray }}>
+        <SafeAreaView style={{flex: 1, backgroundColor: colors.darkGray}}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <VStack borderRadius={"10px"} w={"100%"} px={"20px"} variant={"body"} mt={"30px"} justifyContent={"space-between"} h={"100%"}>
+                <VStack borderRadius={"10px"} w={"100%"} px={"20px"} variant={"body"} mt={"30px"}
+                        justifyContent={"space-between"} h={"100%"}>
                     <VStack alignItems={"center"}>
                         <VStack w={"100%"} mb={"50px"}>
-                            <Heading fontSize={`${TEXT_HEADING_FONT_SIZE - 10}px`} mb={"5px"} color={"white"}>Recuperar Contraseña</Heading>
-                            <Text fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"85%"} color={"white"}>Ingrese su correo electrónico para enviarle un código de recuperación de contraseña.</Text>
+                            <Heading fontSize={`${TEXT_HEADING_FONT_SIZE - 10}px`} mb={"5px"} color={"white"}>Recuperar
+                                Contraseña</Heading>
+                            <Text fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"85%"} color={"white"}>Ingrese su correo
+                                electrónico para enviarle un código de recuperación de contraseña.</Text>
                         </VStack>
                         <Input
                             value={email.toLowerCase()}
                             keyboardType="email-address"
                             h={`${INPUT_HEIGHT}px`}
-                            style={VALIDATE_EMAIL(email) ? styles.InputsSucess : email ? styles.InputsFail : {}}
+                            style={VALIDATE_EMAIL(email) ? styles.InputsSuccess : email ? styles.InputsFail : {}}
                             onChangeText={(e) => setEmail(e)}
                             placeholder={"Correo Electronico*"}
                         />
 
                         {showEmailError ?
                             <HStack space={2} w={"100%"} mt={"20px"}>
-                                <Feather style={{ marginTop: 5 }} name="alert-circle" size={24} color={colors.alert} />
+                                <Feather style={{marginTop: 5}} name="alert-circle" size={24} color={colors.alert}/>
                                 <Text fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"85%"} color={"alert"}>
-                                    El correo electronico <Text color={"white"}>{email.toLowerCase()}</Text> no se encuentra registrado como usuario.
+                                    El correo electronico <Text color={"white"}>{email.toLowerCase()}</Text> no se
+                                    encuentra registrado como usuario.
                                     Por favor verifique e intente de nuevo.
                                 </Text>
                             </HStack>
                             : VALIDATE_EMAIL(email) ?
                                 <HStack space={2} mt={"20px"}>
-                                    <AntDesign style={{ marginTop: 5 }} name="check-circle" size={24} color={colors.mainGreen} />
+                                    <AntDesign style={{marginTop: 5}} name="check-circle" size={24}
+                                               color={colors.mainGreen}/>
                                     <Text fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"85%"} color={"mainGreen"}>
-                                        Te enviaremos un código de verificación de 6 digitos a <Text color={"white"}>{email.toLowerCase()}</Text> para recuperar tu cuenta.
+                                        Te enviaremos un código de verificación de 6 digitos a <Text
+                                        color={"white"}>{email.toLowerCase()}</Text> para recuperar tu cuenta.
                                     </Text>
                                 </HStack>
                                 : null
@@ -130,7 +135,7 @@ export default ForgotPassword
 
 
 const styles = StyleSheet.create({
-    InputsSucess: {
+    InputsSuccess: {
         borderColor: colors.mainGreen,
         borderWidth: 1,
         borderRadius: 10,

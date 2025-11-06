@@ -14,7 +14,7 @@ export default function TabLayout() {
 		elevation: 0,
 	}
 
-	const defaultscreenOptions = {
+	const defaultScreenOptions = {
 		headerBackTitleVisible: false,
 		headerTintColor: colors.white,
 		headerStyle: { ...defaultHeaderStyles },
@@ -24,7 +24,7 @@ export default function TabLayout() {
 
 	return (
 		<Stack screenOptions={{ headerShadowVisible: false }}>
-			<Stack.Screen name='banking' options={{ ...defaultscreenOptions, title: "Deposito & Retiros", headerRight: () => <BankingHeaderRight /> }} />
+			<Stack.Screen name='banking' options={{ ...defaultScreenOptions, title: "Deposito & Retiros", headerRight: () => <BankingHeaderRight /> }} />
 		</Stack>
 	);
 }

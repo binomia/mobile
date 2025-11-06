@@ -38,4 +38,5 @@ const FlaggedScreen: React.FC = () => {
 	)
 }
 
+
 export default FlaggedScreen

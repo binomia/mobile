@@ -1,6 +1,12 @@
-import { CLOUDINARY, CLOUDINARY_API_URL, CLOUDINARY_CLOUD_NAME, CLOUDINARY_ID_UPLOAD_PRESET, CLOUDINARY_VIDEO_UPLOAD_PRESET } from "@/src/constants";
+import {
+    CLOUDINARY,
+    CLOUDINARY_API_URL,
+    CLOUDINARY_CLOUD_NAME,
+    CLOUDINARY_ID_UPLOAD_PRESET,
+    CLOUDINARY_VIDEO_UPLOAD_PRESET
+} from "@/src/constants";
 import axios from "axios"
-import { useState } from "react";
+import {useState} from "react";
 
 
 type UseCloudinaryType = {
@@ -26,8 +32,7 @@ export const useCloudinary = (): UseCloudinaryType => {
                     })
                 );
 
-                const urls = uploadResponses.map((url: any) => url)
-                return urls
+                return uploadResponses.map((url: any) => url)
             }
 
         } catch (_: any) {

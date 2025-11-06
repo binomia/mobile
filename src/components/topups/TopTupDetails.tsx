@@ -1,26 +1,26 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import colors from '@/src/colors'
 import Button from '@/src/components/global/Button';
 import BottomSheet from '../global/BottomSheet';
-import { Dimensions, FlatList } from 'react-native'
-import { Heading, Image, Text, VStack, HStack, Pressable } from 'native-base'
-import { FORMAT_CURRENCY, FORMAT_PHONE_NUMBER, MAKE_FULL_NAME_SHORTEN } from '@/src/helpers'
-import { scale } from 'react-native-size-matters';
-import { useDispatch, useSelector } from 'react-redux';
-import { recurenceMonthlyData, recurenceWeeklyData } from '@/src/mocks';
-import { useLocalAuthentication } from '@/src/hooks/useLocalAuthentication';
-import { useMutation } from '@apollo/client/react';
-import { transactionActions } from '@/src/redux/slices/transactionSlice';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocation } from '@/src/hooks/useLocation';
-import { TopUpApolloQueries } from '@/src/apollo/query';
-import { TopUpAuthSchema } from '@/src/auth/topUpAuth';
-import { topupActions } from '@/src/redux/slices/topupSlice';
-import { fetchAllTransactions, fetchRecentTransactions } from '@/src/redux/fetchHelper';
-import { accountActions } from '@/src/redux/slices/accountSlice';
-import { AES } from 'cryptografia';
-import { ZERO_ENCRYPTION_KEY } from '@/src/constants';
-import { DispatchType } from '@/src/redux';
+import {Dimensions, FlatList} from 'react-native'
+import {Heading, Image, Text, VStack, HStack, Pressable} from 'native-base'
+import {FORMAT_CURRENCY, FORMAT_PHONE_NUMBER, MAKE_FULL_NAME_SHORTEN} from '@/src/helpers'
+import {scale} from 'react-native-size-matters';
+import {useDispatch, useSelector} from 'react-redux';
+import {recurenceMonthlyData, recurenceWeeklyData} from '@/src/mocks';
+import {useLocalAuthentication} from '@/src/hooks/useLocalAuthentication';
+import {useMutation} from '@apollo/client/react';
+import {transactionActions} from '@/src/redux/slices/transactionSlice';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useLocation} from '@/src/hooks/useLocation';
+import {TopUpApolloQueries} from '@/src/apollo/query';
+import {TopUpAuthSchema} from '@/src/auth/topUpAuth';
+import {topupActions} from '@/src/redux/slices/topupSlice';
+import {fetchAllTransactions, fetchRecentTransactions} from '@/src/redux/fetchHelper';
+import {accountActions} from '@/src/redux/slices/accountSlice';
+import {AES} from 'cryptografia';
+import {ZERO_ENCRYPTION_KEY} from '@/src/constants';
+import {DispatchType} from '@/src/redux';
 
 type Props = {
     goBack?: () => void
@@ -28,17 +28,21 @@ type Props = {
     onClose?: (_?: any) => void
 }
 
-const { width } = Dimensions.get("screen")
-const TopTupDetails: React.FC<Props> = ({ goBack = () => { }, onClose = (_?: any) => { } }) => {
+const {width} = Dimensions.get("screen")
+const TopTupDetails: React.FC<Props> = ({
+                                            goBack = () => {
+                                            }, onClose = (_?: any) => {
+    }
+                                        }) => {
     const [createTopUp] = useMutation(TopUpApolloQueries.createTopUp())
 
-    const { newTopUp } = useSelector((state: any) => state.topupReducer)
-    const { location } = useSelector((state: any) => state.globalReducer)
-    const { account, user } = useSelector((state: any) => state.accountReducer)
+    const {newTopUp} = useSelector((state: any) => state.topupReducer)
+    const {location} = useSelector((state: any) => state.globalReducer)
+    const {account, user} = useSelector((state: any) => state.accountReducer)
 
     const dispatch = useDispatch<DispatchType>();
-    const { authenticate } = useLocalAuthentication();
-    const { getLocation } = useLocation();
+    const {authenticate} = useLocalAuthentication();
+    const {getLocation} = useLocation();
 
     const [recurrence, setRecurrence] = useState<string>("oneTime");
     const [recurrenceSelected, setRecurrenceSelected] = useState<string>("");
@@ -86,9 +90,9 @@ const TopTupDetails: React.FC<Props> = ({ goBack = () => { }, onClose = (_?: any
                 }
             })
             const signingKey = await AES.decryptAsync(user.signingKey, ZERO_ENCRYPTION_KEY)
-            const message = await AES.encryptAsync(JSON.stringify({ data, recurrence }), signingKey)
+            const message = await AES.encryptAsync(JSON.stringify({data, recurrence}), signingKey)
 
-            await createTopUp({ variables: { message } })
+            await createTopUp({variables: {message}})
             await onNext()
 
         } catch (error: any) {
@@ -99,10 +103,10 @@ const TopTupDetails: React.FC<Props> = ({ goBack = () => { }, onClose = (_?: any
 
     const onNext = async () => {
         dispatch(topupActions.setHasNewTransaction(true))
-        dispatch(accountActions.setAccount(Object.assign({}, account, { balance: account.balance - Number(newTopUp.amount) })))
-        
+        dispatch(accountActions.setAccount(Object.assign({}, account, {balance: account.balance - Number(newTopUp.amount)})))
+
         await dispatch(fetchRecentTransactions())
-        await dispatch(fetchAllTransactions({ page: 1, pageSize: 5 }))
+        await dispatch(fetchAllTransactions({page: 1, pageSize: 5}))
 
         onClose()
     }
@@ -127,12 +131,11 @@ const TopTupDetails: React.FC<Props> = ({ goBack = () => { }, onClose = (_?: any
             }
 
             await dispatch(fetchRecentTransactions())
-            await dispatch(transactionActions.setHasNewTransaction(true))
-
+            dispatch(transactionActions.setHasNewTransaction(true))
             setLoading(false)
 
         } catch (error) {
-            console.log({ handleOnSend: error });
+            console.log({handleOnSend: error});
         }
     }
 
@@ -154,15 +157,20 @@ const TopTupDetails: React.FC<Props> = ({ goBack = () => { }, onClose = (_?: any
                 <FlatList
                     scrollEnabled={false}
                     data={recurenceWeeklyData}
-                    renderItem={({ item }) => (
+                    renderItem={({item}) => (
                         <HStack my={"10px"} w={"100%"} justifyContent={"space-between"}>
-                            {item.map(({ title, id }) => (
-                                <Pressable w={width * 0.46} key={id} borderRadius={"5px"} justifyContent={"center"} alignItems={"center"} h={scale(45)} bg={recurrenceSelected === id ? colors.mainGreen : colors.lightGray} _pressed={{ opacity: 0.5 }} onPress={() => onSelecteOption(id, title)} borderColor={colors.mainGreen}>
-                                    <Heading fontSize={scale(12)} fontWeight={"500"} color={recurrenceSelected === id ? colors.white : colors.mainGreen}>{title}</Heading>
+                            {item.map(({title, id}) => (
+                                <Pressable w={width * 0.46} key={id} borderRadius={"5px"} justifyContent={"center"}
+                                           alignItems={"center"} h={scale(45)}
+                                           bg={recurrenceSelected === id ? colors.mainGreen : colors.lightGray}
+                                           _pressed={{opacity: 0.5}} onPress={() => onSelecteOption(id, title)}
+                                           borderColor={colors.mainGreen}>
+                                    <Heading fontSize={scale(12)} fontWeight={"500"}
+                                             color={recurrenceSelected === id ? colors.white : colors.mainGreen}>{title}</Heading>
                                 </Pressable>
                             ))}
                         </HStack>
-                    )} />
+                    )}/>
             </VStack>
         )
     }
@@ -182,66 +190,100 @@ const TopTupDetails: React.FC<Props> = ({ goBack = () => { }, onClose = (_?: any
                 <FlatList
                     scrollEnabled={false}
                     data={recurenceMonthlyData}
-                    renderItem={({ item }) => (
+                    renderItem={({item}) => (
                         <HStack w={"100%"}>
-                            {item.map(({ title, id, day }) => (
-                                <Pressable _pressed={{ opacity: 0.5 }} key={title} m={"5px"} flexWrap={"nowrap"} onPress={() => onSelecteOption(id, title)} w={width / 6} h={width / 6} bg={recurrenceDaySelected === id ? colors.mainGreen : colors.lightGray} justifyContent={"center"} alignItems={"center"} borderRadius={10}>
-                                    <Heading fontSize={scale(15)} fontWeight={"500"} color={recurrenceDaySelected === id ? colors.white : colors.mainGreen}>{day}</Heading>
+                            {item.map(({title, id, day}) => (
+                                <Pressable _pressed={{opacity: 0.5}} key={title} m={"5px"} flexWrap={"nowrap"}
+                                           onPress={() => onSelecteOption(id, title)} w={width / 6} h={width / 6}
+                                           bg={recurrenceDaySelected === id ? colors.mainGreen : colors.lightGray}
+                                           justifyContent={"center"} alignItems={"center"} borderRadius={10}>
+                                    <Heading fontSize={scale(15)} fontWeight={"500"}
+                                             color={recurrenceDaySelected === id ? colors.white : colors.mainGreen}>{day}</Heading>
                                 </Pressable>
                             ))}
                         </HStack>
-                    )} />
+                    )}/>
             </VStack>
         )
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: colors.darkGray }}>
+        <SafeAreaView style={{flex: 1, backgroundColor: colors.darkGray}}>
             <VStack px={"10px"} mt={"10px"} h={"100%"}>
-                <VStack pb={"30px"} mt={"10px"} flex={1} justifyContent={"space-between"} alignItems={"center"} borderRadius={10}>
+                <VStack pb={"30px"} mt={"10px"} flex={1} justifyContent={"space-between"} alignItems={"center"}
+                        borderRadius={10}>
                     <VStack alignItems={"center"} justifyContent={"center"}>
                         <HStack my={"10px"}>
-                            <Image borderRadius={100} resizeMode='contain' alt='logo-image-details' w={scale(60)} h={scale(60)} source={{ uri: newTopUp.logo }} />
+                            <Image borderRadius={100} resizeMode='contain' alt='logo-image-details' w={scale(60)}
+                                   h={scale(60)} source={{uri: newTopUp.logo}}/>
                         </HStack>
-                        <Heading textTransform={"capitalize"} fontSize={scale(25)} color={"white"}>{MAKE_FULL_NAME_SHORTEN(newTopUp?.fullName || "")}</Heading>
-                        <Text fontSize={scale(16)} color={colors.lightSkyGray}>{FORMAT_PHONE_NUMBER(newTopUp?.phone || "")}</Text>
-                        <Heading textTransform={"capitalize"} fontSize={scale(40)} color={"mainGreen"}>{FORMAT_CURRENCY(newTopUp?.amount)}</Heading>
+                        <Heading textTransform={"capitalize"} fontSize={scale(25)}
+                                 color={"white"}>{MAKE_FULL_NAME_SHORTEN(newTopUp?.fullName || "")}</Heading>
+                        <Text fontSize={scale(16)}
+                              color={colors.lightSkyGray}>{FORMAT_PHONE_NUMBER(newTopUp?.phone || "")}</Text>
+                        <Heading textTransform={"capitalize"} fontSize={scale(40)}
+                                 color={"mainGreen"}>{FORMAT_CURRENCY(newTopUp?.amount)}</Heading>
                     </VStack>
                     <VStack flex={1} mt={"20px"} justifyContent={"space-between"}>
-                        <VStack p={"20px"} w={"100%"} key={"Recurrente-2"} >
-                            <Heading fontSize={scale(20)} mt={"20px"} fontWeight={"500"} color={"white"}>Envió Recurrente</Heading>
+                        <VStack p={"20px"} w={"100%"} key={"Recurrente-2"}>
+                            <Heading fontSize={scale(20)} mt={"20px"} fontWeight={"500"} color={"white"}>Envió
+                                Recurrente</Heading>
                             <HStack mt={"15px"} justifyContent={"space-between"}>
-                                <Pressable onPress={() => onRecurrenceChange("oneTime")} w={"49%"} h={scale(50)} bg={recurrence === "oneTime" ? colors.mainGreen : colors.lightGray} borderRadius={10} alignItems={"center"} justifyContent={"center"} _pressed={{ opacity: 0.5 }}>
-                                    <Heading fontSize={scale(15)} fontWeight={"500"} color={recurrence === "oneTime" ? colors.white : colors.mainGreen}>Una vez</Heading>
+                                <Pressable onPress={() => onRecurrenceChange("oneTime")} w={"49%"} h={scale(50)}
+                                           bg={recurrence === "oneTime" ? colors.mainGreen : colors.lightGray}
+                                           borderRadius={10} alignItems={"center"} justifyContent={"center"}
+                                           _pressed={{opacity: 0.5}}>
+                                    <Heading fontSize={scale(15)} fontWeight={"500"}
+                                             color={recurrence === "oneTime" ? colors.white : colors.mainGreen}>Una
+                                        vez</Heading>
                                 </Pressable>
-                                <Pressable onPress={() => onRecurrenceChange("weekly")} w={"49%"} h={scale(50)} bg={recurrence === "weekly" ? colors.mainGreen : colors.lightGray} borderRadius={10} alignItems={"center"} justifyContent={"center"} _pressed={{ opacity: 0.5 }}>
-                                    <Heading fontSize={scale(15)} fontWeight={"500"} color={recurrence === "weekly" ? colors.white : colors.mainGreen}>Semanal</Heading>
-                                    {recurrence === "weekly" && recurrenceOptionSelected ? <Text fontSize={scale(10)} color={colors.white}>{recurrenceOptionSelected}</Text> : null}
+                                <Pressable onPress={() => onRecurrenceChange("weekly")} w={"49%"} h={scale(50)}
+                                           bg={recurrence === "weekly" ? colors.mainGreen : colors.lightGray}
+                                           borderRadius={10} alignItems={"center"} justifyContent={"center"}
+                                           _pressed={{opacity: 0.5}}>
+                                    <Heading fontSize={scale(15)} fontWeight={"500"}
+                                             color={recurrence === "weekly" ? colors.white : colors.mainGreen}>Semanal</Heading>
+                                    {recurrence === "weekly" && recurrenceOptionSelected ? <Text fontSize={scale(10)}
+                                                                                                 color={colors.white}>{recurrenceOptionSelected}</Text> : null}
                                 </Pressable>
                             </HStack>
                             <HStack mt={"15px"} justifyContent={"space-between"}>
-                                <Pressable onPress={() => onRecurrenceChange("biweekly")} w={"49%"} h={scale(50)} bg={recurrence === "biweekly" ? colors.mainGreen : colors.lightGray} borderRadius={10} alignItems={"center"} justifyContent={"center"} _pressed={{ opacity: 0.5 }}>
-                                    <Heading fontSize={scale(15)} fontWeight={"500"} color={recurrence === "biweekly" ? colors.white : colors.mainGreen}>Quincenal</Heading>
-                                    {recurrence === "biweekly" && recurrenceBiweeklyOptionSelected ? <Text fontSize={scale(10)} color={colors.white}>{recurrenceBiweeklyOptionSelected}</Text> : null}
+                                <Pressable onPress={() => onRecurrenceChange("biweekly")} w={"49%"} h={scale(50)}
+                                           bg={recurrence === "biweekly" ? colors.mainGreen : colors.lightGray}
+                                           borderRadius={10} alignItems={"center"} justifyContent={"center"}
+                                           _pressed={{opacity: 0.5}}>
+                                    <Heading fontSize={scale(15)} fontWeight={"500"}
+                                             color={recurrence === "biweekly" ? colors.white : colors.mainGreen}>Quincenal</Heading>
+                                    {recurrence === "biweekly" && recurrenceBiweeklyOptionSelected ?
+                                        <Text fontSize={scale(10)}
+                                              color={colors.white}>{recurrenceBiweeklyOptionSelected}</Text> : null}
                                 </Pressable>
-                                <Pressable onPress={() => onRecurrenceChange("monthly")} w={"49%"} h={scale(50)} bg={recurrence === "monthly" ? colors.mainGreen : colors.lightGray} borderRadius={10} alignItems={"center"} justifyContent={"center"} _pressed={{ opacity: 0.5 }}>
-                                    <Heading fontSize={scale(15)} fontWeight={"500"} color={recurrence === "monthly" ? colors.white : colors.mainGreen}>Mensual</Heading>
-                                    {recurrence === "monthly" && recurrenceDayOptionSelected ? <Text fontSize={scale(10)} color={colors.white}>{recurrenceDayOptionSelected}</Text> : null}
+                                <Pressable onPress={() => onRecurrenceChange("monthly")} w={"49%"} h={scale(50)}
+                                           bg={recurrence === "monthly" ? colors.mainGreen : colors.lightGray}
+                                           borderRadius={10} alignItems={"center"} justifyContent={"center"}
+                                           _pressed={{opacity: 0.5}}>
+                                    <Heading fontSize={scale(15)} fontWeight={"500"}
+                                             color={recurrence === "monthly" ? colors.white : colors.mainGreen}>Mensual</Heading>
+                                    {recurrence === "monthly" && recurrenceDayOptionSelected ?
+                                        <Text fontSize={scale(10)}
+                                              color={colors.white}>{recurrenceDayOptionSelected}</Text> : null}
                                 </Pressable>
                             </HStack>
                         </VStack>
                         <HStack mb="10px" px={"20px"} justifyContent={"space-between"}>
-                            <Button onPress={goBack} w={"49%"} bg={colors.lightGray} color={colors.mainGreen} title={"Atrás"} />
-                            <Button spin={loading} onPress={handleOnPress} w={"49%"} bg={"mainGreen"} color='white' title={"Recargar"} />
+                            <Button onPress={goBack} w={"49%"} bg={colors.lightGray} color={colors.mainGreen}
+                                    title={"Atrás"}/>
+                            <Button spin={loading} onPress={handleOnPress} w={"49%"} bg={"mainGreen"} color='white'
+                                    title={"Recargar"}/>
                         </HStack>
                     </VStack>
                 </VStack>
             </VStack>
             <BottomSheet onCloseFinish={onCloseFinished} open={openOptions === "weekly"} height={scale(300)}>
-                <RenderWeeklyOption key={"RenderWeeklyOption"} />
+                <RenderWeeklyOption key={"RenderWeeklyOption"}/>
             </BottomSheet>
             <BottomSheet onCloseFinish={onCloseFinished} open={openOptions === "monthly"} height={(width / 6) * 10}>
-                <RenderMonthlyOption key={"RenderMonthlyOption"} />
+                <RenderMonthlyOption key={"RenderMonthlyOption"}/>
             </BottomSheet>
         </SafeAreaView>
     )

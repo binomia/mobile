@@ -1,5 +1,5 @@
-import { OCR_SPACE_API_KEY } from "@/src/constants"
-import { FORMAT_CEDULA, FORMAT_DATE } from "@/src/helpers"
+import {OCR_SPACE_API_KEY} from "@/src/constants"
+import {FORMAT_CEDULA, FORMAT_DATE} from "@/src/helpers"
 
 
 export const useOCRSpace = () => {
@@ -7,8 +7,7 @@ export const useOCRSpace = () => {
         const api_url = `https://api.ocr.space/parse/imageurl?apikey=${OCR_SPACE_API_KEY}&url=${image}&language=spa&isOverlayRequired=true&detectOrientation=true&scale=true&OCREngine=2`
 
         return fetch(api_url).then(response => response.json()).then(data => {
-            const response = data.ParsedResults[0].ParsedText
-            return response
+            return data.ParsedResults[0].ParsedText
 
         }).catch(error => {
             console.error(error)

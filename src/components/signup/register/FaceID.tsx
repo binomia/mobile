@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { VStack, Heading, Text, HStack, Spinner, ZStack } from 'native-base';
 import { TouchableOpacity, Dimensions, Image } from 'react-native';
 import colors from '@/src/colors';

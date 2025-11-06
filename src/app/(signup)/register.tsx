@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { VStack } from 'native-base';
 import PagerView from 'react-native-pager-view';
 import colors from '@/src/colors';

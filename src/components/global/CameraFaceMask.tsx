@@ -1,20 +1,20 @@
-import React, { useRef } from 'react'
-import { Dimensions } from 'react-native'
-import { Camera, DrawableFrame, useCameraDevice, useSkiaFrameProcessor } from 'react-native-vision-camera'
-import { Face, FaceDetectionOptions, useFaceDetector } from 'react-native-vision-camera-face-detector'
-import { ZStack } from 'native-base'
-import { Worklets } from 'react-native-worklets-core'
-import { Skia } from '@shopify/react-native-skia'
-import { qrIcon } from '@/src/assets'
+import React, {useRef} from 'react'
+import {Dimensions} from 'react-native'
+import {Camera, DrawableFrame, useCameraDevice, useSkiaFrameProcessor} from 'react-native-vision-camera'
+import {Face, FaceDetectionOptions, useFaceDetector} from 'react-native-vision-camera-face-detector'
+import {ZStack} from 'native-base'
+import {Worklets} from 'react-native-worklets-core'
+import {Skia} from '@shopify/react-native-skia'
+import {qrIcon} from '@/src/assets'
 
 
-const { width, height } = Dimensions.get('screen')
+const {width, height} = Dimensions.get('screen')
 const CameraFaceMask: React.FC = () => {
     const ref = useRef<Camera>(null);
 
     const device = useCameraDevice("front");
     const faceDetectionOptions = useRef<FaceDetectionOptions>({}).current
-    const { detectFaces } = useFaceDetector(faceDetectionOptions)
+    const {detectFaces} = useFaceDetector(faceDetectionOptions)
 
     const handleDetectedFaces = Worklets.createRunOnJS(async (faces: Face[]) => {
         if (faces.length > 0) {
@@ -24,15 +24,14 @@ const CameraFaceMask: React.FC = () => {
     });
 
 
-
-    const frameProcessor = useSkiaFrameProcessor((frame: DrawableFrame) => {
+    const frameProcessor = useSkiaFrameProcessor(async (frame: DrawableFrame) => {
         'worklet'
         frame.render()
 
         const faces = detectFaces(frame)
         if (faces.length > 0) {
             const face = faces[0];
-            const { x, y } = face.bounds;
+            const {x, y} = face.bounds;
 
             // Build a circle path with Skia
             const paint = Skia.Image.MakeImageFromNativeBuffer(qrIcon);
@@ -41,7 +40,7 @@ const CameraFaceMask: React.FC = () => {
             frame.drawImage(paint, x, y);
         }
 
-        handleDetectedFaces(faces)
+        await handleDetectedFaces(faces)
     }, [])
 
     return (device &&
@@ -51,7 +50,7 @@ const CameraFaceMask: React.FC = () => {
                 ref={ref}
                 photo={true}
                 video={true}
-                style={{ width: width, height: height }}
+                style={{width: width, height: height}}
                 device={device}
                 frameProcessor={frameProcessor}
                 pixelFormat="rgb"

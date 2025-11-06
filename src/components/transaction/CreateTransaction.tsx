@@ -1,14 +1,19 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import colors from '@/src/colors'
-import { Heading, Image, Text, VStack, HStack, Avatar } from 'native-base'
-import { EXTRACT_FIRST_LAST_INITIALS, FORMAT_CURRENCY, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, MAKE_FULL_NAME_SHORTEN } from '@/src/helpers'
-import { scale } from 'react-native-size-matters';
+import {Heading, Image, Text, VStack, HStack, Avatar} from 'native-base'
+import {
+    EXTRACT_FIRST_LAST_INITIALS,
+    FORMAT_CURRENCY,
+    GENERATE_RAMDOM_COLOR_BASE_ON_TEXT,
+    MAKE_FULL_NAME_SHORTEN
+} from '@/src/helpers'
+import {scale} from 'react-native-size-matters';
 import Button from '@/src/components/global/Button';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import KeyNumberPad from '../global/KeyNumberPad';
-import { transactionActions } from '@/src/redux/slices/transactionSlice';
-import { TransactionAuthSchema } from '@/src/auth/transactionAuth';
-import { DispatchType } from '@/src/redux';
+import {transactionActions} from '@/src/redux/slices/transactionSlice';
+import {TransactionAuthSchema} from '@/src/auth/transactionAuth';
+import {DispatchType} from '@/src/redux';
 
 
 type Props = {
@@ -21,10 +26,17 @@ type Props = {
     setInput: (_: string) => void
 }
 
-const CreateTransaction: React.FC<Props> = ({ input, title = "Siguiente", showBalance = true, setInput, nextPage = () => { } }) => {
+const CreateTransaction: React.FC<Props> = ({
+                                                input,
+                                                title = "Siguiente",
+                                                showBalance = true,
+                                                setInput,
+                                                nextPage = () => {
+                                                }
+                                            }) => {
     const dispatch = useDispatch<DispatchType>();
-    const { receiver } = useSelector((state: any) => state.transactionReducer)
-    const { account } = useSelector((state: any) => state.accountReducer)
+    const {receiver} = useSelector((state: any) => state.transactionReducer)
+    const {account} = useSelector((state: any) => state.accountReducer)
     const [showPayButton, setShowPayButton] = useState<boolean>(false);
 
     const onNextPage = async () => {
@@ -37,7 +49,7 @@ const CreateTransaction: React.FC<Props> = ({ input, title = "Siguiente", showBa
                 amount: parseFloat(input),
             })
 
-            await dispatch(transactionActions.setTransactionDetails(transactionData))
+            dispatch(transactionActions.setTransactionDetails(transactionData))
             nextPage()
 
         } catch (error) {
@@ -60,21 +72,25 @@ const CreateTransaction: React.FC<Props> = ({ input, title = "Siguiente", showBa
         <VStack flex={1} pb={"10px"} justifyContent={"space-between"}>
             <VStack>
                 {showBalance ? <HStack w={"100%"} mt={"10px"} alignItems={"center"} justifyContent={"center"}>
-                    <Heading size={"md"} color={colors.mainGreen} textAlign={"center"}>{FORMAT_CURRENCY(account.balance)}</Heading>
+                    <Heading size={"md"} color={colors.mainGreen}
+                             textAlign={"center"}>{FORMAT_CURRENCY(account.balance)}</Heading>
                 </HStack> : null}
                 <HStack px={"20px"} mt={"30px"} alignItems={"center"} justifyContent={"space-between"}>
                     <HStack space={2}>
                         {receiver.profileImageUrl ?
-                            <Image borderRadius={100} resizeMode='contain' alt='logo-image' w={"50px"} h={"50px"} source={{ uri: receiver.profileImageUrl }} />
+                            <Image borderRadius={100} resizeMode='contain' alt='logo-image' w={"50px"} h={"50px"}
+                                   source={{uri: receiver.profileImageUrl}}/>
                             :
-                            <Avatar borderRadius={100} w={"50px"} h={"50px"} bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(receiver?.fullName || "")}>
+                            <Avatar borderRadius={100} w={"50px"} h={"50px"}
+                                    bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(receiver?.fullName || "")}>
                                 <Heading size={"sm"} color={colors.white}>
                                     {EXTRACT_FIRST_LAST_INITIALS(receiver?.fullName || "0")}
                                 </Heading>
                             </Avatar>
                         }
                         <VStack justifyContent={"center"}>
-                            <Heading textTransform={"capitalize"} fontSize={scale(15)} color={"white"}>{MAKE_FULL_NAME_SHORTEN(receiver?.fullName || "")}</Heading>
+                            <Heading textTransform={"capitalize"} fontSize={scale(15)}
+                                     color={"white"}>{MAKE_FULL_NAME_SHORTEN(receiver?.fullName || "")}</Heading>
                             <Text fontSize={scale(14)} color={colors.lightSkyGray}>{receiver?.username}</Text>
                         </VStack>
                     </HStack>
@@ -93,7 +109,7 @@ const CreateTransaction: React.FC<Props> = ({ input, title = "Siguiente", showBa
                 </HStack>
             </VStack>
             <VStack mb={"10px"}>
-                <KeyNumberPad onChange={(value: string) => onChange(value)} />
+                <KeyNumberPad onChange={(value: string) => onChange(value)}/>
             </VStack>
         </VStack>
     )

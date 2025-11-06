@@ -19,9 +19,8 @@ export const generateTransactionTable = (drop: boolean = false) => {
             data           TEXT NOT NULL
         );      
     `
-
-    // uuid, accountId, status, timestamp, type
 }
+
 export const generateAccountTable = (drop: boolean = false) => {
     return /*sql*/`
         ${drop ? 'DROP TABLE IF EXISTS "account";' : ''}

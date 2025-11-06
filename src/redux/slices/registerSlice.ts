@@ -47,10 +47,6 @@ const registerSlice = createSlice({
     name: 'register',
     initialState,
     reducers: {
-        reSetAllState: (state) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            state = initialState
-        },
         setUserAgreement: (state, action) => {
             state.userAgreementSigned = action.payload
         },

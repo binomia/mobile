@@ -3,12 +3,12 @@ import * as Network from 'expo-network';
 import * as SecureStore from 'expo-secure-store';
 import * as Application from 'expo-application';
 import * as Device from 'expo-device';
-import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/client';
-import { SetContextLink } from "@apollo/client/link/context";
-import { ErrorLink } from "@apollo/client/link/error";
-import { Alert, Platform } from 'react-native';
-import { router } from 'expo-router';
-import { HASH } from 'cryptografia';
+import {ApolloClient, ApolloLink, HttpLink, InMemoryCache} from '@apollo/client';
+import {SetContextLink} from "@apollo/client/link/context";
+import {ErrorLink} from "@apollo/client/link/error";
+import {Alert, Platform} from 'react-native';
+import {router} from 'expo-router';
+import {HASH} from 'cryptografia';
 
 const httpLink = new HttpLink({
     uri: `http://192.168.1.93:8000/graphql`,
@@ -17,18 +17,18 @@ const httpLink = new HttpLink({
 });
 
 const errorLink = new ErrorLink((errorHandlers) => {
-    const { graphQLErrors }: any = errorHandlers;
+    const {graphQLErrors}: any = errorHandlers;
     if (graphQLErrors)
         graphQLErrors.forEach(async (error: any) => {
-            const { message } = error;
+            const {message} = error;
 
             if (message.includes("INVALID_SESSION")) {
                 await SecureStore.deleteItemAsync("jwt").then(async () => {
                     // Alert.alert("Your session has expired. Please login again.");
                     // await Updates.reloadAsync();
 
-                   router.navigate("/login/true")
-                    
+                    router.navigate("/login/true")
+
                 });
             } else if (message.includes("no puede recibir pagos")) {
                 Alert.alert(message);
@@ -40,6 +40,7 @@ const setAuthorizationLink = new SetContextLink(async (previousContext) => {
     const jwt = await useAsyncStorage().getItem("jwt");
     const ipAddress = await Network.getIpAddressAsync();
     const deviceId = await Application.getInstallationTimeAsync();
+    console.log({deviceId})
 
     return {
         headers: {

@@ -1,7 +1,6 @@
-import { useContext, useRef, useState } from 'react';
-import { VStack } from 'native-base';
+import React, {useContext, useRef, useState} from 'react';
+import {VStack} from 'native-base';
 import PagerView from 'react-native-pager-view';
-import colors from '@/src/colors';
 import CreateAccount from './CreateAccount';
 import Address from './Address';
 import VerifyCode from './VerifyCode';
@@ -9,16 +8,15 @@ import ScanFrontID from './ScanFrontID';
 import ScanBackID from './ScanBackID';
 import AccountCreated from './AccountCreated';
 import FaceID from './FaceID';
-import { GlobalContextType } from '@/src/types';
-import { GlobalContext } from '@/src/contexts/globalContext';
+import {GlobalContextType} from '@/src/types';
+import {GlobalContext} from '@/src/contexts/globalContext';
 import IDData from './IdData';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const RegisterComponent: React.FC = (): React.JSX.Element => {
     const ref = useRef<PagerView>(null);
     const [currentPage, setCurrentPage] = useState<number>(0);
-    const { setShowCloseButton } = useContext<GlobalContextType>(GlobalContext);
+    const {setShowCloseButton} = useContext<GlobalContextType>(GlobalContext);
 
 
     const nextPage = () => {
@@ -47,20 +45,18 @@ const RegisterComponent: React.FC = (): React.JSX.Element => {
 
 
     return (
-        <SafeAreaView style={{ backgroundColor: colors.darkGray, flex: 1 }}>
-            <VStack flex={1}>
-                <PagerView scrollEnabled={false} ref={ref} style={{ flex: 1 }} initialPage={currentPage}>
-                    <CreateAccount key={"0"} nextPage={nextPage} />
-                    <Address key={"1"} nextPage={nextPage} prevPage={prevPage} />
-                    <IDData key={"2"} nextPage={nextPage} prevPage={prevPage} />
-                    <ScanFrontID key={"3"} nextPage={nextPage} prevPage={prevPage} />
-                    <ScanBackID key={"4"} nextPage={nextPage} prevPage={prevPage} />
-                    <FaceID key={"5"} nextPage={nextPage} prevPage={prevPage} reRenderPage={reRenderPage} />
-                    <VerifyCode key={"6"} nextPage={nextPage} prevPage={prevPage} />
-                    <AccountCreated key={"7"} />
-                </PagerView>
-            </VStack>
-        </SafeAreaView>
+        <VStack flex={1}>
+            <PagerView scrollEnabled={false} ref={ref} style={{flex: 1}} initialPage={currentPage}>
+                <CreateAccount key={"0"} nextPage={nextPage}/>
+                <Address key={"1"} nextPage={nextPage} prevPage={prevPage}/>
+                <IDData key={"2"} nextPage={nextPage} prevPage={prevPage}/>
+                <ScanFrontID key={"3"} nextPage={nextPage} prevPage={prevPage}/>
+                <ScanBackID key={"4"} nextPage={nextPage} prevPage={prevPage}/>
+                <FaceID key={"5"} nextPage={nextPage} prevPage={prevPage} reRenderPage={reRenderPage}/>
+                <VerifyCode key={"6"} nextPage={nextPage} prevPage={prevPage}/>
+                <AccountCreated key={"7"}/>
+            </PagerView>
+        </VStack>
     );
 }
 

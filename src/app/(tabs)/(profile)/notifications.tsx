@@ -53,7 +53,7 @@ const NotificationsScreen: React.FC = () => {
 
                 const { allowEmailNotification, allowPushNotification, allowSmsNotification, allowWhatsappNotification } = data.updateAccountPermissions
                 setAllNotifications(Object.assign({}, allNotifications, {
-                    allow: allowEmailNotification && allowPushNotification && allowSmsNotification && allowWhatsappNotification ? true : false
+                    allow: !!(allowEmailNotification && allowPushNotification && allowSmsNotification && allowWhatsappNotification)
                 }))
             }
 

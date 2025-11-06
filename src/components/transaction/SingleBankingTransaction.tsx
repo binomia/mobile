@@ -86,10 +86,10 @@ const SingleTransactionBanking: React.FC<Props> = ({ }) => {
 		const isAvailableAsync = await Sharing.isAvailableAsync()
 		if (!isAvailableAsync) return
 
-		await Sharing.shareAsync("http://test.com")
+		await Sharing.shareAsync("https://localhost:8080")
 	}
 
-	const StatuIcon: React.FC<{ status: string }> = ({ status }: { status: string }) => {
+	const StatusIcon: React.FC<{ status: string }> = ({ status }: { status: string }) => {
 		if (status === "completed") {
 			return (
 				<ZStack w={"35px"} h={"35px"} borderRadius={100} justifyContent={"center"} alignItems={"center"} >
@@ -152,7 +152,7 @@ const SingleTransactionBanking: React.FC<Props> = ({ }) => {
 								<Text mb={"20px"} color={colors.lightSkyGray}>{FORMAT_CREATED_DATE(transaction?.createdAt)}</Text>
 							</VStack>
 							<VStack alignItems={"center"} w={"80%"}>
-								<StatuIcon status={transaction?.status || ""} />
+								<StatusIcon status={transaction?.status || ""} />
 								<Text textAlign={"center"} fontSize={scale(16)} color={colors.white}>{transactionStatus(transaction.status)}</Text>
 							</VStack>
 						</VStack>

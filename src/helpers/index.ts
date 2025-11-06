@@ -1,6 +1,6 @@
-import { GOOGLE_MAPS_API_KEY } from "@/src/constants";
-import { WeeklyQueueTitleType } from "@/src/types";
-import { nextFriday, nextMonday, nextSaturday, nextSunday, nextThursday, nextTuesday, nextWednesday } from "date-fns";
+import {GOOGLE_MAPS_API_KEY} from "@/src/constants";
+import {WeeklyQueueTitleType} from "@/src/types";
+import {nextFriday, nextMonday, nextSaturday, nextSunday, nextThursday, nextTuesday, nextWednesday} from "date-fns";
 import moment from "moment";
 
 
@@ -8,13 +8,9 @@ export const FORMAT_PHONE_NUMBER = (value: string) => {
     value = value.replaceAll(/[^0-9]/g, '');
 
     if (value.length >= 6) {
-        const formattedValue = `(${value.slice(0, 3)}) ` + value.slice(3, 6) + "-" + value.slice(6);
-        return formattedValue
-    }
-
-    else if (value.length >= 3) {
-        const formattedValue = `(${value.slice(0, 3)}) ` + value.slice(3)
-        return formattedValue
+        return `(${value.slice(0, 3)}) ` + value.slice(3, 6) + "-" + value.slice(6)
+    } else if (value.length >= 3) {
+        return `(${value.slice(0, 3)}) ` + value.slice(3)
     }
 
     return value
@@ -25,7 +21,7 @@ export const VALIDATE_EMAIL = (email: string) => {
     return String(email)
         .toLowerCase()
         .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         );
 };
 
@@ -34,7 +30,6 @@ export const FORMAT_CREATED_DATE = (_date: any) => {
     const date = Number(_date)
     return isNaN(date) ? moment(_date).format("lll") : moment(date).format("lll")
 }
-
 
 
 export const GENERATE_SIX_DIGIT_TOKEN = (): string => {
@@ -46,14 +41,10 @@ export const GENERATE_SIX_DIGIT_TOKEN = (): string => {
 export const FORMAT_CEDULA = (value: string) => {
     if (value.length <= 3 && value !== "") {
         return value.replaceAll("-", "")
-    }
-    else if (value.length > 3 && value.length <= 10) {
-        const formattedValue = value.slice(0, 3) + "-" + value.slice(3)
-        return formattedValue
-    }
-    else if (value.length > 10 && value.length <= 11) {
-        const formattedValue = value.slice(0, 3) + "-" + value.slice(3, 10) + "-" + value.slice(10, 11);
-        return formattedValue
+    } else if (value.length > 3 && value.length <= 10) {
+        return value.slice(0, 3) + "-" + value.slice(3)
+    } else if (value.length > 10 && value.length <= 11) {
+        return value.slice(0, 3) + "-" + value.slice(3, 10) + "-" + value.slice(10, 11)
     }
     return value
 }
@@ -86,8 +77,7 @@ export const FORMAT_DATE = (value: string) => {
     }
 
     const [day, month, year] = value.split(" ");
-    const date = `${year}-${months[month]}-${day}`
-    return date
+    return `${year}-${months[month]}-${day}`
 }
 
 
@@ -131,7 +121,7 @@ export const MAKE_FULL_NAME_SHORTEN = (fullName: string) => {
 
     const firstName = nameParts[0];
     let middleNameInitial = '';
-    let lastName = '';
+    let lastName: string;
 
     if (nameParts.length === 2) {
         // If only two parts, assume it's "First Last"
@@ -219,8 +209,8 @@ export const FORMAT_FULL_NAME = (fullName: string, length: number = 15) => {
     return fullName.length > length ? fullName.slice(0, length - 3) + "..." : fullName
 }
 
-export const getMapLocationImage = ({ latitude, longitude }: { latitude: number, longitude: number }) => {
-    return `https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=16&size=500x500&map_id=${"d5db1229935ffa0d"}&key=${GOOGLE_MAPS_API_KEY}`
+export const getMapLocationImage = ({latitude, longitude}: { latitude: number, longitude: number }) => {
+    return `https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=16&size=500x500&map_id=d5db1229935ffa0d&key=${GOOGLE_MAPS_API_KEY}`
 }
 
 
@@ -252,7 +242,7 @@ export const getNextDay = (targetDay: WeeklyQueueTitleType): number => {
                 return 0
         }
     } catch (error) {
-        console.error({ getNextDay: error });
+        console.error({getNextDay: error});
         return 0
     }
 }

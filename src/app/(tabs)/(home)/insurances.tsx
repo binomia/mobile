@@ -5,7 +5,7 @@ import { VStack } from 'native-base'
 
 
 
-const Topups: React.FC = () => {
+const TopUps: React.FC = () => {
 
     return (
         <VStack flex={1} variant={"body"} bg={colors.darkGray} pt={"20px"}>
@@ -15,4 +15,4 @@ const Topups: React.FC = () => {
     )
 }
 
-export default Topups
+export default TopUps

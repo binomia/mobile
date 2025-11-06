@@ -1,32 +1,46 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import colors from '@/src/colors'
 import Input from '@/src/components/global/Input'
 import moment from 'moment';
 import TransactionSkeleton from '@/src/components/transaction/transactionSkeleton';
-import { Keyboard, Dimensions, TouchableWithoutFeedback, TouchableOpacity, RefreshControl, NativeSyntheticEvent, NativeScrollEvent, FlatList } from 'react-native'
-import { Heading, Image, Text, VStack, HStack, Spinner, Pressable, ScrollView, Avatar } from 'native-base'
-import { useLazyQuery } from '@apollo/client/react'
-import { EXTRACT_FIRST_LAST_INITIALS, FORMAT_CURRENCY, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, MAKE_FULL_NAME_SHORTEN } from '@/src/helpers'
-import { scale } from 'react-native-size-matters';
-import { useDispatch, useSelector } from 'react-redux';
-import { transactionActions } from '@/src/redux/slices/transactionSlice';
-import { TransactionApolloQueries } from '@/src/apollo/query/transactionQuery';
-import { noTransactions } from '@/src/assets';
-import { router, useNavigation } from 'expo-router';
-import { DispatchType, StateType } from '@/src/redux';
+import {
+    Keyboard,
+    Dimensions,
+    TouchableWithoutFeedback,
+    TouchableOpacity,
+    RefreshControl,
+    NativeSyntheticEvent,
+    NativeScrollEvent,
+    FlatList
+} from 'react-native'
+import {Heading, Image, Text, VStack, HStack, Spinner, Pressable, ScrollView, Avatar} from 'native-base'
+import {useLazyQuery} from '@apollo/client/react'
+import {
+    EXTRACT_FIRST_LAST_INITIALS,
+    FORMAT_CURRENCY,
+    GENERATE_RAMDOM_COLOR_BASE_ON_TEXT,
+    MAKE_FULL_NAME_SHORTEN
+} from '@/src/helpers'
+import {scale} from 'react-native-size-matters';
+import {useDispatch, useSelector} from 'react-redux';
+import {transactionActions} from '@/src/redux/slices/transactionSlice';
+import {TransactionApolloQueries} from '@/src/apollo/query/transactionQuery';
+import {noTransactions} from '@/src/assets';
+import {router, useNavigation} from 'expo-router';
+import {DispatchType, StateType} from '@/src/redux';
 
 type Props = {
     showNewTransaction?: boolean;
 }
 
-const { height } = Dimensions.get('window')
-const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: Props) => {
+const {height} = Dimensions.get('window')
+const TopUpPhoneTransactions: React.FC<Props> = ({showNewTransaction = true}: Props) => {
     const dispatch = useDispatch<DispatchType>()
-    const { user } = useSelector((state: StateType) => state.accountReducer)
-    const { hasNewTransaction } = useSelector((state: any) => state.topupReducer)
+    const {user} = useSelector((state: StateType) => state.accountReducer)
+    const {hasNewTransaction} = useSelector((state: any) => state.topupReducer)
     const isFocused = useNavigation().isFocused()
 
-    const [accountTransactions, { refetch: refetchAccountTransactions }] = useLazyQuery<any>(TransactionApolloQueries.accountTransactions())
+    const [accountTransactions, {refetch: refetchAccountTransactions}] = useLazyQuery<any>(TransactionApolloQueries.accountTransactions())
     const [searchAccountTransactions] = useLazyQuery<any>(TransactionApolloQueries.searchAccountTransactions())
 
     const [refreshing, setRefreshing] = useState(false);
@@ -43,7 +57,7 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
                 setFilteredTransactions(transactions)
 
             } else {
-                const { data } = await searchAccountTransactions({
+                const {data} = await searchAccountTransactions({
                     variables: {
                         "page": 1,
                         "pageSize": 10,
@@ -60,14 +74,14 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
     }
 
     const formatTransaction = (transaction: any) => {
-        const { transactionType, status } = transaction
+        const {transactionType, status} = transaction
         const isFromMe = transaction.from.user?.id === user.id
 
         const profileImageUrl = isFromMe ? transaction.to.user?.profileImageUrl : transaction.from.user?.profileImageUrl
         const fullName = isFromMe ? transaction.to.user?.fullName : transaction.from.user?.fullName
         const username = isFromMe ? transaction.from.user?.username : transaction.to.user?.username
         const showPayButton = transaction.transactionType === "request" && !isFromMe && transaction.status === "requested"
-        const showMap = (transaction.transactionType === "request" && isFromMe) || (transaction.transactionType === "transfer" && !isFromMe) ? false : true
+        const showMap = !((transaction.transactionType === "request" && isFromMe) || (transaction.transactionType === "transfer" && !isFromMe))
 
         let amountColor;
 
@@ -95,7 +109,7 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
 
     const fetchAccountTransactions = async (page: number = 1, pageSize: number = showNewTransaction ? 20 : 10) => {
         try {
-            const { data } = await accountTransactions({
+            const {data} = await accountTransactions({
                 variables: {
                     "page": page,
                     "pageSize": pageSize
@@ -118,8 +132,8 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
         setRefreshing(false);
     }, []);
 
-    const onScroll = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const { contentOffset, layoutMeasurement, contentSize } = nativeEvent;
+    const onScroll = ({nativeEvent}: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const {contentOffset, layoutMeasurement, contentSize} = nativeEvent;
         const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 20; // Adjust the threshold as needed
 
         setIsBottom(isAtBottom);
@@ -130,15 +144,17 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
         (async () => {
             if (hasNewTransaction) {
                 await fetchAccountTransactions()
-                await dispatch(transactionActions.setHasNewTransaction(false))
+                dispatch(transactionActions.setHasNewTransaction(false))
             }
         })()
 
     }, [isFocused, hasNewTransaction])
 
     useEffect(() => {
-        setIsLoading(true)
-        fetchAccountTransactions()
+        (async () => {
+            await fetchAccountTransactions()
+            setIsLoading(true)
+        })()
     }, [])
 
     useEffect(() => {
@@ -147,7 +163,7 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
                 try {
                     setIsLoadingMore(true)
 
-                    const { data } = await refetchAccountTransactions({ page: page + 1, pageSize: 20 })
+                    const {data} = await refetchAccountTransactions({page: page + 1, pageSize: 20})
 
                     if (data.accountTransactions.length > 0) {
                         setPage(page + 1)
@@ -165,52 +181,75 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
     }, [isBottom])
 
     return (
-        isLoading ? <TransactionSkeleton /> : (
+        isLoading ? <TransactionSkeleton/> : (
             <VStack flex={1} pt={"20px"} bg={colors.darkGray}>
                 {showNewTransaction ? <VStack px={"20px"} w={"100%"} alignItems={"center"}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <Input h={"50px"} w={"100%"} placeholder='Buscar...' onChangeText={(value) => handleSearch(value.toLowerCase())} />
-                    </TouchableWithoutFeedback >
+                        <Input h={"50px"} w={"100%"} placeholder='Buscar...'
+                               onChangeText={(value) => handleSearch(value.toLowerCase())}/>
+                    </TouchableWithoutFeedback>
                 </VStack> : null}
-                <ScrollView onScroll={onScroll} flex={1} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} contentContainerStyle={{ paddingBottom: 80 }}>
+                <ScrollView onScroll={onScroll} flex={1}
+                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
+                            contentContainerStyle={{paddingBottom: 80}}>
                     {filteredTransactions.length > 0 ?
-                        <VStack w={"100%"} >
+                        <VStack w={"100%"}>
                             <HStack w={"100%"} justifyContent={"space-between"}>
-                                <Heading px={showNewTransaction ? "20px" : "0px"} fontSize={scale(20)} color={"white"}>{"Transacciones"}</Heading>
-                                {!showNewTransaction ? <Pressable _pressed={{ opacity: 0.5 }} onPress={() => router.navigate("/transactions")}>
-                                    <Heading px={showNewTransaction ? "20px" : "0px"} underline fontSize={scale(17)} color={colors.pureGray}>{"Ver más"}</Heading>
+                                <Heading px={showNewTransaction ? "20px" : "0px"} fontSize={scale(20)}
+                                         color={"white"}>{"Transacciones"}</Heading>
+                                {!showNewTransaction ? <Pressable _pressed={{opacity: 0.5}}
+                                                                  onPress={() => router.navigate("/transactions")}>
+                                    <Heading px={showNewTransaction ? "20px" : "0px"} underline fontSize={scale(17)}
+                                             color={colors.pureGray}>{"Ver más"}</Heading>
                                 </Pressable> : null}
                             </HStack>
-                            <FlatList                                
+                            <FlatList
                                 style={{paddingHorizontal: showNewTransaction ? 20 : 0, marginTop: 10}}
                                 scrollEnabled={false}
                                 data={transactions}
-                                renderItem={({ item, index }: any) => (
-                                    <TouchableOpacity key={`transactions(tgrtgnrhbfhrbgr)-${item.transactionId}-${index}-${item.transactionId}`} onPress={() => { }}>
-                                        <HStack alignItems={"center"} justifyContent={"space-between"} my={"10px"} borderRadius={10}>
+                                renderItem={({item, index}: any) => (
+                                    <TouchableOpacity
+                                        key={`transactions(tgrtgnrhbfhrbgr)-${item.transactionId}-${index}-${item.transactionId}`}
+                                        onPress={() => {
+                                        }}>
+                                        <HStack alignItems={"center"} justifyContent={"space-between"} my={"10px"}
+                                                borderRadius={10}>
                                             <HStack>
                                                 {formatTransaction(item).profileImageUrl ?
-                                                    <Image borderRadius={100} resizeMode='contain' alt='logo-image-transactions' w={scale(40)} h={scale(40)} source={{ uri: formatTransaction(item).profileImageUrl }} />
+                                                    <Image borderRadius={100} resizeMode='contain'
+                                                           alt='logo-image-transactions' w={scale(40)} h={scale(40)}
+                                                           source={{uri: formatTransaction(item).profileImageUrl}}/>
                                                     :
-                                                    <Avatar borderRadius={100} w={"50px"} h={"50px"} bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(formatTransaction(item).fullName || "")}>
+                                                    <Avatar borderRadius={100} w={"50px"} h={"50px"}
+                                                            bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(formatTransaction(item).fullName || "")}>
                                                         <Heading size={"sm"} color={colors.white}>
                                                             {EXTRACT_FIRST_LAST_INITIALS(formatTransaction(item).fullName || "0")}
                                                         </Heading>
                                                     </Avatar>
                                                 }
                                                 <VStack ml={"10px"} justifyContent={"center"}>
-                                                    <Heading textTransform={"capitalize"} fontSize={scale(13)} color={"white"}>{MAKE_FULL_NAME_SHORTEN(formatTransaction(item).fullName || "")}</Heading>
-                                                    <Text fontSize={scale(10)} color={colors.lightSkyGray}>{moment(Number(item.createdAt)).format("lll")}</Text>
+                                                    <Heading textTransform={"capitalize"} fontSize={scale(13)}
+                                                             color={"white"}>{MAKE_FULL_NAME_SHORTEN(formatTransaction(item).fullName || "")}</Heading>
+                                                    <Text fontSize={scale(10)}
+                                                          color={colors.lightSkyGray}>{moment(Number(item.createdAt)).format("lll")}</Text>
                                                 </VStack>
                                             </HStack>
                                             <VStack ml={"10px"} justifyContent={"center"}>
                                                 {formatTransaction(item).showPayButton ?
-                                                    <HStack space={1} w={"120px"} h={"40px"} bg={colors.mainGreen} borderRadius={25} color='white' justifyContent={"center"} alignItems={"center"}>
-                                                        <Heading textTransform={"capitalize"} fontSize={scale(13)} color={"white"}>Pagar</Heading>
-                                                        <Text fontWeight={"semibold"} fontSize={scale(10)} color={colors.white}>{FORMAT_CURRENCY(formatTransaction(item).amount)}</Text>
+                                                    <HStack space={1} w={"120px"} h={"40px"} bg={colors.mainGreen}
+                                                            borderRadius={25} color='white' justifyContent={"center"}
+                                                            alignItems={"center"}>
+                                                        <Heading textTransform={"capitalize"} fontSize={scale(13)}
+                                                                 color={"white"}>Pagar</Heading>
+                                                        <Text fontWeight={"semibold"} fontSize={scale(10)}
+                                                              color={colors.white}>{FORMAT_CURRENCY(formatTransaction(item).amount)}</Text>
                                                     </HStack>
                                                     :
-                                                    <Heading opacity={item.status === "cancelled" ? 0.5 : 1} textDecorationLine={item.status === "cancelled" ? "line-through" : "none"} fontWeight={"semibold"} textTransform={"capitalize"} fontSize={scale(13)} color={formatTransaction(item).amountColor}>{FORMAT_CURRENCY(formatTransaction(item).amount)}</Heading>
+                                                    <Heading opacity={item.status === "cancelled" ? 0.5 : 1}
+                                                             textDecorationLine={item.status === "cancelled" ? "line-through" : "none"}
+                                                             fontWeight={"semibold"} textTransform={"capitalize"}
+                                                             fontSize={scale(13)}
+                                                             color={formatTransaction(item).amountColor}>{FORMAT_CURRENCY(formatTransaction(item).amount)}</Heading>
                                                 }
                                             </VStack>
                                         </HStack>
@@ -219,16 +258,20 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
                             />
                         </VStack>
                         : (
-                            <VStack mt={"20px"} w={"100%"} h={height / 3} px={"20px"} justifyContent={"flex-end"} alignItems={"center"}>
-                                <Image resizeMode='contain' alt='logo-image-resizeMode' w={"100%"} h={"100%"} source={noTransactions} />
+                            <VStack mt={"20px"} w={"100%"} h={height / 3} px={"20px"} justifyContent={"flex-end"}
+                                    alignItems={"center"}>
+                                <Image resizeMode='contain' alt='logo-image-resizeMode' w={"100%"} h={"100%"}
+                                       source={noTransactions}/>
                                 <VStack justifyContent={"center"} alignItems={"center"}>
-                                    <Heading textTransform={"capitalize"} fontSize={scale(20)} color={"white"}>No hay transacciones</Heading>
-                                    <Text fontSize={scale(14)} color={"white"}>Todavía no hay transacciones para mostrar</Text>
+                                    <Heading textTransform={"capitalize"} fontSize={scale(20)} color={"white"}>No hay
+                                        transacciones</Heading>
+                                    <Text fontSize={scale(14)} color={"white"}>Todavía no hay transacciones para
+                                        mostrar</Text>
                                 </VStack>
                             </VStack>
                         )
                     }
-                    {isLoadingMore ? <Spinner mt={"10px"} size={"lg"} /> : null}
+                    {isLoadingMore ? <Spinner mt={"10px"} size={"lg"}/> : null}
                 </ScrollView>
 
             </VStack>
@@ -236,4 +279,4 @@ const TopupPhoneTransactions: React.FC<Props> = ({ showNewTransaction = true }: 
     )
 }
 
-export default TopupPhoneTransactions
+export default TopUpPhoneTransactions

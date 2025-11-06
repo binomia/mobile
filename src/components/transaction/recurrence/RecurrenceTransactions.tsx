@@ -1,21 +1,29 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import colors from '@/src/colors'
 import moment from 'moment';
 import BottomSheet from '@/src/components/global/BottomSheet';
 import PagerView from 'react-native-pager-view';
 import Button from '@/src/components/global/Button';
-import { Dimensions, FlatList, RefreshControl } from 'react-native'
-import { Heading, Image, Text, VStack, HStack, Pressable, Spinner, ScrollView, Avatar } from 'native-base'
-import { scale } from 'react-native-size-matters';
-import { useLazyQuery, useMutation } from '@apollo/client/react';
-import { TransactionApolloQueries } from '@/src/apollo/query/transactionQuery';
-import { deleteIcon, editIcon, noTransactions } from '@/src/assets';
-import { Entypo } from '@expo/vector-icons';
-import { EXTRACT_FIRST_LAST_INITIALS, FORMAT_CURRENCY, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, getNextBiWeeklyDate, getNextDay, getSpecificDayOfMonth, MAKE_FULL_NAME_SHORTEN } from '@/src/helpers';
-import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { recurenceMonthlyData, recurenceWeeklyData, getTitleById } from '@/src/mocks';
-import { WeeklyQueueTitleType } from '@/src/types';
+import {Dimensions, FlatList, RefreshControl} from 'react-native'
+import {Heading, Image, Text, VStack, HStack, Pressable, Spinner, ScrollView, Avatar} from 'native-base'
+import {scale} from 'react-native-size-matters';
+import {useLazyQuery, useMutation} from '@apollo/client/react';
+import {TransactionApolloQueries} from '@/src/apollo/query/transactionQuery';
+import {deleteIcon, editIcon, noTransactions} from '@/src/assets';
+import {Entypo} from '@expo/vector-icons';
+import {
+    EXTRACT_FIRST_LAST_INITIALS,
+    FORMAT_CURRENCY,
+    GENERATE_RAMDOM_COLOR_BASE_ON_TEXT,
+    getNextBiWeeklyDate,
+    getNextDay,
+    getSpecificDayOfMonth,
+    MAKE_FULL_NAME_SHORTEN
+} from '@/src/helpers';
+import {router} from 'expo-router';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {recurenceMonthlyData, recurenceWeeklyData, getTitleById} from '@/src/mocks';
+import {WeeklyQueueTitleType} from '@/src/types';
 
 type Props = {
     title?: string
@@ -24,8 +32,11 @@ type Props = {
     onCloseFinish?: () => void
 }
 
-const { height, width } = Dimensions.get('window')
-const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish = () => { } }) => {
+const {height, width} = Dimensions.get('window')
+const RecurrenceTransactions: React.FC<Props> = ({
+                                                     open = false, onCloseFinish = () => {
+    }
+                                                 }) => {
     const ref = useRef<PagerView>(null);
 
     const [getAccountRecurrentTransactions] = useLazyQuery<any>(TransactionApolloQueries.accountRecurrentTransactions())
@@ -52,7 +63,7 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
 
     const fetchAccountRecurrentTransactions = async (page: number = 1, pageSize: number = 10) => {
         try {
-            const { data } = await getAccountRecurrentTransactions({
+            const {data} = await getAccountRecurrentTransactions({
                 variables: {
                     page,
                     pageSize
@@ -62,7 +73,7 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
             setTransactions(data.accountRecurrentTransactions)
 
         } catch (error: any) {
-            console.error({ fetchAccountRecurrentTransactions: error });
+            console.error({fetchAccountRecurrentTransactions: error});
         }
     }
 
@@ -162,7 +173,7 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
             console.log(JSON.stringify(transaction, null, 2));
 
             setStartDeleting(true)
-            const { jobId, queueType } = transaction
+            const {jobId, queueType} = transaction
             if (!jobId) return
 
             await deleteRecurrentTransactions({
@@ -178,7 +189,7 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
             setStartDeleting(false)
 
         } catch (error) {
-            console.error({ onDelete: error });
+            console.error({onDelete: error});
             setVisible(false)
             setSpin(false)
         }
@@ -190,9 +201,7 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
 
         if (value === "weekly") {
             ref.current?.setPage(2)
-        }
-
-        else if (value === "monthly") {
+        } else if (value === "monthly") {
             ref.current?.setPage(2)
 
         } else if (value === "biweekly") {
@@ -212,19 +221,25 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
 
         return (
             <VStack px={"10px"} w={"100%"}>
-                <Heading w={"100%"} mb={"20px"} px={"5px"} textAlign={"left"} fontSize={scale(20)} color={"white"}>Selecciona un día</Heading>
+                <Heading w={"100%"} mb={"20px"} px={"5px"} textAlign={"left"} fontSize={scale(20)} color={"white"}>Selecciona
+                    un día</Heading>
                 <FlatList
                     scrollEnabled={false}
                     data={recurenceWeeklyData}
-                    renderItem={({ item }) => (
+                    renderItem={({item}) => (
                         <HStack my={"10px"} w={"100%"} justifyContent={"space-between"}>
-                            {item?.map(({ title, id }) => (
-                                <Pressable w={width * 0.46} key={id} borderRadius={"5px"} justifyContent={"center"} alignItems={"center"} h={scale(45)} bg={recurrenceDaySelected === id ? colors.mainGreen : colors.lightGray} _pressed={{ opacity: 0.5 }} onPress={() => onSelecteOption(id, title)} borderColor={colors.mainGreen}>
-                                    <Heading fontSize={scale(12)} fontWeight={"500"} color={recurrenceDaySelected === id ? colors.white : colors.mainGreen}>{title}</Heading>
+                            {item?.map(({title, id}) => (
+                                <Pressable w={width * 0.46} key={id} borderRadius={"5px"} justifyContent={"center"}
+                                           alignItems={"center"} h={scale(45)}
+                                           bg={recurrenceDaySelected === id ? colors.mainGreen : colors.lightGray}
+                                           _pressed={{opacity: 0.5}} onPress={() => onSelecteOption(id, title)}
+                                           borderColor={colors.mainGreen}>
+                                    <Heading fontSize={scale(12)} fontWeight={"500"}
+                                             color={recurrenceDaySelected === id ? colors.white : colors.mainGreen}>{title}</Heading>
                                 </Pressable>
                             ))}
                         </HStack>
-                    )} />
+                    )}/>
             </VStack>
         )
     }
@@ -239,14 +254,21 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
         }
 
         return (
-            <VStack h={"95%"} py={"0px"} w={"100%"} alignItems={"center"} >
-                <Heading w={"100%"} mb={"20px"} px={"20px"} textAlign={"left"} fontSize={scale(20)} color={"white"}>Selecciona un día</Heading>
+            <VStack h={"95%"} py={"0px"} w={"100%"} alignItems={"center"}>
+                <Heading w={"100%"} mb={"20px"} px={"20px"} textAlign={"left"} fontSize={scale(20)} color={"white"}>Selecciona
+                    un día</Heading>
                 <VStack space={"15px"}>
                     {recurenceMonthlyData.map((item, index) => (
-                        <HStack px={"10px"} key={`recurenceMonthly${index}`} w={"100%"} justifyContent={"space-between"}>
-                            {item?.map(({ title, id, day }) => (
-                                <Pressable _pressed={{ opacity: 0.5 }} key={title} flexWrap={"nowrap"} onPress={() => onSelecteOption(id, title)} w={scale(width / 7)} h={scale(width / 7)} bg={recurrenceDaySelected === id ? colors.mainGreen : colors.lightGray} justifyContent={"center"} alignItems={"center"} borderRadius={10}>
-                                    <Heading fontSize={scale(15)} fontWeight={"500"} color={recurrenceDaySelected === id ? colors.white : colors.mainGreen}>{day}</Heading>
+                        <HStack px={"10px"} key={`recurenceMonthly${index}`} w={"100%"}
+                                justifyContent={"space-between"}>
+                            {item?.map(({title, id, day}) => (
+                                <Pressable _pressed={{opacity: 0.5}} key={title} flexWrap={"nowrap"}
+                                           onPress={() => onSelecteOption(id, title)} w={scale(width / 7)}
+                                           h={scale(width / 7)}
+                                           bg={recurrenceDaySelected === id ? colors.mainGreen : colors.lightGray}
+                                           justifyContent={"center"} alignItems={"center"} borderRadius={10}>
+                                    <Heading fontSize={scale(15)} fontWeight={"500"}
+                                             color={recurrenceDaySelected === id ? colors.white : colors.mainGreen}>{day}</Heading>
                                 </Pressable>
                             ))}
                         </HStack>
@@ -259,10 +281,10 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
     const RenderOptions: React.FC = () => {
         switch (recurrence) {
             case "weekly":
-                return <RenderWeeklyOption />
+                return <RenderWeeklyOption/>
 
             case "monthly":
-                return <RenderMonthlyOption />
+                return <RenderMonthlyOption/>
 
             default:
                 return null
@@ -311,7 +333,9 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
     }
 
     useEffect(() => {
-        fetchAccountRecurrentTransactions()
+        (async () => {
+            await fetchAccountRecurrentTransactions()
+        })()
     }, [])
 
     useEffect(() => {
@@ -323,43 +347,63 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
     }, [recurrence, recurrenceDaySelected, isEdited])
 
     return (
-        <BottomSheet onOpenFinish={fetchAccountRecurrentTransactions} onCloseFinish={onCloseFinish} open={open} height={height * 0.9}>
-            <SafeAreaView style={{ flex: 1, backgroundColor: colors.darkGray }}>
-                <PagerView style={{ flex: 1 }} ref={ref} initialPage={0} onPageSelected={() => { }}>
+        <BottomSheet onOpenFinish={fetchAccountRecurrentTransactions} onCloseFinish={onCloseFinish} open={open}
+                     height={height * 0.9}>
+            <SafeAreaView style={{flex: 1, backgroundColor: colors.darkGray}}>
+                <PagerView style={{flex: 1}} ref={ref} initialPage={0} onPageSelected={() => {
+                }}>
                     <VStack key={"recurrent-transactions"}>
                         {transactions.length > 0 ? (
-                            <ScrollView px={"20px"} w={"100%"} h={"100%"} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+                            <ScrollView px={"20px"} w={"100%"} h={"100%"}
+                                        refreshControl={<RefreshControl refreshing={refreshing}
+                                                                        onRefresh={onRefresh}/>}>
                                 <VStack>
                                     <HStack w={"100%"} justifyContent={"space-between"}>
-                                        <Heading fontSize={scale(20)} mt={"30px"} fontWeight={"500"} color={"white"}>Recurrentes</Heading>
-                                        <Pressable onPress={onPressNewTransaction} mt={"20px"} w={scale(35)} h={scale(35)} borderRadius={100} bg={colors.lightGray} _pressed={{ opacity: 0.5 }} justifyContent={"center"} alignItems={"center"} >
-                                            <Entypo name="plus" size={scale(20)} color={colors.mainGreen} />
+                                        <Heading fontSize={scale(20)} mt={"30px"} fontWeight={"500"}
+                                                 color={"white"}>Recurrentes</Heading>
+                                        <Pressable onPress={onPressNewTransaction} mt={"20px"} w={scale(35)}
+                                                   h={scale(35)} borderRadius={100} bg={colors.lightGray}
+                                                   _pressed={{opacity: 0.5}} justifyContent={"center"}
+                                                   alignItems={"center"}>
+                                            <Entypo name="plus" size={scale(20)} color={colors.mainGreen}/>
                                         </Pressable>
                                     </HStack>
                                     <FlatList
                                         scrollEnabled={false}
                                         data={transactions}
-                                        style={{ marginTop: 20 }}
-                                        renderItem={({ item, index }) => (
-                                            <Pressable key={`${item?.repeatJobKey}-${index}`} onPress={() => onSelectTransaction(item)} my={"10px"} _pressed={{ opacity: 0.5 }} flexDirection={"row"} justifyContent={"space-between"}>
+                                        style={{marginTop: 20}}
+                                        renderItem={({item, index}) => (
+                                            <Pressable key={`${item?.repeatJobKey}-${index}`}
+                                                       onPress={() => onSelectTransaction(item)} my={"10px"}
+                                                       _pressed={{opacity: 0.5}} flexDirection={"row"}
+                                                       justifyContent={"space-between"}>
                                                 <HStack alignItems={"center"}>
                                                     {item?.referenceData?.logo ?
-                                                        <Image borderRadius={100} resizeMode='contain' alt='logo-image' w={scale(45)} h={scale(45)} source={{ uri: item?.referenceData?.logo }} />
+                                                        <Image borderRadius={100} resizeMode='contain' alt='logo-image'
+                                                               w={scale(45)} h={scale(45)}
+                                                               source={{uri: item?.referenceData?.logo}}/>
                                                         :
-                                                        <Avatar borderRadius={100} w={scale(45)} h={scale(45)} bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(item?.referenceData?.fullName || "")}>
+                                                        <Avatar borderRadius={100} w={scale(45)} h={scale(45)}
+                                                                bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(item?.referenceData?.fullName || "")}>
                                                             <Heading size={"sm"} color={colors.white}>
                                                                 {EXTRACT_FIRST_LAST_INITIALS(item?.referenceData?.fullName || "0")}
                                                             </Heading>
                                                         </Avatar>
                                                     }
                                                     <VStack ml={"10px"} justifyContent={"center"}>
-                                                        <Heading textTransform={"capitalize"} fontSize={scale(14)} color={"white"}>{MAKE_FULL_NAME_SHORTEN(item?.referenceData?.fullName || "")}</Heading>
-                                                        <Text textTransform={"capitalize"} fontSize={scale(10)} color={colors.lightSkyGray}>{formatTransactionRecurrenceTime(item?.jobName, item?.jobTime)}</Text>
-                                                        <Text textTransform={"capitalize"} fontSize={scale(10)} color={colors.lightSkyGray}>Proximo pago: {moment(formatTransactionNextDate(item?.jobName, item?.jobTime)).format("ll")}</Text>
+                                                        <Heading textTransform={"capitalize"} fontSize={scale(14)}
+                                                                 color={"white"}>{MAKE_FULL_NAME_SHORTEN(item?.referenceData?.fullName || "")}</Heading>
+                                                        <Text textTransform={"capitalize"} fontSize={scale(10)}
+                                                              color={colors.lightSkyGray}>{formatTransactionRecurrenceTime(item?.jobName, item?.jobTime)}</Text>
+                                                        <Text textTransform={"capitalize"} fontSize={scale(10)}
+                                                              color={colors.lightSkyGray}>Proximo
+                                                            pago: {moment(formatTransactionNextDate(item?.jobName, item?.jobTime)).format("ll")}</Text>
                                                     </VStack>
                                                 </HStack>
                                                 <VStack ml={"10px"} justifyContent={"center"}>
-                                                    <Heading fontWeight={"semibold"} textTransform={"capitalize"} fontSize={scale(14)} color={"mainGreen"}>{FORMAT_CURRENCY(item?.amount)}</Heading>
+                                                    <Heading fontWeight={"semibold"} textTransform={"capitalize"}
+                                                             fontSize={scale(14)}
+                                                             color={"mainGreen"}>{FORMAT_CURRENCY(item?.amount)}</Heading>
                                                 </VStack>
                                             </Pressable>
                                         )}
@@ -368,17 +412,24 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
                             </ScrollView>
                         ) : (
                             <VStack w={"100%"} h={"100%"} px={"20px"}>
-                                <Heading fontSize={scale(20)} mt={"30px"} fontWeight={"500"} color={"white"}>Transacciones</Heading>
+                                <Heading fontSize={scale(20)} mt={"30px"} fontWeight={"500"}
+                                         color={"white"}>Transacciones</Heading>
 
                                 <VStack h={"70%"} justifyContent={"center"}>
-                                    <Image resizeMode="contain" alt='logo-image' w={width} h={width / 2} source={noTransactions} />
+                                    <Image resizeMode="contain" alt='logo-image' w={width} h={width / 2}
+                                           source={noTransactions}/>
                                     <VStack alignItems={"center"}>
-                                        <Heading textTransform={"capitalize"} fontSize={scale(20)} color={"white"}>No hay transacciones</Heading>
-                                        <Text textAlign={"center"} fontSize={scale(14)} color={"white"}>Todavía no hay transacciones para mostrar</Text>
+                                        <Heading textTransform={"capitalize"} fontSize={scale(20)} color={"white"}>No
+                                            hay transacciones</Heading>
+                                        <Text textAlign={"center"} fontSize={scale(14)} color={"white"}>Todavía no hay
+                                            transacciones para mostrar</Text>
                                     </VStack>
                                     <HStack w={"100%"} justifyContent={"center"}>
-                                        <Pressable onPress={onPressNewTransaction} bg={colors.lightGray} w={scale(50)} h={scale(50)} borderRadius={100} mt={"20px"} _pressed={{ opacity: 0.5 }} justifyContent={"center"} alignItems={"center"} >
-                                            <Entypo name="plus" size={scale(30)} color={colors.mainGreen} />
+                                        <Pressable onPress={onPressNewTransaction} bg={colors.lightGray} w={scale(50)}
+                                                   h={scale(50)} borderRadius={100} mt={"20px"}
+                                                   _pressed={{opacity: 0.5}} justifyContent={"center"}
+                                                   alignItems={"center"}>
+                                            <Entypo name="plus" size={scale(30)} color={colors.mainGreen}/>
                                         </Pressable>
                                     </HStack>
                                 </VStack>
@@ -390,40 +441,69 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
                             <HStack justifyContent={"space-between"}>
                                 <HStack alignItems={"center"}>
                                     {transaction.profileImageUrl ?
-                                        <Image borderRadius={100} resizeMode='contain' alt='logo-image' w={scale(45)} h={scale(45)} source={{ uri: transaction.profileImageUrl }} />
+                                        <Image borderRadius={100} resizeMode='contain' alt='logo-image' w={scale(45)}
+                                               h={scale(45)} source={{uri: transaction.profileImageUrl}}/>
                                         :
-                                        <Avatar borderRadius={100} w={"50px"} h={"50px"} bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(transaction.fullName || "")}>
+                                        <Avatar borderRadius={100} w={"50px"} h={"50px"}
+                                                bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(transaction.fullName || "")}>
                                             <Heading size={"sm"} color={colors.white}>
                                                 {EXTRACT_FIRST_LAST_INITIALS(transaction.fullName || "0")}
                                             </Heading>
                                         </Avatar>
                                     }
                                     <VStack ml={"10px"} justifyContent={"center"}>
-                                        <Heading textTransform={"capitalize"} fontSize={scale(16)} color={"white"}>{MAKE_FULL_NAME_SHORTEN(transaction.fullName ?? "")}</Heading>
-                                        <Text fontSize={scale(10)} textTransform={"capitalize"} color={colors.lightSkyGray}>{formatTransactionRecurrenceTime(transaction.jobName, transaction.jobTime)}</Text>
-                                        <Text textTransform={"capitalize"} fontSize={scale(10)} color={colors.lightSkyGray}>Proximo pago: {moment(formatTransactionNextDate(transaction.jobName, transaction.jobTime)).format("ll")}</Text>
+                                        <Heading textTransform={"capitalize"} fontSize={scale(16)}
+                                                 color={"white"}>{MAKE_FULL_NAME_SHORTEN(transaction.fullName ?? "")}</Heading>
+                                        <Text fontSize={scale(10)} textTransform={"capitalize"}
+                                              color={colors.lightSkyGray}>{formatTransactionRecurrenceTime(transaction.jobName, transaction.jobTime)}</Text>
+                                        <Text textTransform={"capitalize"} fontSize={scale(10)}
+                                              color={colors.lightSkyGray}>Proximo
+                                            pago: {moment(formatTransactionNextDate(transaction.jobName, transaction.jobTime)).format("ll")}</Text>
                                     </VStack>
                                 </HStack>
                                 <VStack ml={"10px"} justifyContent={"center"}>
-                                    <Heading fontWeight={"semibold"} textTransform={"capitalize"} fontSize={scale(16)} color={"mainGreen"}>{FORMAT_CURRENCY(transaction.amount)}</Heading>
+                                    <Heading fontWeight={"semibold"} textTransform={"capitalize"} fontSize={scale(16)}
+                                             color={"mainGreen"}>{FORMAT_CURRENCY(transaction.amount)}</Heading>
                                 </VStack>
                             </HStack>
                             <VStack mt={"50px"}>
-                                <Heading fontSize={scale(20)} mt={"20px"} fontWeight={"500"} color={"white"}>Envió Recurrente</Heading>
+                                <Heading fontSize={scale(20)} mt={"20px"} fontWeight={"500"} color={"white"}>Envió
+                                    Recurrente</Heading>
                                 <HStack mt={"20px"} justifyContent={"space-between"}>
-                                    <Pressable onPress={() => onRecurrenceChange("weekly")} opacity={recurrence === "weekly" ? 1 : 0.8} w={"49%"} h={scale(50)} bg={recurrence === "weekly" ? colors.mainGreen : colors.lightGray} borderRadius={10} alignItems={"center"} justifyContent={"center"} _pressed={{ opacity: 0.5 }}>
-                                        <Heading fontSize={scale(16)} fontWeight={"500"} color={recurrence === "weekly" ? colors.white : colors.mainGreen}>Semanal</Heading>
-                                        {recurrence === "weekly" && recurrenceOptionSelected ? <Text fontSize={scale(10)} color={colors.white}>{recurrenceOptionSelected}</Text> : null}
+                                    <Pressable onPress={() => onRecurrenceChange("weekly")}
+                                               opacity={recurrence === "weekly" ? 1 : 0.8} w={"49%"} h={scale(50)}
+                                               bg={recurrence === "weekly" ? colors.mainGreen : colors.lightGray}
+                                               borderRadius={10} alignItems={"center"} justifyContent={"center"}
+                                               _pressed={{opacity: 0.5}}>
+                                        <Heading fontSize={scale(16)} fontWeight={"500"}
+                                                 color={recurrence === "weekly" ? colors.white : colors.mainGreen}>Semanal</Heading>
+                                        {recurrence === "weekly" && recurrenceOptionSelected ?
+                                            <Text fontSize={scale(10)}
+                                                  color={colors.white}>{recurrenceOptionSelected}</Text> : null}
                                     </Pressable>
-                                    <Pressable onPress={() => onRecurrenceChange("biweekly")} opacity={recurrence === "biweekly" ? 1 : 0.8} w={"49%"} h={scale(50)} bg={recurrence === "biweekly" ? colors.mainGreen : colors.lightGray} borderRadius={10} alignItems={"center"} justifyContent={"center"} _pressed={{ opacity: 0.5 }}>
-                                        <Heading fontSize={scale(16)} fontWeight={"500"} color={recurrence === "biweekly" ? colors.white : colors.mainGreen}>Quincenal</Heading>
-                                        {recurrence === "biweekly" && recurrenceBiweeklyOptionSelected ? <Text fontSize={scale(10)} color={colors.white}>{recurrenceBiweeklyOptionSelected}</Text> : null}
+                                    <Pressable onPress={() => onRecurrenceChange("biweekly")}
+                                               opacity={recurrence === "biweekly" ? 1 : 0.8} w={"49%"} h={scale(50)}
+                                               bg={recurrence === "biweekly" ? colors.mainGreen : colors.lightGray}
+                                               borderRadius={10} alignItems={"center"} justifyContent={"center"}
+                                               _pressed={{opacity: 0.5}}>
+                                        <Heading fontSize={scale(16)} fontWeight={"500"}
+                                                 color={recurrence === "biweekly" ? colors.white : colors.mainGreen}>Quincenal</Heading>
+                                        {recurrence === "biweekly" && recurrenceBiweeklyOptionSelected ?
+                                            <Text fontSize={scale(10)}
+                                                  color={colors.white}>{recurrenceBiweeklyOptionSelected}</Text> : null}
                                     </Pressable>
                                 </HStack>
                                 <HStack mt={"20px"} justifyContent={"space-between"}>
-                                    <Pressable onPress={() => onRecurrenceChange("monthly")} opacity={recurrence === "monthly" ? 1 : 0.8} w={"49%"} h={scale(50)} bg={recurrence === "monthly" ? colors.mainGreen : colors.lightGray} borderRadius={10} alignItems={"center"} justifyContent={"center"} _pressed={{ opacity: 0.5 }}>
-                                        <Heading fontSize={scale(16)} fontWeight={"500"} color={recurrence === "monthly" ? colors.white : colors.mainGreen}>Mensual</Heading>
-                                        {recurrence === "monthly" && recurrenceDayOptionSelected ? <Text fontSize={scale(10)} color={colors.white}>{recurrenceDayOptionSelected}</Text> : null}
+                                    <Pressable onPress={() => onRecurrenceChange("monthly")}
+                                               opacity={recurrence === "monthly" ? 1 : 0.8} w={"49%"} h={scale(50)}
+                                               bg={recurrence === "monthly" ? colors.mainGreen : colors.lightGray}
+                                               borderRadius={10} alignItems={"center"} justifyContent={"center"}
+                                               _pressed={{opacity: 0.5}}>
+                                        <Heading fontSize={scale(16)} fontWeight={"500"}
+                                                 color={recurrence === "monthly" ? colors.white : colors.mainGreen}>Mensual</Heading>
+                                        {recurrence === "monthly" && recurrenceDayOptionSelected ?
+                                            <Text fontSize={scale(10)}
+                                                  color={colors.white}>{recurrenceDayOptionSelected}</Text> : null}
                                     </Pressable>
                                 </HStack>
                             </VStack>
@@ -449,7 +529,7 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
                         </HStack>
                     </VStack>
                     <VStack w={"100%"} mt={"20px"} key={"RenderOptions"}>
-                        <RenderOptions />
+                        <RenderOptions/>
                     </VStack>
                 </PagerView>
                 <BottomSheet onCloseFinish={onBottomSheetCloseFinish} height={height * 0.5} open={visible}>
@@ -457,34 +537,47 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
                         <HStack p={"20px"} justifyContent={"space-between"}>
                             <HStack alignItems={"center"}>
                                 {transaction.profileImageUrl ?
-                                    <Image borderRadius={100} resizeMode='contain' alt='logo-image' w={scale(45)} h={scale(45)} source={{ uri: transaction.profileImageUrl }} />
+                                    <Image borderRadius={100} resizeMode='contain' alt='logo-image' w={scale(45)}
+                                           h={scale(45)} source={{uri: transaction.profileImageUrl}}/>
                                     :
-                                    <Avatar borderRadius={100} w={"50px"} h={"50px"} bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(transaction.fullName || "")}>
+                                    <Avatar borderRadius={100} w={"50px"} h={"50px"}
+                                            bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(transaction.fullName || "")}>
                                         <Heading size={"sm"} color={colors.white}>
                                             {EXTRACT_FIRST_LAST_INITIALS(transaction.fullName || "0")}
                                         </Heading>
                                     </Avatar>
                                 }
                                 <VStack ml={"10px"} justifyContent={"center"}>
-                                    <Heading textTransform={"capitalize"} fontSize={scale(16)} color={"white"}>{MAKE_FULL_NAME_SHORTEN(transaction.fullName ?? "")}</Heading>
-                                    <Text fontSize={scale(10)} textTransform={"capitalize"} color={colors.lightSkyGray}>{formatTransactionRecurrenceTime(transaction.jobName, transaction.jobTime)}</Text>
-                                    <Text textTransform={"capitalize"} fontSize={scale(10)} color={colors.lightSkyGray}>Proximo pago: {moment(formatTransactionNextDate(transaction.jobName, transaction.jobTime)).format("ll")}</Text>
+                                    <Heading textTransform={"capitalize"} fontSize={scale(16)}
+                                             color={"white"}>{MAKE_FULL_NAME_SHORTEN(transaction.fullName ?? "")}</Heading>
+                                    <Text fontSize={scale(10)} textTransform={"capitalize"}
+                                          color={colors.lightSkyGray}>{formatTransactionRecurrenceTime(transaction.jobName, transaction.jobTime)}</Text>
+                                    <Text textTransform={"capitalize"} fontSize={scale(10)} color={colors.lightSkyGray}>Proximo
+                                        pago: {moment(formatTransactionNextDate(transaction.jobName, transaction.jobTime)).format("ll")}</Text>
                                 </VStack>
                             </HStack>
                             <VStack ml={"10px"} justifyContent={"center"}>
-                                <Heading fontWeight={"semibold"} textTransform={"capitalize"} fontSize={scale(16)} color={"mainGreen"}>{FORMAT_CURRENCY(transaction.amount)}</Heading>
+                                <Heading fontWeight={"semibold"} textTransform={"capitalize"} fontSize={scale(16)}
+                                         color={"mainGreen"}>{FORMAT_CURRENCY(transaction.amount)}</Heading>
                             </VStack>
                         </HStack>
-                        <HStack key={"Recurrente-1"} p={"20px"} mt={"20px"} borderRadius={10} w={"100%"} space={2} >
-                            <Pressable onPress={onDelete} _pressed={{ opacity: 0.5 }} w={"49%"} h={scale(120)} bg={colors.lightGray} borderRadius={10} alignItems={"center"} justifyContent={"center"}>
+                        <HStack key={"Recurrente-1"} p={"20px"} mt={"20px"} borderRadius={10} w={"100%"} space={2}>
+                            <Pressable onPress={onDelete} _pressed={{opacity: 0.5}} w={"49%"} h={scale(120)}
+                                       bg={colors.lightGray} borderRadius={10} alignItems={"center"}
+                                       justifyContent={"center"}>
                                 {startDeleting ?
-                                    <Spinner color={"red"} size={"lg"} /> :
-                                    <Image alt='logo-image' resizeMode='contain' w={scale(30)} h={scale(30)} source={deleteIcon} />
+                                    <Spinner color={"red"} size={"lg"}/> :
+                                    <Image alt='logo-image' resizeMode='contain' w={scale(30)} h={scale(30)}
+                                           source={deleteIcon}/>
                                 }
-                                <Heading mt={"5px"} fontWeight={"600"} fontSize={scale(14)} color={colors.red}>Eliminar</Heading>
+                                <Heading mt={"5px"} fontWeight={"600"} fontSize={scale(14)}
+                                         color={colors.red}>Eliminar</Heading>
                             </Pressable>
-                            <Pressable onPress={onEdit} _pressed={{ opacity: 0.5 }} w={"49%"} h={scale(120)} bg={colors.lightGray} borderRadius={10} alignItems={"center"} justifyContent={"center"}>
-                                <Image alt='logo-image' resizeMode='contain' w={scale(30)} h={scale(30)} source={editIcon} />
+                            <Pressable onPress={onEdit} _pressed={{opacity: 0.5}} w={"49%"} h={scale(120)}
+                                       bg={colors.lightGray} borderRadius={10} alignItems={"center"}
+                                       justifyContent={"center"}>
+                                <Image alt='logo-image' resizeMode='contain' w={scale(30)} h={scale(30)}
+                                       source={editIcon}/>
                                 <Heading fontSize={scale(14)} mt={"5px"} color={colors.mainGreen}>Editar</Heading>
                             </Pressable>
                         </HStack>
@@ -495,7 +588,6 @@ const RecurrenceTransactions: React.FC<Props> = ({ open = false, onCloseFinish =
         </BottomSheet>
     )
 }
-
 
 
 export default RecurrenceTransactions

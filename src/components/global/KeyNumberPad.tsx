@@ -1,10 +1,10 @@
 import React from 'react'
-import { Text, StyledProps, Pressable, VStack, Heading } from 'native-base';
-import { StyleSheet, Dimensions, FlatList } from 'react-native';
+import {Text, StyledProps, Pressable, VStack, Heading} from 'native-base';
+import {StyleSheet, Dimensions, FlatList} from 'react-native';
 import colors from '@/src/colors';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import { FORMAT_CURRENCY } from '@/src/helpers';
-import { scale } from 'react-native-size-matters';
+import {FORMAT_CURRENCY} from '@/src/helpers';
+import {scale} from 'react-native-size-matters';
 import * as Haptics from 'expo-haptics';
 
 
@@ -14,8 +14,11 @@ interface Props extends StyledProps {
 }
 
 
-const { height } = Dimensions.get("window")
-const KeyNumberPad: React.FC<Props> = ({ onChange = (_: string) => { }, maxAmount = 1e6 }): React.JSX.Element => {
+const {height} = Dimensions.get("window")
+const KeyNumberPad: React.FC<Props> = ({
+                                           onChange = (_: string) => {
+                                           }, maxAmount = 1e6
+                                       }): React.JSX.Element => {
     const [value, setValue] = React.useState<string>("0")
     const [valueScale, setValueScale] = React.useState<number>(0)
 
@@ -23,7 +26,7 @@ const KeyNumberPad: React.FC<Props> = ({ onChange = (_: string) => { }, maxAmoun
 
     const onInputChange = async (number: string) => {
         if (value.length === 0 && number === "0" || number === "." && value.includes(".")) {
-            Haptics.notificationAsync(
+            await Haptics.notificationAsync(
                 Haptics.NotificationFeedbackType.Error
             )
 
@@ -50,9 +53,10 @@ const KeyNumberPad: React.FC<Props> = ({ onChange = (_: string) => { }, maxAmoun
                 await delay(100)
                 setValueScale(0)
 
-                Haptics.notificationAsync(
+                await Haptics.notificationAsync(
                     Haptics.NotificationFeedbackType.Error
                 )
+
                 return
             }
 
@@ -63,17 +67,24 @@ const KeyNumberPad: React.FC<Props> = ({ onChange = (_: string) => { }, maxAmoun
 
     return (
         <VStack>
-            <Heading mb={"40px"} fontSize={scale(38 + valueScale)} color={"mainGreen"} textAlign={"center"}>{FORMAT_CURRENCY(Number(value))}</Heading>
-            <FlatList columnWrapperStyle={styles.ColumnWrapperStyle} contentContainerStyle={{ alignItems: "center", justifyContent: "center" }} data={["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "x"]} numColumns={3} renderItem={({ item }) => (
-                item === "x" ?
-                    <Pressable key={`number-key-pad-key-${item}`} onPress={() => onInputChange(item)} style={styles.OuterButton} _pressed={styles.OuterButtonPressed}>
-                        <FontAwesome6 name="delete-left" size={22} color={colors.white} />
-                    </Pressable>
-                    :
-                    <Pressable key={`number-key-pad-key-${item}`} onPress={() => onInputChange(item)} style={styles.OuterButton} _pressed={styles.OuterButtonPressed}>
-                        <Text fontWeight={"extrabold"} opacity={1} fontSize={"20px"} textAlign={"center"} color={colors.white}>{item}</Text>
-                    </Pressable>
-            )} />
+            <Heading mb={"40px"} fontSize={scale(38 + valueScale)} color={"mainGreen"}
+                     textAlign={"center"}>{FORMAT_CURRENCY(Number(value))}</Heading>
+            <FlatList columnWrapperStyle={styles.ColumnWrapperStyle}
+                      contentContainerStyle={{alignItems: "center", justifyContent: "center"}}
+                      data={["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "x"]} numColumns={3}
+                      renderItem={({item}) => (
+                          item === "x" ?
+                              <Pressable key={`number-key-pad-key-${item}`} onPress={() => onInputChange(item)}
+                                         style={styles.OuterButton} _pressed={styles.OuterButtonPressed}>
+                                  <FontAwesome6 name="delete-left" size={22} color={colors.white}/>
+                              </Pressable>
+                              :
+                              <Pressable key={`number-key-pad-key-${item}`} onPress={() => onInputChange(item)}
+                                         style={styles.OuterButton} _pressed={styles.OuterButtonPressed}>
+                                  <Text fontWeight={"extrabold"} opacity={1} fontSize={"20px"} textAlign={"center"}
+                                        color={colors.white}>{item}</Text>
+                              </Pressable>
+                      )}/>
         </VStack>
 
     )

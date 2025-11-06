@@ -23,7 +23,7 @@ const SingleTopTup: React.FC<Props> = ({ topup, open, onClose }: Props) => {
         onClose(false)
     }
 
-    const StatuIcon: React.FC<{ status: string }> = ({ status }: { status: string }) => {
+    const StatusIcon: React.FC<{ status: string }> = ({ status }: { status: string }) => {
         const _w = "35px"
         const _h = "35px"
         if (status === "completed") {
@@ -62,7 +62,7 @@ const SingleTopTup: React.FC<Props> = ({ topup, open, onClose }: Props) => {
         const isAvailableAsync = await Sharing.isAvailableAsync()
         if (!isAvailableAsync) return
 
-        await Sharing.shareAsync("http://test.com")
+        await Sharing.shareAsync("https://localhost:8080")
     }
 
     return (
@@ -86,7 +86,7 @@ const SingleTopTup: React.FC<Props> = ({ topup, open, onClose }: Props) => {
                         <Text mb={"10px"} color={colors.lightSkyGray}>{FORMAT_CREATED_DATE(topup?.createdAt)}</Text>
                     </VStack>
                     <VStack mb={"20px"} ml={"10px"} alignItems={"center"} justifyContent={"center"}>
-                        <StatuIcon status={topup.status} />
+                        <StatusIcon status={topup.status} />
                         <Text ml={"3px"} textAlign={"center"} fontSize={scale(16)} color={colors.lightSkyGray}>{transactionStatus(topup.status)}</Text>
                     </VStack>
                 </VStack>

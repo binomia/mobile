@@ -1,23 +1,23 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import Button from '../global/Button';
 import Input from '../global/Input';
 import colors from '@/src/colors';
 import PagerView from 'react-native-pager-view';
-import { Dimensions, Keyboard, TouchableWithoutFeedback } from 'react-native'
-import { HStack, Pressable, Image, VStack, Text, Heading } from 'native-base'
-import { KeyboardAvoidingScrollView } from '@cassianosch/react-native-keyboard-sticky-footer-avoiding-scroll-view';
-import { CreditCardView, CreditCardFormData, CreditCardInput } from 'react-native-credit-card-input';
-import { cardBackHolder, cardHolder, noCard } from '@/src/assets';
-import { scale } from 'react-native-size-matters';
-import { MaterialIcons } from '@expo/vector-icons';
-import { TEXT_PARAGRAPH_FONT_SIZE } from '@/src/constants';
-import { CreditCardFormField } from 'react-native-credit-card-input';
-import { useLazyQuery } from '@apollo/client/react';
-import { CardApolloQueries } from '@/src/apollo/query/cardQuery';
-import { useDispatch, useSelector } from 'react-redux';
-import { CardType } from '@/src/types';
-import { accountActions } from '@/src/redux/slices/accountSlice';
-import { DispatchType } from '@/src/redux';
+import {Dimensions, Keyboard, TouchableWithoutFeedback} from 'react-native'
+import {HStack, Pressable, Image, VStack, Text, Heading} from 'native-base'
+import {KeyboardAvoidingScrollView} from '@cassianosch/react-native-keyboard-sticky-footer-avoiding-scroll-view';
+import {CreditCardView, CreditCardFormData, CreditCardInput} from 'react-native-credit-card-input';
+import {cardBackHolder, cardHolder, noCard} from '@/src/assets';
+import {scale} from 'react-native-size-matters';
+import {MaterialIcons} from '@expo/vector-icons';
+import {TEXT_PARAGRAPH_FONT_SIZE} from '@/src/constants';
+import {CreditCardFormField} from 'react-native-credit-card-input';
+import {useLazyQuery} from '@apollo/client/react';
+import {CardApolloQueries} from '@/src/apollo/query/cardQuery';
+import {useDispatch, useSelector} from 'react-redux';
+import {CardType} from '@/src/types';
+import {accountActions} from '@/src/redux/slices/accountSlice';
+import {DispatchType} from '@/src/redux';
 
 
 type Props = {
@@ -27,13 +27,17 @@ type Props = {
     onClose?: () => void
 }
 
-const { height } = Dimensions.get('window')
-const EditCard: React.FC<Props> = ({ onPress = async (_: any) => { }, onClose = () => { }, openToEdit = false }: Props) => {
+const {height} = Dimensions.get('window')
+const EditCard: React.FC<Props> = ({
+                                       onPress = async (_: any) => {
+                                       }, onClose = () => {
+    }, openToEdit = false
+                                   }: Props) => {
     const ref = useRef<PagerView>(null);
     const [fetchCards] = useLazyQuery<any>(CardApolloQueries.cards())
     const [fetchCard] = useLazyQuery<any>(CardApolloQueries.card())
     const dispatch = useDispatch<DispatchType>()
-    const { card }: { card: CardType } = useSelector((state: any) => state.accountReducer)
+    const {card}: { card: CardType } = useSelector((state: any) => state.accountReducer)
 
 
     const [number, setNumber] = useState("")
@@ -60,7 +64,7 @@ const EditCard: React.FC<Props> = ({ onPress = async (_: any) => { }, onClose = 
 
     const onRefreshCards = useCallback(async () => {
         try {
-            const { data } = await fetchCards()
+            const {data} = await fetchCards()
             dispatch(accountActions.setCards(data.cards))
 
         } catch (error) {
@@ -101,7 +105,7 @@ const EditCard: React.FC<Props> = ({ onPress = async (_: any) => { }, onClose = 
         }
     }
 
-    const onCardChange = ({ values, status }: CreditCardFormData) => {
+    const onCardChange = ({values, status}: CreditCardFormData) => {
         setNumber(values.number.replaceAll(" ", ""))
         setExpiry(values.expiry)
         setCvc(values.cvc)
@@ -111,7 +115,7 @@ const EditCard: React.FC<Props> = ({ onPress = async (_: any) => { }, onClose = 
 
     const fetchDecryptedCard = async () => {
         try {
-            const { data } = await fetchCard({
+            const {data} = await fetchCard({
                 variables: {
                     cardId: card.id
                 }
@@ -128,7 +132,7 @@ const EditCard: React.FC<Props> = ({ onPress = async (_: any) => { }, onClose = 
             }
 
         } catch (error: any) {
-            console.log({ fetchDecryptedCard: error });
+            console.log({fetchDecryptedCard: error});
         }
     }
 
@@ -173,16 +177,19 @@ const EditCard: React.FC<Props> = ({ onPress = async (_: any) => { }, onClose = 
 
 
     useEffect(() => {
-        if (openToEdit)
-            fetchDecryptedCard()
+        (async () => {
+            if (openToEdit)
+                await fetchDecryptedCard()
+        })()
     }, [openToEdit])
 
     return (
-        <PagerView style={{ flex: 0.97 }} initialPage={0} ref={ref}>
+        <PagerView style={{flex: 0.97}} initialPage={0} ref={ref}>
             <VStack p={"20px"}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <KeyboardAvoidingScrollView stickyFooter={<StickyFooter />}>
-                        <HStack alignItems={"center"} bg={colors.lightGray} w={"100%"} py={scale(height * 0.015)} borderRadius={10}>
+                    <KeyboardAvoidingScrollView stickyFooter={<StickyFooter/>}>
+                        <HStack alignItems={"center"} bg={colors.lightGray} w={"100%"} py={scale(height * 0.015)}
+                                borderRadius={10}>
                             <CreditCardView
                                 imageFront={cardHolder}
                                 imageBack={cardBackHolder}
@@ -198,16 +205,37 @@ const EditCard: React.FC<Props> = ({ onPress = async (_: any) => { }, onClose = 
 
                         <VStack mt={"10px"} w={"100%"} bg={colors.lightGray} borderRadius={10} py={"10px"}>
                             <HStack px={"10px"} justifyContent={"space-between"}>
-                                <Input bg={colors.darkGray} value={name} onFocus={() => setFocusedField("name")} h={scale(45)} placeholder='Nombre De La Tarjeta' onChangeText={(text) => setName(text)} />
+                                <Input bg={colors.darkGray} value={name} onFocus={() => setFocusedField("name")}
+                                       h={scale(45)} placeholder='Nombre De La Tarjeta'
+                                       onChangeText={(text) => setName(text)}/>
                             </HStack>
-                            <CreditCardInput placeholders={{ number: formatCardNumber(number), expiry, cvc }} onChange={onCardChange} onFocusField={(field: CreditCardFormField) => setFocusedField(field)} placeholderColor={colors.white} style={{ width: "100%", borderRadius: 10, backgroundColor: colors.lightGray }} labelStyle={{ display: "none" }} inputStyle={{ color: colors.white, fontSize: scale(14), paddingHorizontal: 10, borderRadius: 10, borderBottomColor: colors.darkGray, height: scale(45), backgroundColor: colors.darkGray }} />
+                            <CreditCardInput placeholders={{number: formatCardNumber(number), expiry, cvc}}
+                                             onChange={onCardChange}
+                                             onFocusField={(field: CreditCardFormField) => setFocusedField(field)}
+                                             placeholderColor={colors.white} style={{
+                                width: "100%",
+                                borderRadius: 10,
+                                backgroundColor: colors.lightGray
+                            }} labelStyle={{display: "none"}} inputStyle={{
+                                color: colors.white,
+                                fontSize: scale(14),
+                                paddingHorizontal: 10,
+                                borderRadius: 10,
+                                borderBottomColor: colors.darkGray,
+                                height: scale(45),
+                                backgroundColor: colors.darkGray
+                            }}/>
                             <HStack px={"10px"} justifyContent={"space-between"}>
-                                <Input bg={colors.darkGray} value={alias} onFocus={() => setFocusedField("alias")} h={scale(45)} placeholder='Nombre Del Banco' onChangeText={(text) => setAlias(text)} />
+                                <Input bg={colors.darkGray} value={alias} onFocus={() => setFocusedField("alias")}
+                                       h={scale(45)} placeholder='Nombre Del Banco'
+                                       onChangeText={(text) => setAlias(text)}/>
                             </HStack>
                         </VStack>
                         <HStack alignItems={"center"} w={"100%"} mt={"20px"}>
                             <Pressable onPress={onPressPrimary}>
-                                <MaterialIcons style={{ marginTop: 3 }} name={asPrimary ? "check-box" : "check-box-outline-blank"} size={28} color={colors.mainGreen} />
+                                <MaterialIcons style={{marginTop: 3}}
+                                               name={asPrimary ? "check-box" : "check-box-outline-blank"} size={28}
+                                               color={colors.mainGreen}/>
                             </Pressable>
                             <Text mx={"5px"} fontSize={`${TEXT_PARAGRAPH_FONT_SIZE}px`} w={"100%"} color={"white"}>
                                 Agregue tarjeta como principal.
@@ -220,11 +248,13 @@ const EditCard: React.FC<Props> = ({ onPress = async (_: any) => { }, onClose = 
             <VStack key={"error-CreditCardView-1"}>
                 <VStack py={"30px"} px={"10px"} mb={"30px"} justifyContent={"space-between"} flex={1}>
                     <VStack mt={"10px"}>
-                        <Image alt='logo-image' h={height / 3} resizeMode='contain' w={"100%"} source={noCard} />
-                        <Heading textTransform={"capitalize"} fontSize={scale(20)} color={colors.white} textAlign={"center"}>{errorMessage}</Heading>
-                        <Text textAlign={"center"} fontSize={scale(15)} color={colors.pureGray}>Por favor, añada una tarjeta  que no esté ya vinculada a su cuenta.</Text>
+                        <Image alt='logo-image' h={height / 3} resizeMode='contain' w={"100%"} source={noCard}/>
+                        <Heading textTransform={"capitalize"} fontSize={scale(20)} color={colors.white}
+                                 textAlign={"center"}>{errorMessage}</Heading>
+                        <Text textAlign={"center"} fontSize={scale(15)} color={colors.pureGray}>Por favor, añada una
+                            tarjeta que no esté ya vinculada a su cuenta.</Text>
                     </VStack>
-                    <Button onPress={() => ref.current?.setPage(0)} title="Añadir Tarjeta" bg={colors.mainGreen} />
+                    <Button onPress={() => ref.current?.setPage(0)} title="Añadir Tarjeta" bg={colors.mainGreen}/>
                 </VStack>
             </VStack>
         </PagerView>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import colors from '@/src/colors'
 import Input from '@/src/components/global/Input'
 import CreateTransaction from '@/src/components/transaction/CreateTransaction';
@@ -6,28 +6,28 @@ import BottomSheet from '@/src/components/global/BottomSheet';
 import PagerView from 'react-native-pager-view';
 import TranferRequestDetails from '@/src/components/transaction/TranferRequestDetails';
 import SingleSentTransaction from '@/src/components/transaction/SingleSentTransaction';
-import {  Keyboard, TouchableWithoutFeedback, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native'
-import { Heading, Image, Text, VStack, HStack, Avatar } from 'native-base'
-import { useLazyQuery } from '@apollo/client/react'
-import { UserApolloQueries } from '@/src/apollo/query'
-import { UserAuthSchema } from '@/src/auth/userAuth'
-import { z } from 'zod'
-import { EXTRACT_FIRST_LAST_INITIALS, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, MAKE_FULL_NAME_SHORTEN } from '@/src/helpers'
-import { scale } from 'react-native-size-matters';
-import { useDispatch, useSelector } from 'react-redux';
-import { transactionActions } from '@/src/redux/slices/transactionSlice';
-import { router } from 'expo-router';
-import { pendingClock } from '@/src/assets';
-import { fetchRecentTransactions } from '@/src/redux/fetchHelper';
-import { DispatchType, StateType } from '@/src/redux';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {Keyboard, TouchableWithoutFeedback, FlatList, TouchableOpacity, Dimensions, Alert} from 'react-native'
+import {Heading, Image, Text, VStack, HStack, Avatar} from 'native-base'
+import {useLazyQuery} from '@apollo/client/react'
+import {UserApolloQueries} from '@/src/apollo/query'
+import {UserAuthSchema} from '@/src/auth/userAuth'
+import {z} from 'zod'
+import {EXTRACT_FIRST_LAST_INITIALS, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT, MAKE_FULL_NAME_SHORTEN} from '@/src/helpers'
+import {scale} from 'react-native-size-matters';
+import {useDispatch, useSelector} from 'react-redux';
+import {transactionActions} from '@/src/redux/slices/transactionSlice';
+import {router} from 'expo-router';
+import {pendingClock} from '@/src/assets';
+import {fetchRecentTransactions} from '@/src/redux/fetchHelper';
+import {DispatchType, StateType} from '@/src/redux';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
-const { height } = Dimensions.get('window')
+const {height} = Dimensions.get('window')
 
 const Request: React.FC = () => {
     const dispatch = useDispatch<DispatchType>()
     const ref = useRef<PagerView>(null);
-    const { receiver } = useSelector((state: StateType) => state.transactionReducer)
+    const {receiver} = useSelector((state: StateType) => state.transactionReducer)
     const [fetchSingleUser] = useLazyQuery<any>(UserApolloQueries.singleUser())
 
     const [searchUser] = useLazyQuery<any>(UserApolloQueries.searchUser())
@@ -40,7 +40,7 @@ const Request: React.FC = () => {
 
 
     const fetchSugestedUsers = async () => {
-        const sugestedUsers = await getSugestedUsers({ variables: { allowRequestMe: true } })
+        const sugestedUsers = await getSugestedUsers({variables: {allowRequestMe: true}})
         const _users = await UserAuthSchema.searchUserData.parseAsync(sugestedUsers.data.sugestedUsers)
         setUsers(_users)
     }
@@ -51,7 +51,7 @@ const Request: React.FC = () => {
                 await fetchSugestedUsers()
 
             } else {
-                const { data } = await searchUser({
+                const {data} = await searchUser({
                     variables: {
                         "allowRequestMe": true,
                         "limit": 5,
@@ -73,14 +73,14 @@ const Request: React.FC = () => {
     }
 
     const onSelectUser = async (user: z.infer<typeof UserAuthSchema.singleSearchUserData>) => {
-         dispatch(transactionActions.setReceiver(user))
+        dispatch(transactionActions.setReceiver(user))
         setOpenRequest(true)
     }
 
     const onCloseFinish = async () => {
         setOpenRequest(false)
 
-         dispatch(transactionActions.setReceiver({}))
+        dispatch(transactionActions.setReceiver({}))
         setInput("0")
 
         if (currentPage === 2) {
@@ -117,13 +117,13 @@ const Request: React.FC = () => {
     }
 
     const onPageSelected = async () => {
-        const { data } = await fetchSingleUser({
+        const {data} = await fetchSingleUser({
             variables: {
                 username: receiver.username
             }
         })
 
-        const { status, allowRequestMe } = data.singleUser.account
+        const {status, allowRequestMe} = data.singleUser.account
         if (!allowRequestMe) {
             Alert.alert("Advertencia", `${receiver.fullName} no puede recibir dinero en este momento.`, [{
                 onPress: async () => {
@@ -131,8 +131,8 @@ const Request: React.FC = () => {
                     ref.current?.setPage(0)
 
                     await onCloseFinish()
-                    await dispatch(transactionActions.setTransactionDetails({}))
                     await fetchSugestedUsers()
+                    dispatch(transactionActions.setTransactionDetails({}))
                 }
             }])
 
@@ -156,35 +156,42 @@ const Request: React.FC = () => {
     }
 
     useEffect(() => {
-        fetchSugestedUsers()
+        (async () => {
+            await fetchSugestedUsers()
+        })()
     }, [])
 
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <SafeAreaView style={{ flex: 1, backgroundColor: colors.darkGray }}>
+            <SafeAreaView style={{flex: 1, backgroundColor: colors.darkGray}}>
                 <VStack px={"20px"} pt={"20px"}>
                     <VStack w={"100%"} alignItems={"center"}>
-                        <Input h={"50px"} w={"100%"} placeholder='Buscar...' onChangeText={(text) => handleSearch(text.toLowerCase())} bColor={colors.lightGray} />
+                        <Input h={"50px"} w={"100%"} placeholder='Buscar...'
+                               onChangeText={(text) => handleSearch(text.toLowerCase())} bColor={colors.lightGray}/>
                     </VStack>
                     <Heading mt={"40px"} size={"lg"} color={"white"}>Recomendados</Heading>
                     <FlatList
-                        style={{ height: "100%", marginTop: 10 }}
+                        style={{height: "100%", marginTop: 10}}
                         data={users}
-                        renderItem={({ item, index }) => (
-                            <TouchableOpacity key={`search_user_${index}-${item.username}`} onPress={() => onSelectUser(item)}>
+                        renderItem={({item, index}) => (
+                            <TouchableOpacity key={`search_user_${index}-${item.username}`}
+                                              onPress={() => onSelectUser(item)}>
                                 <HStack alignItems={"center"} my={"10px"} borderRadius={10}>
                                     {item.profileImageUrl ?
-                                        <Image borderRadius={100} resizeMode='contain' alt='logo-image' w={"50px"} h={"50px"} source={{ uri: item.profileImageUrl }} />
+                                        <Image borderRadius={100} resizeMode='contain' alt='logo-image' w={"50px"}
+                                               h={"50px"} source={{uri: item.profileImageUrl}}/>
                                         :
-                                        <Avatar borderRadius={100} w={"50px"} h={"50px"} bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(item.fullName || "")}>
+                                        <Avatar borderRadius={100} w={"50px"} h={"50px"}
+                                                bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(item.fullName || "")}>
                                             <Heading size={"sm"} color={colors.white}>
                                                 {EXTRACT_FIRST_LAST_INITIALS(item.fullName || "0")}
                                             </Heading>
                                         </Avatar>
                                     }
                                     <VStack ml={"10px"} justifyContent={"center"}>
-                                        <Heading textTransform={"capitalize"} fontSize={scale(15)} color={"white"}>{MAKE_FULL_NAME_SHORTEN(item.fullName)}</Heading>
+                                        <Heading textTransform={"capitalize"} fontSize={scale(15)}
+                                                 color={"white"}>{MAKE_FULL_NAME_SHORTEN(item.fullName)}</Heading>
                                         <Text color={colors.lightSkyGray}>{item.username}</Text>
                                     </VStack>
                                 </HStack>
@@ -192,12 +199,14 @@ const Request: React.FC = () => {
                         )}
                     />
                     <BottomSheet height={height * 0.9} open={openRequest} onCloseFinish={onCloseFinish}>
-                        <PagerView style={{ flex: 1 }} scrollEnabled={false} onPageSelected={onPageSelected} ref={ref} initialPage={currentPage}>
+                        <PagerView style={{flex: 1}} scrollEnabled={false} onPageSelected={onPageSelected} ref={ref}
+                                   initialPage={currentPage}>
                             <HStack h={"95%"}>
-                                <CreateTransaction nextPage={nextPage} title='Solicitar' showBalance={false} setInput={setInput} input={input} />
+                                <CreateTransaction nextPage={nextPage} title='Solicitar' showBalance={false}
+                                                   setInput={setInput} input={input}/>
                             </HStack>
-                            <TranferRequestDetails goBack={prevPage} onCloseFinish={onCloseFinish} goNext={nextPage} />
-                            <SingleSentTransaction key={"single-request-transaction-2"} iconImage={pendingClock} />
+                            <TranferRequestDetails goBack={prevPage} onCloseFinish={onCloseFinish} goNext={nextPage}/>
+                            <SingleSentTransaction key={"single-request-transaction-2"} iconImage={pendingClock}/>
                         </PagerView>
                     </BottomSheet>
                 </VStack>

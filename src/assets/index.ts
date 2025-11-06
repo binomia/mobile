@@ -80,7 +80,6 @@ import location from './icons/location.png';
 import allIcon from './icons/all.png';
 
 
-
 export {
     drPlaceHolder,
     splash,

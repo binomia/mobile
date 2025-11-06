@@ -1,34 +1,34 @@
 import * as Contacts from 'expo-contacts';
 import phone from 'phone';
+import {HASH} from "cryptografia";
 
 
 export const useContacts = () => {
     const getContacts = async (): Promise<any[]> => {
-        const { status } = await Contacts.requestPermissionsAsync();
+        const {status} = await Contacts.requestPermissionsAsync();
         if (status === 'granted') {
-            const { data } = await Contacts.getContactsAsync({
+            const {data} = await Contacts.getContactsAsync({
                 fields: [Contacts.Fields.PhoneNumbers]
             });
 
-            const contacts = data.reduce((validContacts, contact: Contacts.Contact) => {
+            return data.reduce((validContacts, contact: Contacts.Contact) => {
                 const validPhoneNumbers = contact.phoneNumbers?.filter((phoneNumber: Contacts.PhoneNumber) => {
                     if (!phoneNumber.number) return false
-                    const { isValid } = phone(phoneNumber.number, { country: "DO" });
+                    const {isValid} = phone(phoneNumber.number, {country: "DO"});
                     return isValid;
                 });
 
-                if (validPhoneNumbers?.length) {
+
+                if (validPhoneNumbers?.length && validPhoneNumbers.length > 0) {
                     validContacts.push({
-                        id: contact.id as string,
+                        id: HASH.sha256(Date.now().toString()),
                         name: contact.name,
                         phoneNumbers: validPhoneNumbers
                     });
                 }
 
                 return validContacts;
-            }, [] as Array<{ id: string, name: string, phoneNumbers: Contacts.PhoneNumber[] }>);
-
-            return contacts
+            }, [] as Array<{ id: string, name: string, phoneNumbers: Contacts.PhoneNumber[] }>)
         } else {
             console.log('Permission to access contacts was denied');
             return []
@@ -39,11 +39,9 @@ export const useContacts = () => {
         const contacts = await getContacts();
 
         // Filter to find the contact with the specified phone number
-        const foundContact = contacts.find((contact: Contacts.Contact) => contact.phoneNumbers?.some((phone: Contacts.PhoneNumber) => {
+        return contacts.find((contact: Contacts.Contact) => contact.phoneNumbers?.some((phone: Contacts.PhoneNumber) => {
             return phone.number?.replace(/\s+/g, '') === phoneNumber.replace(/\s+/g, '')
-        }));
-
-        return foundContact
+        }))
     }
 
     return {

@@ -21,7 +21,7 @@ const CameraFaceMask: React.FC = () => {
 		}
 	});
 
-	const frameProcessor = useSkiaFrameProcessor((frame: DrawableFrame) => {
+	const frameProcessor = useSkiaFrameProcessor(async (frame: DrawableFrame) => {
 		'worklet'
 		frame.render()
 
@@ -99,13 +99,8 @@ const CameraFaceMask: React.FC = () => {
 			}
 		}
 
-		handleDetectedFaces(faces)
+		await handleDetectedFaces(faces)
 	}, [])
-
-
-
-
-
 
 	return (
 		device &&

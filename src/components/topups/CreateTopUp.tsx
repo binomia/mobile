@@ -1,32 +1,32 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import colors from '@/src/colors'
 import BottomSheet from '@/src/components/global/BottomSheet'
 import Input from '@/src/components/global/Input'
 import Button from '@/src/components/global/Button'
 import phone from 'phone'
-import { Dimensions, Keyboard, StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import { Heading, Image, Text, VStack, HStack, Pressable } from 'native-base'
-import { Entypo } from "@expo/vector-icons";
-import { FORMAT_PHONE_NUMBER } from '@/src/helpers'
-import { scale } from 'react-native-size-matters'
-import { useDispatch } from 'react-redux'
-import { topupActions } from '@/src/redux/slices/topupSlice'
-import { FlatGrid } from 'react-native-super-grid'
-import { useLazyQuery } from '@apollo/client/react'
-import { TopUpApolloQueries } from '@/src/apollo/query'
-import { TopUpAuthSchema } from '@/src/auth/topUpAuth'
-import { z } from 'zod'
-import { TopUpContext } from '@/src/contexts/topUpContext'
-import { DispatchType } from '@/src/redux'
+import {Dimensions, Keyboard, StyleSheet, TouchableWithoutFeedback} from 'react-native'
+import {Heading, Image, Text, VStack, HStack, Pressable} from 'native-base'
+import {Entypo} from "@expo/vector-icons";
+import {FORMAT_PHONE_NUMBER} from '@/src/helpers'
+import {scale} from 'react-native-size-matters'
+import {useDispatch} from 'react-redux'
+import {topupActions} from '@/src/redux/slices/topupSlice'
+import {FlatGrid} from 'react-native-super-grid'
+import {useLazyQuery} from '@apollo/client/react'
+import {TopUpApolloQueries} from '@/src/apollo/query'
+import {TopUpAuthSchema} from '@/src/auth/topUpAuth'
+import {z} from 'zod'
+import {TopUpContext} from '@/src/contexts/topUpContext'
+import {DispatchType} from '@/src/redux'
 
 
 type Props = {
     next: () => void
 }
 
-const { height, width } = Dimensions.get('window')
-const CreateTopUp: React.FC<Props> = ({ next }: Props) => {
-    const { phoneNumber, fullName, company, setCompany, setFullName, setPhoneNumber } = useContext(TopUpContext)
+const {height, width} = Dimensions.get('window')
+const CreateTopUp: React.FC<Props> = ({next}: Props) => {
+    const {phoneNumber, fullName, company, setCompany, setFullName, setPhoneNumber} = useContext(TopUpContext)
 
     const [topUpCompanies] = useLazyQuery<any>(TopUpApolloQueries.topUpCompanies())
     const dispatch = useDispatch<DispatchType>()
@@ -38,10 +38,10 @@ const CreateTopUp: React.FC<Props> = ({ next }: Props) => {
 
     const fetchCompanies = async () => {
         try {
-            const { data } = await topUpCompanies()
+            const {data} = await topUpCompanies()
             setCompanies(data.topUpCompanies)
         } catch (error) {
-            console.error({ fetchCompanies: error });
+            console.error({fetchCompanies: error});
         }
     }
 
@@ -56,12 +56,12 @@ const CreateTopUp: React.FC<Props> = ({ next }: Props) => {
     }
 
     const isAValidPhoneNumber = (value: string) => {
-        const { isValid } = phone(value, { country: "DO" });
+        const {isValid} = phone(value, {country: "DO"});
         return isValid
     };
 
     const onNext = async () => {
-        await dispatch(topupActions.setNewTopUp({
+        dispatch(topupActions.setNewTopUp({
             logo: company?.logo,
             company: company,
             phone: phoneNumber,
@@ -71,7 +71,9 @@ const CreateTopUp: React.FC<Props> = ({ next }: Props) => {
     }
 
     useEffect(() => {
-        fetchCompanies()
+        (async () => {
+            await fetchCompanies()
+        })()
     }, [])
 
     useEffect(() => {
@@ -82,21 +84,24 @@ const CreateTopUp: React.FC<Props> = ({ next }: Props) => {
         <VStack variant={"body"} justifyContent={"space-between"}>
             <VStack mt={"20px"}>
                 <Heading fontSize={scale(24)} color={"white"}>Crear Recarga</Heading>
-                <TouchableWithoutFeedback style={{ flex: 1 }} onPress={Keyboard.dismiss}>
+                <TouchableWithoutFeedback style={{flex: 1}} onPress={Keyboard.dismiss}>
                     <VStack h={"70%"}>
-                        <Pressable onPress={() => setOpenBottomSheet(true)} mt={"20px"} h={60} px={"15px"} _pressed={{ opacity: 0.5 }} flexDirection={"row"} bg={colors.lightGray} justifyContent={"space-between"} alignItems={"center"} borderRadius={10}>
+                        <Pressable onPress={() => setOpenBottomSheet(true)} mt={"20px"} h={60} px={"15px"}
+                                   _pressed={{opacity: 0.5}} flexDirection={"row"} bg={colors.lightGray}
+                                   justifyContent={"space-between"} alignItems={"center"} borderRadius={10}>
                             {company?.name ? (
                                 <HStack justifyContent={"space-between"} w={"100%"} h={"100%"} alignItems={"center"}>
                                     <HStack alignItems={"center"}>
-                                        <Image w={"35px"} h={"35px"} alt='logo-selectedCompany-image' borderRadius={100} resizeMode='contain' source={{ uri: company.logo }} />
+                                        <Image w={"35px"} h={"35px"} alt='logo-selectedCompany-image' borderRadius={100}
+                                               resizeMode='contain' source={{uri: company.logo}}/>
                                         <Heading px={"10px"} fontSize={18} color={colors.white}>{company.name}</Heading>
                                     </HStack>
-                                    <Entypo name="chevron-down" size={24} color={colors.white} />
+                                    <Entypo name="chevron-down" size={24} color={colors.white}/>
                                 </HStack>
                             ) : (
                                 <HStack justifyContent={"space-between"} w={"100%"} alignItems={"center"}>
                                     <Text fontSize={15} color={colors.gray}>Seleccione una compañia</Text>
-                                    <Entypo name="chevron-down" size={24} color={colors.gray} />
+                                    <Entypo name="chevron-down" size={24} color={colors.gray}/>
                                 </HStack>
                             )}
                         </Pressable>
@@ -143,16 +148,19 @@ const CreateTopUp: React.FC<Props> = ({ next }: Props) => {
                         data={companies}
                         style={styles.gridView}
                         spacing={15}
-                        renderItem={({ item: company }) => (
-                            <Pressable onPress={() => onCompanySelect(company)} h={120} my={"3px"} key={company?.name} px={"15px"} _pressed={{ opacity: 0.5 }} bg={colors.lightGray} justifyContent={"center"} alignItems={"center"} borderRadius={10}>
-                                <Image w={"45px"} h={"45px"} alt='logo-topUpCompanies-BottomSheet-image' borderRadius={100} resizeMode='contain' source={{ uri: company?.logo }} />
+                        renderItem={({item: company}) => (
+                            <Pressable onPress={() => onCompanySelect(company)} h={120} my={"3px"} key={company?.name}
+                                       px={"15px"} _pressed={{opacity: 0.5}} bg={colors.lightGray}
+                                       justifyContent={"center"} alignItems={"center"} borderRadius={10}>
+                                <Image w={"45px"} h={"45px"} alt='logo-topUpCompanies-BottomSheet-image'
+                                       borderRadius={100} resizeMode='contain' source={{uri: company?.logo}}/>
                                 <Heading mt={"5px"} fontSize={18} color={colors.white}>{company?.name}</Heading>
                             </Pressable>
                         )}
                     />
                 </BottomSheet>
             </HStack>
-        </VStack >
+        </VStack>
 
 
     )

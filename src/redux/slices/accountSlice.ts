@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { fetchAccountLimit } from '../fetchHelper'
+import {createSlice} from '@reduxjs/toolkit'
+import {fetchAccountLimit} from '../fetchHelper'
 
 type InitialStateType = {
     limits: any,
@@ -25,10 +25,6 @@ const accountSlice = createSlice({
     name: 'global',
     initialState,
     reducers: {
-        reSetAllState: (state) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            state = initialState
-        },
         setCard: (state, action) => {
             state.card = action.payload
         },

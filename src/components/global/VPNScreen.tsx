@@ -1,16 +1,16 @@
-import { Dimensions } from 'react-native'
-import React, { useState } from 'react'
-import { Heading, HStack, Text, Image, VStack } from 'native-base'
-import { vpnIcon } from '@/src/assets'
+import {Dimensions} from 'react-native'
+import React, {useState} from 'react'
+import {Heading, HStack, Text, Image, VStack} from 'native-base'
+import {vpnIcon} from '@/src/assets'
 import Button from '@/src/components/global/Button'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import {SafeAreaView} from 'react-native-safe-area-context'
 import colors from '@/src/colors'
 import ExpoVpnChecker from "expo-vpn-checker";
-import { useDispatch } from 'react-redux'
-import { globalActions } from '@/src/redux/slices/globalSlice'
-import { DispatchType } from '@/src/redux'
+import {useDispatch} from 'react-redux'
+import {globalActions} from '@/src/redux/slices/globalSlice'
+import {DispatchType} from '@/src/redux'
 
-const { width } = Dimensions.get('window')
+const {width} = Dimensions.get('window')
 const VPNScreen: React.FC = () => {
     const [refreshing, setRefreshing] = useState(false);
 
@@ -23,26 +23,26 @@ const VPNScreen: React.FC = () => {
             setRefreshing(true);
 
             await delay(1000);
-            await dispatch(globalActions.setIsVPNConnected(ExpoVpnChecker.checkVpn()));
-
+            dispatch(globalActions.setIsVPNConnected(ExpoVpnChecker.checkVpn()));
             setRefreshing(false);
 
         } catch (error) {
-            console.log({ error });
+            console.log({error});
             setRefreshing(false);
         }
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: colors.darkGray }}>
+        <SafeAreaView style={{flex: 1, backgroundColor: colors.darkGray}}>
             <VStack variant={"body"} justifyContent={'space-between'} alignItems={'center'} flex={1}>
                 <VStack>
                     <HStack mt={'30px'} w={width} h={width}>
-                        <Image resizeMode='contain' w={'100%'} h={'100%'} alt='logo-image' source={vpnIcon} />
+                        <Image resizeMode='contain' w={'100%'} h={'100%'} alt='logo-image' source={vpnIcon}/>
                     </HStack>
                     <Heading px={'20px'} textAlign={'center'} color={'white'}>Conectado a una red VPN</Heading>
                     <Text mt={'5px'} px={'20px'} fontSize={'16px'} textAlign={'center'} color={'white'}>
-                        El uso de Binomia a través de una red VPN no está permitido. Por favor, desactiva la VPN e intenta nuevamente.
+                        El uso de Binomia a través de una red VPN no está permitido. Por favor, desactiva la VPN e
+                        intenta nuevamente.
                     </Text>
                 </VStack>
                 <Button

@@ -176,30 +176,30 @@ export class UserApolloQueries {
         `
     }
 
-    static updateUserPassword = () => {
-        return gql`
-            mutation UpdateUserPassword($email: String!, $password: String!, $data: TokenAngSignInput!) {
-                updateUserPassword(email: $email, password: $password, data: $data) {
-                    id
-                    fullName
-                    username
-                    phone
-                    email
-                    password
-                    dniNumber
-                    profileImageUrl                   
-                    userAgreementSigned
-                    idFrontUrl
-                    status
-                    idBackUrl
-                    faceVideoUrl
-                    address
-                    createdAt
-                    updatedAt
-                }
-            }
-        `
-    }
+    // static updateUserPassword = () => {
+    //     return gql`
+    //         mutation UpdateUserPassword($email: String!, $password: String!, $data: TokenAngSignInput!) {
+    //             updateUserPassword(email: $email, password: $password, data: $data) {
+    //                 id
+    //                 fullName
+    //                 username
+    //                 phone
+    //                 email
+    //                 password
+    //                 dniNumber
+    //                 profileImageUrl
+    //                 userAgreementSigned
+    //                 idFrontUrl
+    //                 status
+    //                 idBackUrl
+    //                 faceVideoUrl
+    //                 address
+    //                 createdAt
+    //                 updatedAt
+    //             }
+    //         }
+    //     `
+    // }
 
     static updateUser = () => {
         return gql`

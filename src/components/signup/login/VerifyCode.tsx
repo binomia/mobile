@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { VStack, Heading, Text, HStack } from 'native-base';
 import { TextInput, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
 import { SessionContext } from '@/src/contexts/sessionContext';
@@ -151,7 +151,7 @@ export default VerifyCode
 
 
 const styles = StyleSheet.create({
-    InputsSucess: {
+    InputsSuccess: {
         borderColor: colors.mainGreen,
         borderWidth: 1,
         borderRadius: 10,

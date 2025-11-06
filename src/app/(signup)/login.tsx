@@ -27,7 +27,7 @@ import { fetchAllTransactions, fetchRecentTransactions } from '@/src/redux/fetch
 import { DispatchType } from '@/src/redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const LoginComponent: React.FC = (): React.JSX.Element => {
+const LoginComponent = ()  => {
     const [verifySession] = useMutation<any>(SessionApolloQueries.verifySession());
     const { setItem } = useAsyncStorage()
     const dispatch = useDispatch<DispatchType>()
@@ -156,7 +156,7 @@ const LoginComponent: React.FC = (): React.JSX.Element => {
         }
 
         console.log({params});
-        
+
     }, [email, password])
 
     return (

@@ -77,7 +77,7 @@ const CardModification: React.FC<Props> = ({ open = false, onCloseFinish = () =>
                 if (data.deleteCard) {
                     dispatch(accountActions.setCards(cardsFiltered))
 
-                    onClose()
+                    await onClose()
                     setIsDeleting(false)
                 }
             }

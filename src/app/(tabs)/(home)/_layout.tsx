@@ -14,7 +14,7 @@ export default function TabLayout() {
 		elevation: 0,
 	}
 
-	const defaultscreenOptions = {
+	const defaultScreenOptions = {
 		headerBackTitleVisible: false,
 		headerTintColor: colors.white,
 		headerStyle: { ...defaultHeaderStyles },
@@ -24,14 +24,14 @@ export default function TabLayout() {
 
 	return (
 		<Stack screenOptions={{ headerShadowVisible: false }}>
-			<Stack.Screen name='index' options={{ ...defaultscreenOptions, title: "", headerLeft: () => <HomeHeaderLeft />, headerRight: () => <HomeHeaderRight /> }} />
-			<Stack.Screen name='user' options={{ title: "Buscar", ...defaultscreenOptions, headerRight: () => <HomeHeaderRight /> }} />
-			<Stack.Screen name='request' options={{ title: "Solicitar Dinero", ...defaultscreenOptions }} />
-			<Stack.Screen name='insurances' options={{ title: "Seguros", ...defaultscreenOptions, headerRight: () => <TopupsRight /> }} />
-			<Stack.Screen name='topups' options={{ title: "Recargas", ...defaultscreenOptions, headerRight: () => <TopupsRight /> }} />
-			<Stack.Screen name='topUpTransactions' options={{ title: "", ...defaultscreenOptions, headerRight: () => <TopupsRight /> }} />
-			<Stack.Screen name='createTopUp' options={{ title: "Nueva Recarga", ...defaultscreenOptions }} />
-			<Stack.Screen name='transactions' options={{ ...defaultscreenOptions, title: "Transacciones", headerRight: () => <TransactionsHeaderRight /> }} />
+			<Stack.Screen name='index' options={{ ...defaultScreenOptions, title: "", headerLeft: () => <HomeHeaderLeft />, headerRight: () => <HomeHeaderRight /> }} />
+			<Stack.Screen name='user' options={{ title: "Buscar", ...defaultScreenOptions, headerRight: () => <HomeHeaderRight /> }} />
+			<Stack.Screen name='request' options={{ title: "Solicitar Dinero", ...defaultScreenOptions }} />
+			<Stack.Screen name='insurances' options={{ title: "Seguros", ...defaultScreenOptions, headerRight: () => <TopupsRight /> }} />
+			<Stack.Screen name='topups' options={{ title: "Recargas", ...defaultScreenOptions, headerRight: () => <TopupsRight /> }} />
+			<Stack.Screen name='topUpTransactions' options={{ title: "", ...defaultScreenOptions, headerRight: () => <TopupsRight /> }} />
+			<Stack.Screen name='createTopUp' options={{ title: "Nueva Recarga", ...defaultScreenOptions }} />
+			<Stack.Screen name='transactions' options={{ ...defaultScreenOptions, title: "Transacciones", headerRight: () => <TransactionsHeaderRight /> }} />
 		</Stack>
 	);
 }

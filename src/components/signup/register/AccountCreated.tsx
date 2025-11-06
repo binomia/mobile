@@ -4,6 +4,7 @@ import Button from '@/src/components/global/Button';
 import { TEXT_HEADING_FONT_SIZE, TEXT_PARAGRAPH_FONT_SIZE } from '@/src/constants';
 import { welcomeSignup } from '@/src/assets';
 import * as Updates from 'expo-updates';
+import React from "react";
 
 
 
