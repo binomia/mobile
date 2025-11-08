@@ -40,7 +40,6 @@ const setAuthorizationLink = new SetContextLink(async (previousContext) => {
     const jwt = await useAsyncStorage().getItem("jwt");
     const ipAddress = await Network.getIpAddressAsync();
     const deviceId = await Application.getInstallationTimeAsync();
-    console.log({deviceId})
 
     return {
         headers: {
