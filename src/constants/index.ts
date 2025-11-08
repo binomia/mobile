@@ -72,6 +72,7 @@ export const INPUT_HEIGHT = SCREEN_HEIGHT < 670 ? RFPercentage(6) + 8 : RFPercen
 export const TEXTAREA_HEIGHT = SCREEN_HEIGHT < 670 ? RFPercentage(15) + 8 : RFPercentage(15)
 export const INPUT_CODE_HEIGHT = SCREEN_HEIGHT < 670 ? RFPercentage(7) : RFPercentage(6)
 
+export const SOCKET_IO_URL = "http://192.168.1.93:6001";
 
 export const DATABASE_NAME = "db.db"
 export const SOCKET_EVENTS = {
