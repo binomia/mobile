@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react'
+import React, {useEffect, useState, useRef, useContext} from 'react'
 import colors from '@/src/colors'
 import BottomSheet from '@/src/components/global/BottomSheet';
 import PagerView from 'react-native-pager-view';
@@ -19,7 +19,8 @@ import {transactionActions} from '@/src/redux/slices/transactionSlice';
 import {noTransactions, pendingClock} from '@/src/assets';
 import {router, useNavigation} from 'expo-router';
 import {fetchRecentTopUps, fetchRecentTransactions} from '@/src/redux/fetchHelper';
-import {DispatchType} from '@/src/redux';
+import {DispatchType, StateType} from '@/src/redux';
+import {DBContext} from "@/src/contexts/dbContext";
 
 
 const {height, width} = Dimensions.get('window')
@@ -27,8 +28,9 @@ const RecentTransactions: React.FC = () => {
     const ref = useRef<PagerView>(null);
     const dispatch = useDispatch<DispatchType>()
     const {user} = useSelector((state: any) => state.accountReducer)
-    const {hasNewTransaction, recentTransactions} = useSelector((state: any) => state.transactionReducer)
+    const {hasNewTransaction, recentTransactions} = useSelector((state: StateType) => state.transactionReducer)
     const isFocused = useNavigation().isFocused()
+    const {insertTransactions, allowReFetchTransactions} = useContext(DBContext)
 
     const [singleTransactionTitle, setSingleTransactionTitle] = useState<string>("Ver Detalles");
     const [showSingleTransaction, setShowSingleTransaction] = useState<boolean>(false);
@@ -36,7 +38,7 @@ const RecentTransactions: React.FC = () => {
     const [showPayButton, setShowPayButton] = useState<boolean>(false);
     const [openBottomSheet, setOpenBottomSheet] = useState(false);
     const [transaction, setTransaction] = useState<any>({})
-    const [bottomSheetHeught, setBottomSheetHeught] = useState<number>(height * 0.9);
+    const [bottomSheetHeight, setBottomSheetHeight] = useState<number>(height * 0.9);
 
     const delay = async (ms: number) => new Promise(res => setTimeout(res, ms))
 
@@ -79,9 +81,9 @@ const RecentTransactions: React.FC = () => {
         const formatedTransaction = formatTransaction(transaction)
 
         if (transaction?.status === "suspicious")
-            setBottomSheetHeught(!formatedTransaction.isFromMe ? height * 0.7 : height * 0.9)
+            setBottomSheetHeight(!formatedTransaction.isFromMe ? height * 0.7 : height * 0.9)
         else
-            setBottomSheetHeught(!formatedTransaction.isFromMe ? height * 0.5 : height * 0.9)
+            setBottomSheetHeight(!formatedTransaction.isFromMe ? height * 0.5 : height * 0.9)
 
         dispatch(transactionActions.setTransaction(Object.assign({}, transaction, {...formatedTransaction})))
 
@@ -120,6 +122,16 @@ const RecentTransactions: React.FC = () => {
         setTransaction(transaction)
         setOpenBottomSheet(true)
     }
+
+    useEffect(() => {
+        (async () => {
+            const allowReFetch = await allowReFetchTransactions()
+
+            if (recentTransactions.length > 0 && allowReFetch)
+                await insertTransactions(recentTransactions)
+        })()
+
+    }, [recentTransactions])
 
     useEffect(() => {
         (async () => {
@@ -228,7 +240,7 @@ const RecentTransactions: React.FC = () => {
                             )
                         )}
                     />
-                    <BottomSheet height={bottomSheetHeught} onCloseFinish={onCloseFinishSingleTransaction}
+                    <BottomSheet height={bottomSheetHeight} onCloseFinish={onCloseFinishSingleTransaction}
                                  open={showSingleTransaction}>
                         <SingleSentTransaction iconImage={pendingClock} showPayButton={showPayButton} goNext={goNext}
                                                onClose={onCloseFinishSingleTransaction} title={singleTransactionTitle}/>

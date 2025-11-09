@@ -14,6 +14,7 @@ import {ActivityIndicator, LogBox, View} from 'react-native';
 import {SocketContextProvider} from '@/src/contexts/socketContext';
 import {TopUpContextProvider} from '@/src/contexts/topUpContext';
 import {RouterContextProvider} from '@/src/contexts/RouterContext';
+import {DBContextProvider} from "@/src/contexts/dbContext";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 let SpaceMono = require('../fonts/SpaceMono-Regular.ttf');
@@ -32,18 +33,20 @@ const Layout = () => {
             <NativeBaseProvider theme={theme}>
                 <Provider store={store}>
                     <ApolloProvider client={apolloClient}>
-                        <SessionContextProvider>
-                            <GlobalContextProvider>
-                                <SocketContextProvider>
-                                    <TopUpContextProvider>
-                                        <View style={{flex: 1}}>
-                                            <RouterContextProvider/>
-                                            {/* <CameraComponent  open={true} /> */}
-                                        </View>
-                                    </TopUpContextProvider>
-                                </SocketContextProvider>
-                            </GlobalContextProvider>
-                        </SessionContextProvider>
+                        <DBContextProvider>
+                            <SessionContextProvider>
+                                <GlobalContextProvider>
+                                    <SocketContextProvider>
+                                        <TopUpContextProvider>
+                                            <View style={{flex: 1}}>
+                                                <RouterContextProvider/>
+                                                {/* <CameraComponent  open={true} /> */}
+                                            </View>
+                                        </TopUpContextProvider>
+                                    </SocketContextProvider>
+                                </GlobalContextProvider>
+                            </SessionContextProvider>
+                        </DBContextProvider>
                     </ApolloProvider>
                 </Provider>
             </NativeBaseProvider>

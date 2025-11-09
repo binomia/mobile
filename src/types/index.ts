@@ -1,11 +1,13 @@
-import { AccountAuthSchema } from "@/src/auth/accountAuth";
-import { TransactionAuthSchema } from "@/src/auth/transactionAuth";
-import { UserAuthSchema } from "@/src/auth/userAuth"
+import {AccountAuthSchema} from "@/src/auth/accountAuth";
+import {TransactionAuthSchema} from "@/src/auth/transactionAuth";
+import {UserAuthSchema} from "@/src/auth/userAuth"
 import z from "zod";
 import * as Notifications from 'expo-notifications';
-import { TopUpAuthSchema } from "@/src/auth/topUpAuth";
-import { SessionAuthSchema } from "@/src/auth/sessionAuth";
+import {TopUpAuthSchema} from "@/src/auth/topUpAuth";
+import {SessionAuthSchema} from "@/src/auth/sessionAuth";
 import React from "react";
+import {ZodSchemas} from "@/src/schemas";
+import {Low} from "lowdb";
 
 
 export type SessionContextType = {
@@ -39,7 +41,7 @@ export type SessionVerificationDataType = {
 export type CreateUserDataType = z.infer<typeof UserAuthSchema.createUser>
 
 export type SessionPropsType = {
-    onLogin: ({ email, password }: { email: string, password: string }) => Promise<any>
+    onLogin: ({email, password}: { email: string, password: string }) => Promise<any>
     onRegister: (data: CreateUserDataType) => Promise<any>,
     onLogout: () => void
     sendVerificationCode: (to: string) => any
@@ -79,7 +81,6 @@ export type TopUpContextType = {
     company: z.infer<typeof TopUpAuthSchema.company>
     setCompany: (value: any) => void
 }
-
 
 export type GlobalContextType = {
     email: string
@@ -140,15 +141,29 @@ export type SocketContextType = {
     on: (event: string, callback: (data: any) => void) => void
 }
 
-
 export type PushNotificationType = {
     notification?: Notifications.Notification
     expoPushToken?: string
     registerForPushNotificationsAsync: () => Promise<string | undefined>
 }
 
-
 export type WeeklyQueueTitleType = z.infer<typeof TransactionAuthSchema.weeklyQueueTitle>
 export type AccountLimitsType = z.infer<typeof AccountAuthSchema.accountLimits>
 export type AccountType = z.infer<typeof AccountAuthSchema.account>
 
+export type RecentTransactions = {
+    transactions: z.infer<typeof ZodSchemas.recentTransactions>[],
+    account: z.infer<typeof ZodSchemas.account>,
+    lastTransactionReFetchedTime: number
+    lastAccountReFetchedTime: number
+};
+export type DBContextDataType = RecentTransactions
+export type DBContextType = {
+    db: Low<DBContextDataType>
+    insertTransactions: (transactions: any[]) => Promise<void>
+    updateAccount: (account: z.infer<typeof ZodSchemas.account>) => Promise<void>
+    allowReFetchTransactions: (bypass?: boolean) => Promise<boolean>
+    allowReFetchAccount: (bypass?: boolean) => Promise<boolean>
+    getRecentTransactions: () => Promise<z.infer<typeof ZodSchemas.recentTransactions>[]>
+    getAccount: () => Promise<z.infer<typeof ZodSchemas.account> | false>
+}

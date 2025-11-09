@@ -1,7 +1,7 @@
 import * as Crypto from 'expo-crypto';
 import * as Network from 'expo-network';
 import useAsyncStorage from "@/src/hooks/useAsyncStorage";
-import {createContext, useEffect, useState} from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 import {CreateUserDataType, SessionContextType, SessionPropsType, VerificationDataType} from "@/src/types";
 import {useLazyQuery, useMutation} from '@apollo/client/react';
 import {SessionApolloQueries, UserApolloQueries} from "@/src/apollo/query";
@@ -25,6 +25,7 @@ import {HASH} from "cryptografia";
 import {z} from "zod";
 import {SessionAuthSchema} from "@/src/auth/sessionAuth";
 import {DispatchType} from '../redux';
+import {DBContext} from "@/src/contexts/dbContext";
 
 export const SessionContext = createContext<SessionPropsType>({
     onLogin: (_: { email: string, password: string }) => Promise.resolve({}),
@@ -70,6 +71,7 @@ export const SessionContextProvider = ({children}: SessionContextType) => {
     const [getSessionUser] = useLazyQuery<any>(UserApolloQueries.sessionUser());
     const {getContacts} = useContacts();
     const {registerForPushNotificationsAsync} = useNotifications()
+    const {allowReFetchTransactions} = useContext(DBContext)
 
     const [sessionVerificationData, setSessionVerificationData] = useState<z.infer<typeof SessionAuthSchema.verifySession>>({
         signature: "",
@@ -88,7 +90,6 @@ export const SessionContextProvider = ({children}: SessionContextType) => {
             const accountsData = await AccountAuthSchema.account.parseAsync(user.data?.sessionUser?.account)
             const cardsData = await UserAuthSchema.cardsData.parseAsync(user.data?.sessionUser?.cards)
             const primaryCard = cardsData.find((card: any) => card?.isPrimary === true)
-
             const contacts = await getContacts()
 
             await Promise.all([
@@ -100,12 +101,15 @@ export const SessionContextProvider = ({children}: SessionContextType) => {
 
                 dispatch(globalActions.setContacts(contacts)),
 
-                dispatch(fetchRecentTransactions()),
                 dispatch(fetchAllTransactions({page: 1, pageSize: 10})),
                 dispatch(fetchAccountBankingTransactions({page: 1, pageSize: 30})),
                 dispatch(fetchRecentTopUps()),
                 dispatch(fetchAccountLimit()),
             ])
+
+            const allowReFetch = await allowReFetchTransactions()
+            if (allowReFetch)
+                await dispatch(fetchRecentTransactions())
 
         } catch (error) {
             // await onLogout()

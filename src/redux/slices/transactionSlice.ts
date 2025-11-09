@@ -1,5 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { fetchAccountBankingTransactions, fetchAllTransactions, fetchRecentTransactions, searchAccountTransactions } from '../fetchHelper'
+import {createSlice} from '@reduxjs/toolkit'
+import {fetchAccountBankingTransactions, fetchAllTransactions, fetchRecentTransactions, searchAccountTransactions} from '../fetchHelper'
+import {z} from "zod";
+import {ZodSchemas} from "@/src/schemas";
 
 type InitialStateType = {
     loading: boolean
@@ -9,8 +11,8 @@ type InitialStateType = {
     transaction: any
     transactions: any
     bankingTransactions: any
-    recentTransactions: any
-    transactionDeytails: any
+    recentTransactions: z.infer<typeof ZodSchemas.recentTransactions>[]
+    transactionDetails: any
     createTransactionBody: any
     hasNewTransaction: boolean
 }
@@ -24,7 +26,7 @@ const initialState: InitialStateType = {
     transactions: [],
     bankingTransactions: [],
     recentTransactions: [],
-    transactionDeytails: {},
+    transactionDetails: {},
     createTransactionBody: {},
     hasNewTransaction: false
 }
@@ -45,12 +47,13 @@ const transactionSlice = createSlice({
         },
         setRecentTransactions: (state, action) => {
             state.recentTransactions = action.payload
+            state.recentTransactionsLoading = false
         },
         setCreateTransactionBody: (state, action) => {
             state.createTransactionBody = action.payload
         },
         setTransactionDetails: (state, action) => {
-            state.transactionDeytails = action.payload
+            state.transactionDetails = action.payload
         },
         setHasNewTransaction: (state, action) => {
             state.hasNewTransaction = action.payload

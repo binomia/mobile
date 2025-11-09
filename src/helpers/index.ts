@@ -2,6 +2,35 @@ import {GOOGLE_MAPS_API_KEY} from "@/src/constants";
 import {WeeklyQueueTitleType} from "@/src/types";
 import {nextFriday, nextMonday, nextSaturday, nextSunday, nextThursday, nextTuesday, nextWednesday} from "date-fns";
 import moment from "moment";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+export class AsyncStorageAdapter<T> {
+    private readonly key: string;
+    private readonly defaultData: T;
+
+    constructor(key: string, defaultData: T) {
+        this.key = key;
+        this.defaultData = defaultData;
+    }
+
+    async read(): Promise<T> {
+        try {
+            const json = await AsyncStorage.getItem(this.key)
+            if (json) {
+                const parsed = JSON.parse(json)
+                // merge defaults to ensure all keys exist
+                return {...this.defaultData, ...parsed}
+            }
+        } catch {
+            // ignore errors and use defaults
+        }
+        return this.defaultData
+    }
+
+    async write(data: T): Promise<void> {
+        await AsyncStorage.setItem(this.key, JSON.stringify(data));
+    }
+}
 
 
 export const FORMAT_PHONE_NUMBER = (value: string) => {

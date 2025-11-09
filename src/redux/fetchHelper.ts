@@ -5,7 +5,6 @@ import {AccountAuthSchema} from "@/src/auth/accountAuth";
 import {createAsyncThunk} from "@reduxjs/toolkit"
 import moment from "moment";
 
-
 export const fetchAccountLimit = createAsyncThunk('fetchAccountLimit', async (): Promise<any> => {
     try {
         const {data} = await apolloClient.query<any>({query: AccountApolloQueries.accountLimit()});
@@ -71,10 +70,7 @@ export const fetchRecentTopUps = createAsyncThunk('fetchRecentTopUps', async () 
     }
 })
 
-export const fetchAllTransactions = createAsyncThunk('fetchAllTransactions', async ({page, pageSize}: {
-    page: number,
-    pageSize: number
-}): Promise<any> => {
+export const fetchAllTransactions = createAsyncThunk('fetchAllTransactions', async ({page, pageSize}: { page: number, pageSize: number }): Promise<any> => {
     try {
         const {data: {recentTopUps}} = await apolloClient.query<any>({
             query: TopUpApolloQueries.recentTopUps(),
@@ -116,15 +112,7 @@ export const fetchAllTransactions = createAsyncThunk('fetchAllTransactions', asy
     }
 })
 
-export const searchAccountTransactions = createAsyncThunk('searchAccountTransactions', async ({
-                                                                                                  page,
-                                                                                                  pageSize,
-                                                                                                  search
-                                                                                              }: {
-    page: number,
-    pageSize: number,
-    search: string
-}): Promise<any> => {
+export const searchAccountTransactions = createAsyncThunk('searchAccountTransactions', async ({page, pageSize, search}: { page: number, pageSize: number, search: string }): Promise<any> => {
     try {
         const {data: transactionsData} = await apolloClient.query<any>({
             query: TransactionApolloQueries.searchAccountTransactions(),
@@ -152,13 +140,7 @@ export const searchAccountTransactions = createAsyncThunk('searchAccountTransact
     }
 })
 
-export const fetchAccountBankingTransactions = createAsyncThunk('fetchAccountBankingTransactions', async ({
-                                                                                                              page = 1,
-                                                                                                              pageSize = 10
-                                                                                                          }: {
-    page: number,
-    pageSize: number
-}) => {
+export const fetchAccountBankingTransactions = createAsyncThunk('fetchAccountBankingTransactions', async ({page = 1, pageSize = 10}: { page: number, pageSize: number }) => {
     try {
         const {data} = await apolloClient.query<any>({
             query: TransactionApolloQueries.accountBankingTransactions(),
