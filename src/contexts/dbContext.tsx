@@ -95,8 +95,6 @@ export const DBContextProvider = ({children}: { children: ReactNode }) => {
                 );
             });
 
-            console.log({canReFetch});
-
             if (!canReFetch) {
                 dispatch(transactionActions.setRecentTransactions(db.data.transactions));
             } else {
@@ -124,8 +122,6 @@ export const DBContextProvider = ({children}: { children: ReactNode }) => {
                 console.log(`⏳ Only ${secondsSinceLastFetch.toFixed(1)}s since last fetch — skipping`);
                 return false;
             }
-
-            console.log({canReFetch: true});
 
             db.data.lastAccountReFetchedTime = now;
             await db.write();

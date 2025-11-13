@@ -1,6 +1,6 @@
 import {SOCKET_EVENTS, SOCKET_IO_URL} from "@/src/constants";
 import useAsyncStorage from "@/src/hooks/useAsyncStorage";
-import {createContext, useCallback, useEffect} from "react";
+import {createContext, useCallback, useContext, useEffect} from "react";
 import {useDispatch} from "react-redux";
 import {io} from "socket.io-client";
 import {jwtDecode} from "jwt-decode";
@@ -9,12 +9,13 @@ import {useLazyQuery} from "@apollo/client/react";
 import {AccountApolloQueries} from "@/src/apollo/query";
 import {fetchAccountLimit, fetchAllTransactions, fetchRecentTopUps, fetchRecentTransactions} from "@/src/redux/fetchHelper";
 import {accountActions} from "@/src/redux/slices/accountSlice";
+import {DBContext} from "@/src/contexts/dbContext";
 
 export const SocketContext = createContext({});
 
 export const SocketContextProvider = ({children}: { children: any }) => {
     const [getAccount] = useLazyQuery<any>(AccountApolloQueries.account());
-
+    const {updateAccount} = useContext(DBContext)
     const {getItem} = useAsyncStorage()
     const dispatch = useDispatch<any>()
 
@@ -22,6 +23,10 @@ export const SocketContextProvider = ({children}: { children: any }) => {
         try {
             const {data} = await getAccount()
             await dispatch(accountActions.setAccount(data.account))
+
+            if (data?.account)
+                await updateAccount(data.account)
+
         } catch (error) {
             console.log(error);
         }

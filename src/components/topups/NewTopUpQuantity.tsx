@@ -1,11 +1,11 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import KeyNumberPad from '../global/KeyNumberPad'
 import Button from '../global/Button';
 import colors from '@/src/colors';
-import {Heading, HStack, VStack, Image, Text, Pressable} from 'native-base'
+import {Heading, HStack, VStack, Image, Text, Pressable, Avatar} from 'native-base'
 import {MaterialIcons} from "@expo/vector-icons";
 import {useDispatch, useSelector} from 'react-redux';
-import {FORMAT_CURRENCY, FORMAT_PHONE_NUMBER} from '@/src/helpers';
+import {EXTRACT_FIRST_LAST_INITIALS, FORMAT_CURRENCY, FORMAT_PHONE_NUMBER, GENERATE_RAMDOM_COLOR_BASE_ON_TEXT} from '@/src/helpers';
 import {scale} from 'react-native-size-matters';
 import {topupActions} from '@/src/redux/slices/topupSlice';
 import {DispatchType} from '@/src/redux';
@@ -47,27 +47,35 @@ const NewTopUpQuantity: React.FC<Props> = ({next, back}: Props) => {
         setInput(value)
     }
 
+    useEffect(() => {
+        console.log(newTopUp.company?.logo)
+    }, []);
+
     return (
         <VStack px={"20px"} variant={"body"} justifyContent={"space-between"} h={"100%"}>
             <VStack>
                 <HStack w={"100%"} mt={"10px"} alignItems={"center"} justifyContent={"space-between"}>
                     <Pressable _pressed={{opacity: 0.5}} onPress={() => back()} right={"7px"}>
                         <MaterialIcons name="arrow-back-ios" size={30} color={colors.white}/>
-                        {/* <Ionicons name="chevron-back-outline" size={35} color={colors.white} /> */}
                     </Pressable>
-                    <Heading size={"md"} color={colors.mainGreen}
-                             textAlign={"center"}>{FORMAT_CURRENCY(account.balance)}</Heading>
+                    <Heading size={"md"} color={colors.mainGreen} textAlign={"center"}>{FORMAT_CURRENCY(account.balance)}</Heading>
                     <HStack w={"35px"}/>
                 </HStack>
                 <HStack w={"100%"} h={"100px"} justifyContent={"space-between"} alignItems={"center"}>
+
                     <HStack alignItems={"center"}>
-                        <Image w={"40px"} h={"40px"} alt='logo-selectedCompany-image' borderRadius={100}
-                               resizeMode='contain' source={{uri: newTopUp.company?.logo}}/>
+                        {newTopUp.company?.logo ?
+                            <Image w={"50px"} h={"50px"} alt='logo-selectedCompany-image' borderRadius={100} resizeMode='contain' source={{uri: newTopUp.company?.logo}}/>
+                            :
+                            <Avatar borderRadius={100} w={"50px"} h={"50px"} bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(newTopUp?.fullName || "")}>
+                                <Heading size={"sm"} color={colors.white}>
+                                    {EXTRACT_FIRST_LAST_INITIALS(newTopUp?.fullName || "0")}
+                                </Heading>
+                            </Avatar>
+                        }
                         <VStack>
-                            <Heading textTransform={"capitalize"} px={"10px"} fontSize={18}
-                                     color={colors.white}>{newTopUp?.fullName || ""}</Heading>
-                            <Text px={"10px"} fontSize={18}
-                                  color={colors.white}>{FORMAT_PHONE_NUMBER(newTopUp?.phone || "")}</Text>
+                            <Heading textTransform={"capitalize"} px={"10px"} fontSize={18} color={colors.white}>{newTopUp?.fullName || ""}</Heading>
+                            <Text px={"10px"} fontSize={18} color={colors.white}>{FORMAT_PHONE_NUMBER(newTopUp?.phone || "")}</Text>
                         </VStack>
                     </HStack>
                     <Button

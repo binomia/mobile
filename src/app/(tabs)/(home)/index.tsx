@@ -15,15 +15,12 @@ import {router, useNavigation} from 'expo-router';
 import {MaterialIcons} from '@expo/vector-icons';
 import {fetchRecentTopUps, fetchRecentTransactions} from '@/src/redux/fetchHelper';
 import {accountActions} from '@/src/redux/slices/accountSlice';
-import TransactionSkeleton from '@/src/components/transaction/transactionSkeleton';
 import {useGrafanaCloud} from '@/src/hooks/useGrafanaCloud';
 import {DBContext} from "@/src/contexts/dbContext";
-import {StateType} from "@/src/redux";
 
-const {width} = Dimensions.get('window');
+const {width} = Dimensions.get('screen');
 const HomeScreen: React.FC = () => {
     const {account} = useSelector((state: any) => state.accountReducer)
-    const {recentTransactions} = useSelector((state: StateType) => state.transactionReducer)
     const {Loki} = useGrafanaCloud()
     const {allowReFetchTransactions, getAccount: getAccountFromLocal, allowReFetchAccount, updateAccount} = useContext(DBContext)
 
@@ -44,8 +41,6 @@ const HomeScreen: React.FC = () => {
             if (canRefresh) {
                 const {data} = await getAccount()
                 await dispatch(accountActions.setAccount(data?.account))
-
-                console.log(data?.account?.balance)
 
                 if (data?.account?.balance)
                     await updateAccount(data?.account)
@@ -78,6 +73,7 @@ const HomeScreen: React.FC = () => {
             setTimeout(() => {
                 setRefreshing(false);
             }, 1000);
+
         } catch (error) {
             console.log(error);
         }
@@ -157,6 +153,18 @@ const HomeScreen: React.FC = () => {
     }
 
     useEffect(() => {
+        (async () => {
+            await fetchAccount()
+            const accountFromLocal = await getAccountFromLocal()
+            if (accountFromLocal) {
+                setAccountBalance(accountFromLocal.balance)
+                setAllowSend(accountFromLocal.allowSend)
+                setStatus(accountFromLocal.status)
+            }
+        })()
+    }, [account]);
+
+    useEffect(() => {
         navigation.addListener("focus", async () => {
             await fetchAccount()
             const accountFromLocal = await getAccountFromLocal()
@@ -168,7 +176,7 @@ const HomeScreen: React.FC = () => {
         })
     }, []);
 
-    return (!(recentTransactions.length > 0) ? <TransactionSkeleton/> :
+    return ( // !(recentTransactions.length > 0) ? <TransactionSkeleton/> :
             <VStack p={"20px"} w={width} bg={colors.darkGray} flex={1} alignItems={"center"}>
                 <ScrollView w={"100%"} showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
                     <VStack w={"100%"} justifyContent={"center"} alignItems={"center"} borderRadius={"10px"}>

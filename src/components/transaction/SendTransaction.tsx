@@ -105,14 +105,10 @@ const SendTransactionScreen: React.FC<Props> = ({
     return (
         <BottomSheet openTime={300} height={height * 0.9} onCloseFinish={handleOnClose} open={visible}>
             <SafeAreaView style={{flex: 1}}>
-                <PagerView style={{flex: 1}} onPageSelected={onPageSelected} scrollEnabled={false} ref={ref}
-                           initialPage={currentPage}>
-                    <CreateTransaction key={"transaction-create-0"} input={input} onCloseFinish={handleOnClose}
-                                       setInput={setInput} nextPage={nextPage}/>
-                    <TransactionDetails key={"TransactionDetailsScreen-1"} onClose={handleOnClose} goNext={nextPage}
-                                        goBack={prevPage}/>
-                    <SingleTransaction key={"SingleTransactionScreen-2"} onClose={handleOnClose}
-                                       iconImage={pendingClock}/>
+                <PagerView style={{flex: 1}} onPageSelected={onPageSelected} scrollEnabled={false} ref={ref} initialPage={currentPage}>
+                    <CreateTransaction key={"transaction-create-0"} input={input} onCloseFinish={handleOnClose} setInput={setInput} nextPage={nextPage}/>
+                    <TransactionDetails key={"TransactionDetailsScreen-1"} onClose={handleOnClose} goNext={nextPage} goBack={prevPage}/>
+                    <SingleTransaction key={"SingleTransactionScreen-2"} onClose={handleOnClose} iconImage={pendingClock}/>
                 </PagerView>
             </SafeAreaView>
         </BottomSheet>

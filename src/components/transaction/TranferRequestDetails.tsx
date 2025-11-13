@@ -19,7 +19,7 @@ import { useLocation } from '@/src/hooks/useLocation';
 import { AccountAuthSchema } from '@/src/auth/accountAuth';
 import { accountActions } from '@/src/redux/slices/accountSlice';
 import { router } from 'expo-router';
-import { DispatchType } from '@/src/redux';
+import {DispatchType, StateType} from '@/src/redux';
 
 type Props = {
     goBack?: () => void
@@ -33,14 +33,14 @@ const TransferRequestDetails: React.FC<Props> = ({ goNext = () => { }, onCloseFi
 
     const { authenticate } = useLocalAuthentication();
     const { getLocation } = useLocation();
-    const { receiver } = useSelector((state: any) => state.transactionReducer)
-    const { location } = useSelector((state: any) => state.globalReducer)
-    const { user } = useSelector((state: any) => state.accountReducer)
+    const { receiver } = useSelector((state: StateType) => state.transactionReducer)
+    const { location } = useSelector((state: StateType) => state.globalReducer)
+    const { user } = useSelector((state: StateType) => state.accountReducer)
 
     const [createRequestTransaction] = useMutation<any>(TransactionApolloQueries.createRequestTransaction())
     const [fetchSingleUser] = useLazyQuery<any>(UserApolloQueries.singleUser())
 
-    const { transactionDeytails } = useSelector((state: any) => state.transactionReducer)
+    const { transactionDetails } = useSelector((state: StateType) => state.transactionReducer)
     const [recurrenceSelected, setRecurrenceSelected] = useState<string>("");
     const [recurrenceDaySelected, setRecurrenceDaySelected] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false)
@@ -92,7 +92,7 @@ const TransferRequestDetails: React.FC<Props> = ({ goNext = () => { }, onCloseFi
             const data = await TransactionAuthSchema.createTransaction.parseAsync({
                 transactionType: "request",
                 receiver: receiver.username,
-                amount: parseFloat(transactionDeytails.amount),
+                amount: parseFloat(transactionDetails.amount),
                 location: Object.assign({}, _location, {})
             })
 
@@ -109,7 +109,7 @@ const TransferRequestDetails: React.FC<Props> = ({ goNext = () => { }, onCloseFi
                 dispatch(accountActions.setAccount(accountsData))
                 dispatch(transactionActions.setTransaction(Object.assign({}, transaction, {
                     ...formatTransaction(Object.assign({}, transaction, {
-                        status: "pending",
+                        status: "requested",
                         to: receiver,
                         from: user
                     }))
@@ -234,19 +234,19 @@ const TransferRequestDetails: React.FC<Props> = ({ goNext = () => { }, onCloseFi
                 <VStack pb={"30px"} flex={1} justifyContent={"space-between"} alignItems={"center"} borderRadius={10}>
                     <VStack w={"100%"} pt={"20px"} alignItems={"center"} justifyContent={"center"}>
                         <HStack my={"10px"}>
-                            {transactionDeytails.profileImageUrl ?
-                                <Image borderRadius={100} resizeMode='contain' alt='logo-image' w={scale(60)} h={scale(60)} source={{ uri: transactionDeytails.profileImageUrl }} />
+                            {transactionDetails?.profileImageUrl ?
+                                <Image borderRadius={100} resizeMode='contain' alt='logo-image' w={scale(60)} h={scale(60)} source={{ uri: transactionDetails.profileImageUrl }} />
                                 :
-                                <Avatar borderRadius={100} w={"50px"} h={"50px"} bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(transactionDeytails?.fullName || "")}>
+                                <Avatar borderRadius={100} w={"50px"} h={"50px"} bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(transactionDetails?.fullName || "")}>
                                     <Heading size={"sm"} color={colors.white}>
-                                        {EXTRACT_FIRST_LAST_INITIALS(transactionDeytails?.fullName || "0")}
+                                        {EXTRACT_FIRST_LAST_INITIALS(transactionDetails?.fullName || "0")}
                                     </Heading>
                                 </Avatar>
                             }
                         </HStack>
-                        <Heading textTransform={"capitalize"} fontSize={scale(25)} color={"white"}>{MAKE_FULL_NAME_SHORTEN(transactionDeytails?.fullName || "")}</Heading>
-                        <Text fontSize={scale(16)} color={colors.lightSkyGray}>{transactionDeytails?.username}</Text>
-                        <Heading textTransform={"capitalize"} mt={"20px"} fontSize={scale(40)} color={"mainGreen"}>{FORMAT_CURRENCY(transactionDeytails?.amount)}</Heading>
+                        <Heading textTransform={"capitalize"} fontSize={scale(25)} color={"white"}>{MAKE_FULL_NAME_SHORTEN(transactionDetails?.fullName || "")}</Heading>
+                        <Text fontSize={scale(16)} color={colors.lightSkyGray}>{transactionDetails?.username}</Text>
+                        <Heading textTransform={"capitalize"} mt={"20px"} fontSize={scale(40)} color={"mainGreen"}>{FORMAT_CURRENCY(transactionDetails?.amount)}</Heading>
                     </VStack>
                     <VStack px={"10px"} mt={"20px"} w={"100%"} justifyContent={"center"}>
                         <HStack w={"85%"} mb={"5px"}>

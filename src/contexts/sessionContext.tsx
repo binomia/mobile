@@ -86,7 +86,7 @@ export const SessionContextProvider = ({children}: SessionContextType) => {
             const user = await getSessionUser()
 
             const userProfileData = await UserAuthSchema.userProfileData.parseAsync(user?.data?.sessionUser)
-            const kycData = await UserAuthSchema.kycData.parseAsync(user.data.sessionUser?.kyc)
+            const kycData = await UserAuthSchema.kycData.parseAsync(user.data?.sessionUser?.kyc)
             const accountsData = await AccountAuthSchema.account.parseAsync(user.data?.sessionUser?.account)
             const cardsData = await UserAuthSchema.cardsData.parseAsync(user.data?.sessionUser?.cards)
             const primaryCard = cardsData.find((card: any) => card?.isPrimary === true)

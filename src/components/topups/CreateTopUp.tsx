@@ -149,11 +149,8 @@ const CreateTopUp: React.FC<Props> = ({next}: Props) => {
                         style={styles.gridView}
                         spacing={15}
                         renderItem={({item: company}) => (
-                            <Pressable onPress={() => onCompanySelect(company)} h={120} my={"3px"} key={company?.name}
-                                       px={"15px"} _pressed={{opacity: 0.5}} bg={colors.lightGray}
-                                       justifyContent={"center"} alignItems={"center"} borderRadius={10}>
-                                <Image w={"45px"} h={"45px"} alt='logo-topUpCompanies-BottomSheet-image'
-                                       borderRadius={100} resizeMode='contain' source={{uri: company?.logo}}/>
+                            <Pressable onPress={() => onCompanySelect(company)} h={120} my={"3px"} key={company?.name} px={"15px"} _pressed={{opacity: 0.5}} bg={colors.lightGray} justifyContent={"center"} alignItems={"center"} borderRadius={10}>
+                                <Image w={"45px"} h={"45px"} alt='logo-topUpCompanies-BottomSheet-image' borderRadius={100} resizeMode='contain' source={{uri: company?.logo}}/>
                                 <Heading mt={"5px"} fontSize={18} color={colors.white}>{company?.name}</Heading>
                             </Pressable>
                         )}

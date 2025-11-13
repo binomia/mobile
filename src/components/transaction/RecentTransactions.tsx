@@ -65,7 +65,8 @@ const RecentTransactions: React.FC = () => {
         }
 
         return {
-            isFromMe: isFromMe && transaction?.location?.uri,
+            status: transaction.status,
+            isFromMe: isFromMe,
             isSuspicious: transaction.status === "suspicious",
             showMap,
             amountColor,
@@ -79,11 +80,10 @@ const RecentTransactions: React.FC = () => {
 
     const onSelectTransaction = async (transaction: any) => {
         const formatedTransaction = formatTransaction(transaction)
-
         if (transaction?.status === "suspicious")
             setBottomSheetHeight(!formatedTransaction.isFromMe ? height * 0.7 : height * 0.9)
         else
-            setBottomSheetHeight(!formatedTransaction.isFromMe ? height * 0.5 : height * 0.9)
+            setBottomSheetHeight(formatedTransaction.isFromMe ? height * 0.9 : height * 0.5)
 
         dispatch(transactionActions.setTransaction(Object.assign({}, transaction, {...formatedTransaction})))
 
@@ -157,19 +157,15 @@ const RecentTransactions: React.FC = () => {
                         data={recentTransactions}
                         renderItem={({item: {data, type}, index}: any) => (
                             type === "transaction" ? (
-                                <Pressable bg={colors.lightGray} my={"5px"} borderRadius={10} px={"15px"} py={"10px"}
-                                           key={`transactions(tgrtgnrhbfhrbgr)-${data.transactionId}-${index}-${data.transactionId}`}
-                                           _pressed={{opacity: 0.5}} onPress={() => onSelectTransaction(data)}>
-                                    <HStack alignItems={"center"} justifyContent={"space-between"} my={"10px"}
-                                            borderRadius={10}>
+                                <Pressable bg={colors.lightGray} my={"5px"} borderRadius={10} px={"15px"} py={"10px"} key={`transactions(tgrtgnrhbfhrbgr)-${data.transactionId}-${index}-${data.transactionId}`} _pressed={{opacity: 0.5}} onPress={() => onSelectTransaction(data)}>
+                                    <HStack alignItems={"center"} justifyContent={"space-between"} my={"10px"} borderRadius={10}>
                                         <HStack>
                                             {formatTransaction(data).profileImageUrl ?
                                                 <Image borderRadius={100} resizeMode='contain' alt='logo-image'
                                                        w={scale(40)} h={scale(40)}
                                                        source={{uri: formatTransaction(data).profileImageUrl}}/>
                                                 :
-                                                <Avatar borderRadius={100} w={"50px"} h={"50px"}
-                                                        bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(formatTransaction(data).fullName || "")}>
+                                                <Avatar borderRadius={100} w={"50px"} h={"50px"} bg={GENERATE_RAMDOM_COLOR_BASE_ON_TEXT(formatTransaction(data).fullName || "")}>
                                                     <Heading size={"sm"} color={colors.white}>
                                                         {EXTRACT_FIRST_LAST_INITIALS(formatTransaction(data).fullName || "0")}
                                                     </Heading>
@@ -202,13 +198,9 @@ const RecentTransactions: React.FC = () => {
                                             }
                                         </VStack>
                                     </HStack>
-                                </Pressable>
-                            ) : (
-                                <Pressable bg={colors.lightGray} my={"5px"} borderRadius={10} px={"15px"} py={"10px"}
-                                           key={`transactions(tgrtgnrhbfhrbgr)-${data.transactionId}-${index}-${data.transactionId}`}
-                                           _pressed={{opacity: 0.5}} onPress={() => onOpenBottomSheet(data)}>
-                                    <HStack alignItems={"center"} justifyContent={"space-between"} my={"10px"}
-                                            borderRadius={10}>
+                                </Pressable>) : (
+                                <Pressable bg={colors.lightGray} my={"5px"} borderRadius={10} px={"15px"} py={"10px"} key={`transactions(tgrtgnrhbfhrbgr)-${data.transactionId}-${index}-${data.transactionId}`} _pressed={{opacity: 0.5}} onPress={() => onOpenBottomSheet(data)}>
+                                    <HStack alignItems={"center"} justifyContent={"space-between"} my={"10px"} borderRadius={10}>
                                         <HStack>
                                             {data.company.logo ?
                                                 <Image borderRadius={100} resizeMode='contain' alt='logo-image'
@@ -240,10 +232,8 @@ const RecentTransactions: React.FC = () => {
                             )
                         )}
                     />
-                    <BottomSheet height={bottomSheetHeight} onCloseFinish={onCloseFinishSingleTransaction}
-                                 open={showSingleTransaction}>
-                        <SingleSentTransaction iconImage={pendingClock} showPayButton={showPayButton} goNext={goNext}
-                                               onClose={onCloseFinishSingleTransaction} title={singleTransactionTitle}/>
+                    <BottomSheet height={bottomSheetHeight} onCloseFinish={onCloseFinishSingleTransaction} open={showSingleTransaction}>
+                        <SingleSentTransaction iconImage={pendingClock} showPayButton={showPayButton} goNext={goNext} onClose={onCloseFinishSingleTransaction} title={singleTransactionTitle}/>
                     </BottomSheet>
                     <SingleTopTup open={openBottomSheet} onClose={onCloseFinish} topup={transaction}/>
                 </VStack>

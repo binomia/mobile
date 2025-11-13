@@ -27,16 +27,16 @@ const SearchUserScreen: React.FC = () => {
     const [users, setUsers] = useState<z.infer<typeof UserAuthSchema.searchUserData>>([])
     const [showSendTransaction, setShowSendTransaction] = useState<boolean>(false);
 
-    const fetchSugestedUsers = async () => {
-        const sugestedUsers = await getSuggestedUsers()
-        const _users = await UserAuthSchema.searchUserData.parseAsync(sugestedUsers.data.sugestedUsers)
+    const fetchSuggestedUsers = async () => {
+        const suggestedUsers = await getSuggestedUsers()
+        const _users = await UserAuthSchema.searchUserData.parseAsync(suggestedUsers.data.sugestedUsers)
         setUsers(_users)
     }
 
     const handleSearch = async (value: string) => {
         try {
             if (value === "")
-                await fetchSugestedUsers()
+                await fetchSuggestedUsers()
             else {
                 const {data} = await searchUser({
                     variables: {
@@ -71,7 +71,7 @@ const SearchUserScreen: React.FC = () => {
 
     useEffect(() => {
         (async () => {
-            await fetchSugestedUsers()
+            await fetchSuggestedUsers()
         })()
     }, [])
 
@@ -88,8 +88,7 @@ const SearchUserScreen: React.FC = () => {
                         style={{height: '100%', marginTop: 10}}
                         data={users}
                         renderItem={({item, index}) => (
-                            <TouchableOpacity key={`search_user_${index}-${item.username}`}
-                                              onPress={() => onSelectUser(item)}>
+                            <TouchableOpacity key={`search_user_${index}-${item.username}`} onPress={() => onSelectUser(item)}>
                                 <HStack alignItems={"center"} my={"10px"} borderRadius={10}>
                                     {item.profileImageUrl ?
                                         <Image borderRadius={100} resizeMode='contain' alt='logo-image' w={"50px"}
@@ -111,8 +110,11 @@ const SearchUserScreen: React.FC = () => {
                             </TouchableOpacity>
                         )}
                     />
-                    <SendTransaction open={showSendTransaction} onCloseFinish={() => setShowSendTransaction(false)}
-                                     onSendFinish={() => setShowSendTransaction(false)}/>
+                    <SendTransaction
+                        open={showSendTransaction}
+                        onCloseFinish={() => setShowSendTransaction(false)}
+                        onSendFinish={() => setShowSendTransaction(false)}
+                    />
                 </VStack>
             </SafeAreaView>
         </TouchableWithoutFeedback>

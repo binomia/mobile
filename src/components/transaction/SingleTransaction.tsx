@@ -1,16 +1,14 @@
-import React, {useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import colors from '@/src/colors'
 import Button from '@/src/components/global/Button';
 import moment from 'moment';
 import PagerView from 'react-native-pager-view';
 import * as Sharing from 'expo-sharing';
-import {Dimensions} from 'react-native'
 import {Heading, Image, Text, VStack, HStack, Pressable, ZStack, Avatar} from 'native-base'
 import {
     EXTRACT_FIRST_LAST_INITIALS,
     FORMAT_CURRENCY,
     GENERATE_RAMDOM_COLOR_BASE_ON_TEXT,
-    getMapLocationImage,
     MAKE_FULL_NAME_SHORTEN
 } from '@/src/helpers'
 import {scale} from 'react-native-size-matters';
@@ -18,15 +16,15 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useMutation} from '@apollo/client/react';
 import {TransactionApolloQueries} from '@/src/apollo/query/transactionQuery';
 import {transactionActions} from '@/src/redux/slices/transactionSlice';
-import {transactionStatus} from '@/src/mocks';
-import {Ionicons, Entypo} from '@expo/vector-icons';
-import {cancelIcon, checked, pendingClock, suspicious, waiting} from '@/src/assets';
+import {Ionicons, Entypo, AntDesign} from '@expo/vector-icons';
 import {z} from 'zod';
 import {TransactionAuthSchema} from '@/src/auth/transactionAuth';
 import {useLocalAuthentication} from '@/src/hooks/useLocalAuthentication';
 import {accountActions} from '@/src/redux/slices/accountSlice';
 import {fetchRecentTransactions} from '@/src/redux/fetchHelper';
-import {DispatchType} from '@/src/redux';
+import {DispatchType, StateType} from '@/src/redux';
+import CircularProgress from 'react-native-circular-progress-indicator';
+import {Dimensions} from "react-native";
 
 
 type Props = {
@@ -37,7 +35,62 @@ type Props = {
     iconImage?: any
 }
 
-const {height} = Dimensions.get('window')
+const {width} = Dimensions.get("screen");
+const statusSize = width / 8
+const statusIconSize = statusSize * 0.5
+const statusLinePadding = statusSize * 0.5
+const statusLineHeight = statusSize * 0.6
+
+const status = [
+    {
+        title: "Emitida",
+        description: "Transacción inicializada",
+        icon: "check-circle",
+        progress: 100,
+        color: (progress: number) => progress < 100 ? colors.gray : colors.mainGreen,
+        activeStrokeColor: (progress: number) => progress <= 100 ? colors.mainGreen : colors.gray,
+        inActiveStrokeColor: (progress: number) => progress < 100 ? colors.gray : colors.mainGreen
+    },
+    {
+        title: "Pendiente",
+        description: "En turno para ser procesada",
+        icon: "clock-circle",
+        progress: 20,
+        color: (progress: number) => progress < 100 ? colors.gray : colors.mainGreen,
+        activeStrokeColor: (progress: number) => progress <= 1 ? "transparent" : progress <= 100 ? colors.mainGreen : colors.gray,
+        inActiveStrokeColor: (progress: number) => progress < 100 ? colors.gray : colors.mainGreen
+    },
+    {
+        title: "Anomalías",
+        description: "Comprobando posibles incidencias",
+        icon: "security-scan",
+        progress: 0,
+        color: (progress: number) => progress < 100 ? colors.gray : colors.mainGreen,
+        activeStrokeColor: (progress: number) => progress <= 100 ? colors.mainGreen : colors.gray,
+        inActiveStrokeColor: (progress: number) => progress < 100 ? colors.gray : colors.mainGreen
+    },
+    {
+        title: "Moviendo fondos",
+        description: "Enviando fondos al destinatario",
+        icon: "bank",
+        progress: 0,
+        color: (progress: number) => progress < 100 ? colors.gray : colors.mainGreen,
+        activeStrokeColor: (progress: number) => progress <= 100 ? colors.mainGreen : colors.gray,
+        inActiveStrokeColor: (progress: number) => progress < 100 ? colors.gray : colors.mainGreen,
+    },
+    {
+        title: "Completed",
+        description: "Transaction finished",
+        icon: "check",
+        progress: 0,
+        color: (progress: number) => progress < 100 ? colors.gray : colors.mainGreen,
+        activeStrokeColor: (progress: number) => progress <= 100 ? colors.mainGreen : colors.gray,
+        inActiveStrokeColor: (progress: number) => progress < 100 ? colors.gray : colors.mainGreen,
+        hideDivider: true
+    }
+]
+
+
 const SingleSentTransaction: React.FC<Props> = ({
                                                     title = "Ver Detalles", onClose = () => {
     }, showPayButton = false, goNext = (_?: number) => {
@@ -46,13 +99,12 @@ const SingleSentTransaction: React.FC<Props> = ({
     const ref = useRef<PagerView>(null);
     const dispatch = useDispatch<DispatchType>()
     const {authenticate} = useLocalAuthentication()
-    const {location} = useSelector((state: any) => state.globalReducer)
     const {
         transaction,
         recentTransactions,
-        transactionDeytails,
+        transactionDetails,
         receiver
-    } = useSelector((state: any) => state.transactionReducer)
+    } = useSelector((state: StateType) => state.transactionReducer)
     const {account, user}: {
         account: any,
         user: any,
@@ -148,57 +200,9 @@ const SingleSentTransaction: React.FC<Props> = ({
             ref.current?.setPage(1)
     }
 
-    const StatuIcon: React.FC<{ status: string }> = ({status}: { status: string }) => {
-        if (status === "completed") {
-            return (
-                <ZStack w={"35px"} h={"35px"} borderRadius={100} justifyContent={"center"} alignItems={"center"}>
-                    <HStack w={"80%"} h={"80%"} bg={colors.mainGreen} borderRadius={100}/>
-                    <Image borderRadius={100} tintColor={colors.lightGray} alt='logo-image' w={"100%"} h={"100%"}
-                           source={checked}/>
-                </ZStack>
-            )
-        } else if (status === "cancelled") {
-            return (
-                <ZStack w={"35px"} h={"35px"} borderRadius={100} justifyContent={"center"} alignItems={"center"}>
-                    <HStack w={"80%"} h={"80%"} bg={colors.white} borderRadius={100}/>
-                    <Image borderRadius={100} alt='logo-image' w={"100%"} h={"100%"} source={cancelIcon}/>
-                </ZStack>
-            )
-
-        } else if (status === "pending") {
-            return (
-                <ZStack w={"35px"} h={"35px"} borderRadius={100} justifyContent={"center"} alignItems={"center"}>
-                    <HStack w={"80%"} h={"80%"} bg={colors.gray} borderRadius={100}/>
-                    <Image borderRadius={100} alt='logo-image' w={"100%"} h={"100%"} source={pendingClock}/>
-                </ZStack>
-            )
-        } else if (status === "waiting") {
-            return (
-                <ZStack w={"35px"} h={"35px"} borderRadius={100} justifyContent={"center"} alignItems={"center"}>
-                    <HStack w={"80%"} h={"80%"} bg={colors.gray} borderRadius={100}/>
-                    <Image borderRadius={100} alt='logo-image' w={"100%"} h={"100%"} source={waiting}/>
-                </ZStack>
-            )
-        } else if (status === "requested") {
-            return (
-                <ZStack w={"35px"} h={"35px"} borderRadius={100} justifyContent={"center"} alignItems={"center"}>
-                    <HStack w={"80%"} h={"80%"} bg={colors.gray} borderRadius={100}/>
-                    <Image borderRadius={100} alt='logo-image' w={"100%"} h={"100%"} source={pendingClock}/>
-                </ZStack>
-            )
-        } else if (status === "suspicious") {
-            return (
-                <ZStack w={"35px"} h={"35px"} borderRadius={100} justifyContent={"center"} alignItems={"center"}>
-                    <Image borderRadius={100} tintColor={colors.goldenYellow} alt='logo-image' w={"100%"} h={"100%"}
-                           source={suspicious}/>
-                </ZStack>
-            )
-        }
-    }
-
     return (
-        <VStack h={"90%"} px={"20px"} justifyContent={"space-between"}>
-            <VStack pt={"20px"}>
+        <VStack h={"90%"} px={"20px"}>
+            <VStack pt={"20px"} alignItems={"center"}>
                 <HStack w={"100%"} justifyContent={"space-between"} alignItems={"center"}>
                     <HStack>
                         {receiver?.profileImageUrl ?
@@ -218,25 +222,43 @@ const SingleSentTransaction: React.FC<Props> = ({
                             <Text fontSize={scale(15)} color={colors.lightSkyGray}>{receiver?.username}</Text>
                         </VStack>
                     </HStack>
-                    <Pressable mb={"20px"} _pressed={{opacity: 0.5}} bg={colors.lightGray} onPress={handleShare}
-                               w={"40px"} h={"40px"} borderRadius={100} alignItems={"center"} justifyContent={"center"}>
+                    <Pressable mb={"20px"} _pressed={{opacity: 0.5}} bg={colors.lightGray} onPress={handleShare} w={"40px"} h={"40px"} borderRadius={100} alignItems={"center"} justifyContent={"center"}>
                         <Entypo name="share" size={20} color={colors.mainGreen}/>
                     </Pressable>
                 </HStack>
-                <VStack>
-                    <VStack mt={"20px"} alignItems={"center"}>
-                        <Heading textTransform={"capitalize"} fontSize={scale(38)}
-                                 color={colors.white}>{FORMAT_CURRENCY(transactionDeytails?.amount)}</Heading>
-                        <Text mb={"10px"} color={colors.lightSkyGray}>{moment(Date.now()).format("lll")}</Text>
-                        {transaction.isFromMe ?
-                            <VStack my={"20px"} textAlign={"center"} space={1} alignItems={"center"}>
-                                <StatuIcon status={"pending"}/>
-                                <VStack w={"80%"}>
-                                    <Text textAlign={"center"} fontSize={scale(14)}
-                                          color={colors.white}>{transactionStatus("pending")}</Text>
-                                </VStack>
-                            </VStack> : null}
-                    </VStack>
+                <VStack w={"100%"} mt={"30px"} alignItems={"center"}>
+                    <Heading textTransform={"capitalize"} fontSize={scale(38)} color={colors.white}>{FORMAT_CURRENCY(transactionDetails?.amount)}</Heading>
+                    <Text mb={"10px"} color={colors.lightSkyGray}>{moment(Date.now()).format("lll")}</Text>
+                    {transaction.isFromMe ?
+                        <VStack w={"100%"} borderWidth={0.5} borderColor={colors.placeholder} mt={5} pt={5} p={5} borderRadius={15}>
+                            <Heading mb={5} fontSize={scale(15)} textTransform={"capitalize"} color={"white"}>{"Progreso"}</Heading>
+                            {status.map((item, i) => (
+                                <HStack key={i} w={"100%"} opacity={1}>
+                                    <VStack w={"62px"} h={"80px"}>
+                                        <ZStack justifyContent={"center"} alignItems={"center"} w={`${statusSize}px`} h={`${statusSize}px`} borderRadius={100}>
+                                            <CircularProgress radius={25} showProgressValue={false} inActiveStrokeWidth={2} activeStrokeColor={item.activeStrokeColor(item.progress)} inActiveStrokeColor={item.inActiveStrokeColor(item.progress)} activeStrokeWidth={2} value={item.progress as number}/>
+                                            <AntDesign name={item.icon as any} size={statusIconSize} color={item.color(item.progress)}/>
+                                        </ZStack>
+                                        {item.hideDivider ? null : <HStack ml={`${statusLinePadding}px`} bottom={"3px"} h={`${statusLineHeight}px`} w={"2px"} bg={item.color(item.progress)}/>}
+                                    </VStack>
+                                    <VStack pl={1.5}>
+                                        <Heading fontSize={scale(16)} color={item.color(item.progress)}>{item.title}</Heading>
+                                        <Text color={item.color(item.progress)}>{item.description}</Text>
+                                    </VStack>
+                                </HStack>
+                            ))}
+                            {transaction.status === "requested" ? <HStack mt={"20px"} w={"100%"} justifyContent={"center"}>
+                                <Button
+                                    onPress={onCancelRequestedTransaction}
+                                    spin={isCancelLoading}
+                                    w={"49%"}
+                                    bg={colors.lightGray}
+                                    color={colors.red}
+                                    title={"Cancelar"}
+                                />
+                            </HStack> : null}
+                        </VStack>
+                        : null}
                 </VStack>
             </VStack>
             {showPayButton ?
@@ -271,44 +293,17 @@ const SingleSentTransaction: React.FC<Props> = ({
                         />
                     </HStack>
                 </VStack>
-                : transaction.isFromMe ?
-                    <VStack w={"100%"} justifyContent={"center"}>
-                        <HStack w={"85%"} mb={"5px"}>
-                            <Heading fontSize={scale(16)} textTransform={"capitalize"}
-                                     color={"white"}>{transaction.location?.fullArea || "Ubicación"}</Heading>
-                        </HStack>
-                        <Image
-                            alt='fine-location-image-alt'
-                            resizeMode="cover"
-                            w={"100%"}
-                            h={height / 3}
-                            source={{
-                                uri: getMapLocationImage({latitude: location?.latitude, longitude: location?.longitude})
-                            }}
-                            style={{
-                                borderRadius: 10
-                            }}
-                        />
-                        {transaction.status === "requested" ? <HStack mt={"20px"} w={"100%"} justifyContent={"center"}>
-                            <Button
-                                onPress={onCancelRequestedTransaction}
-                                spin={isCancelLoading}
-                                w={"49%"}
-                                bg={colors.lightGray}
-                                color={colors.red}
-                                title={"Cancelar"}
-                            />
-                        </HStack> : null}
-                    </VStack> :
-                    <VStack my={"20px"} textAlign={"center"} space={1} alignItems={"center"}>
-                        <VStack my={"20px"} textAlign={"center"} space={1} alignItems={"center"}>
-                            <StatuIcon status={"pending"}/>
-                            <VStack w={"80%"}>
-                                <Text textAlign={"center"} fontSize={scale(14)}
-                                      color={colors.white}>{transactionStatus("pending")}</Text>
-                            </VStack>
-                        </VStack>
-                    </VStack>
+                :
+                <HStack mt={"20px"} w={"100%"} justifyContent={"center"}>
+                    <Button
+                        onPress={onCancelRequestedTransaction}
+                        spin={isCancelLoading}
+                        w={"49%"}
+                        bg={colors.lightGray}
+                        color={colors.red}
+                        title={"Cancelar"}
+                    />
+                </HStack>
             }
         </VStack>
     )

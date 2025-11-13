@@ -27,12 +27,8 @@ type Props = {
 }
 
 const CreateTransaction: React.FC<Props> = ({
-                                                input,
-                                                title = "Siguiente",
-                                                showBalance = true,
-                                                setInput,
-                                                nextPage = () => {
-                                                }
+                                                input, title = "Siguiente", showBalance = true, setInput, nextPage = () => {
+    }
                                             }) => {
     const dispatch = useDispatch<DispatchType>();
     const {receiver} = useSelector((state: any) => state.transactionReducer)
