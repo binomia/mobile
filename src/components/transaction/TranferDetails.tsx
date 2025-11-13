@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import colors from '@/src/colors'
 import Button from '@/src/components/global/Button';
 import BottomSheet from '../global/BottomSheet';

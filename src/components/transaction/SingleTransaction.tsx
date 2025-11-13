@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useRef, useState} from 'react'
 import colors from '@/src/colors'
 import Button from '@/src/components/global/Button';
 import moment from 'moment';
