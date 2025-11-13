@@ -27,12 +27,7 @@ type Props = {
 }
 
 const {width} = Dimensions.get("screen")
-const TransactionDetails: React.FC<Props> = ({
-                                                 onClose = () => {
-                                                 }, goNext = () => {
-    }, goBack = () => {
-    }
-                                             }) => {
+const TransactionDetails: React.FC<Props> = ({onClose = () => {}, goNext = () => {}, goBack = () => {}}) => {
     const {receiver} = useSelector((state: StateType) => state.transactionReducer)
     const {user, account} = useSelector((state: StateType) => state.accountReducer)
 
